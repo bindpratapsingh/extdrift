@@ -1,0 +1,8 @@
+- For multiple browsers 
+- Not random forest maybe something new state of the art new model
+- need to get heuristics
+- understand malicious approach wrt to existing browsers
+- existing heuristics 
+- why ML is important 
+- existing stae of teh arrt. Implement that result and then compare and then improvement. 
+- Step by Step approach

@@ -1,0 +1,338 @@
+% =====================================================================
+%  CSD493: Project-1 (Monsoon 2026) -- DETAILED Project Proposal
+%  Shiv Nadar Institution of Eminence, Dept. of CSE
+%  Behavioral-Diff Detection of Malicious Browser Extension Updates
+%
+%  Revised version. Key changes vs. the first draft:
+%    * Base paper set to an IEEE-published, top-tier work (Bui et al.,
+%      IEEE S&P 2023); removed the unverifiable "Stock et al." citation.
+%    * Multi-browser / cross-engine coverage added (Chromium family + Firefox).
+%    * CRXcavator (sunset by Cisco/Duo in 2023) removed as a data source;
+%      data plan re-based on synthetic corpus + validated real incidents.
+%    * Manifest V3 target made explicit; Tranco replaces deprecated Alexa.
+%    * Trace-determinism (record/replay) and a transparent weighted baseline added.
+%    * Explicit scope/phasing and a publishable-novelty section.
+%  Compile with pdfLaTeX.
+% =====================================================================
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=blue]{hyperref}
+
+\definecolor{snublue}{RGB}{20,60,120}
+
+% --- Section styling ---
+\titleformat{\section}{\large\bfseries\color{snublue}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.4ex plus 1ex minus .2ex}{1ex}
+
+% --- Running header/footer ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize CSD493: Project-1 Proposal}
+\rhead{\footnotesize Shiv Nadar IoE}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+
+\newcommand{\dem}[1]{\textbf{#1}}
+
+\begin{document}
+
+% ========================= Title block ===============================
+\begin{center}
+    {\large\bfseries Shiv Nadar Institution of Eminence}\\[2pt]
+    {\normalsize Department of Computer Science and Engineering}\\[14pt]
+    {\LARGE\bfseries\color{snublue} Behavioral-Diff Detection of Malicious\\[4pt]
+     Browser Extension Updates}\\[8pt]
+    {\itshape A sandboxed, cross-browser runtime-analysis framework for supply-chain
+     threat detection in browser extensions}\\[14pt]
+\end{center}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\textbf{Group Members:} & Bind Pratap Singh (2310110084), Suhani Deepak Agrawat (2310110717)\\
+\textbf{Programme:}     & B.Tech CSE, Batch 2023--27\\
+\textbf{Project Advisor:} & Dr. Sweta Mishra\\
+\textbf{Area of Specialization:} & Cybersecurity\\
+\textbf{Date:}          & May 23, 2026\\
+\end{tabular}
+\end{center}
+
+\vspace{0.5em}
+\hrule
+\vspace{1em}
+
+% ============================ Abstract ===============================
+\begin{center}\textbf{Abstract}\end{center}
+\begin{quote}
+Browser extensions are a persistent supply-chain risk: a trusted, widely-installed extension can
+become malicious after a single silent background update, reaching hundreds of thousands of users
+within hours. Static review fails to catch obfuscated payloads, delayed activation, and behaviours
+that only surface at runtime. This project proposes a sandboxed \emph{behavioral-diff} framework
+that executes two consecutive versions of the same extension under identical, automated browsing
+conditions and computes a weighted delta across their runtime traces. To remove environmental noise,
+the two versions are driven against \emph{record/replayed} page content so the only meaningful
+difference is the extension itself. The system actively triggers dormant payloads via synthetic DOM
+interaction; records network traffic, extension-API calls, DOM access, and storage access; and scores
+the behavioural change with both a transparent weighted baseline and a Random Forest classifier
+trained on a synthetic weaponisation corpus and validated on real 2024--25 supply-chain incidents.
+Crucially, the framework is \emph{cross-browser}: it analyses Chromium-family browsers
+(Chrome, Edge, Brave) and Firefox, enabling detection of update-time divergence within and across
+browser engines. The result is an explainable, per-update diff report that is directly actionable for
+security teams. The system is designed to be implementable within the semester by two final-year CSE
+students, while leaving a clear novelty surface suitable for a short research paper.
+\end{quote}
+
+\vspace{0.5em}
+
+% =========================== Motivation ==============================
+\section{Motivation}
+The browser-extension ecosystem runs on a fundamental \emph{trust contract}: once a user installs an
+extension, the browser grants it elevated access to every page they visit. This trust contract is
+\textbf{not renewed on each update}. An extension that passes a careful initial review automatically
+receives the same privileges after every subsequent silent update, with no re-consent from the user
+and no re-review by the store. The same dynamic exists in \emph{every} major browser.
+
+\begin{quote}
+\textbf{December 2024 --- Cyberhaven Supply-Chain Attack.} A threat actor compromised the developer
+account of Cyberhaven, a legitimate data-loss-prevention extension with 400,000 active users. A
+malicious update was pushed to the Chrome Web Store and silently distributed to all users within
+hours. The payload exfiltrated session cookies and authentication tokens from targeted financial
+portals --- entirely bypassing static review, permission checks, and endpoint security tools. The
+same campaign is now known to have compromised dozens of additional Chromium extensions.
+\end{quote}
+
+Static code analysis and permission-manifest inspection cannot catch this class of attack: malicious
+logic can be obfuscated, condition-gated, or time-delayed. There is currently no open, systematic,
+\emph{version-aware} tool that detects such behavioural divergence between consecutive extension
+releases, and existing academic dynamic-analysis tools analyse a \emph{single} version of an
+extension on a \emph{single} browser. This project targets exactly that gap.
+
+% ======================== Problem Statement ==========================
+\section{Problem Statement}
+Given two consecutive releases of the same browser extension --- version $N$ (trusted baseline) and
+version $N{+}1$ (candidate update), packaged as \texttt{.crx} (Chromium) or \texttt{.xpi}
+(Firefox) --- the system must decide whether the behavioural change between them constitutes a
+security threat.
+
+The meaningful signal is \emph{change}: new behaviours that did not exist in version $N$, weighted by
+their security sensitivity. Formally, the system computes a behavioural delta vector
+\[
+    \Delta \;=\; f(T_{N+1}) - f(T_{N}),
+\]
+where $T_N$ and $T_{N+1}$ are runtime traces of each version collected under \emph{identical,
+replayed} browsing conditions, and $f(\cdot)$ is a feature-extraction function. A scoring function
+then maps $\Delta$ to a risk score and outputs an interpretable diff report explaining which
+behavioural changes drove the alert. Because the same extension is analysed on multiple browsers,
+the framework also exposes \emph{cross-engine} divergence (behaviour that appears only under a
+particular browser's API surface), which is itself a known evasion technique.
+
+% ====================== Proposed Methodology =========================
+\section{Proposed Methodology}
+The system is a five-stage analysis pipeline, parameterised by target browser.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.3em]
+\item \dem{Scope \& Sandbox Construction.} Each version of an extension is unpacked and loaded into
+an isolated Docker container running a headless browser instance --- Chromium (covering Chrome, Edge,
+Brave, which share the Manifest V3 \texttt{.crx} format and the \texttt{chrome.*} API) and Firefox
+(\texttt{.xpi}, \texttt{browser.*} WebExtensions API). All outbound traffic is intercepted by
+\texttt{mitmproxy} (with its CA certificate installed inside the container to terminate TLS).
+Containers are network-egress-restricted so live malware cannot reach real victims.
+
+\item \dem{Deterministic Browsing \& Payload Fuzzing.} To make the diff meaningful, both versions are
+driven against \emph{the same page content} using a record-and-replay proxy, eliminating ad/nonce/
+timestamp noise that would otherwise produce false positives. Over this fixed content, the framework
+performs synthetic DOM fuzzing --- clicking login buttons, populating \emph{dummy} credential forms ---
+across Tranco-ranked top sites, financial login pages, and webmail portals, to activate
+condition-gated logic. (Tranco replaces the deprecated Alexa list.)
+
+\item \dem{Runtime Trace Collection.} The sandbox records a trace spanning four dimensions:
+(i) outbound network requests (destinations, payload shape, exfiltration patterns),
+(ii) DOM access events (reads of form fields, cookies-in-DOM, injected nodes),
+(iii) storage/cookie access, and (iv) extension-API calls (\texttt{chrome.*}\,/\,\texttt{browser.*},
+including MV3 service-worker activity such as \texttt{declarativeNetRequest}).
+
+\item \dem{Feature Extraction \& Risk Weighting.} Raw traces are normalised and converted into the
+numerical feature vector $\Delta$. Features are weighted by security sensitivity to manage false
+positives --- e.g., domain-reputation delta, new-destination count, DOM-access intensity, permission
+delta, and exfiltration-pattern matches.
+
+\item \dem{Scoring: Baseline + Classifier.} $\Delta$ is scored two ways for robustness and
+explainability: (a) a \emph{transparent weighted-rule baseline}, and (b) a \emph{Random Forest}
+classifier (with XGBoost as a secondary model). Because confirmed malicious \emph{update pairs} are
+scarce in the wild, the classifier is trained predominantly on a \emph{synthetic weaponisation
+corpus} --- clean extensions into which known malicious behaviours (cookie exfiltration, credential
+scraping, beaconing) are injected to create labelled $(N, N{+}1)$ pairs --- and is then
+\emph{validated} on held-out real incidents from the 2024--25 campaigns. The agreement between the
+interpretable baseline and the learned model is itself reported as a confidence signal.
+\end{enumerate}
+
+% ================= Multi-browser / cross-engine ======================
+\section{Multi-Browser and Cross-Engine Coverage}
+A core requirement of this project is coverage across browser families rather than a single browser.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=0.2em]
+\item \dem{Chromium family (primary).} Chrome, Edge, Brave, and Opera share the Manifest~V3
+\texttt{.crx} format and the \texttt{chrome.*} API, so a single instrumentation back-end covers all
+of them with minimal additional work. This is also the family hit by the Cyberhaven campaign.
+\item \dem{Firefox (second engine).} Firefox uses the \texttt{.xpi} package and the \texttt{browser.*}
+WebExtensions API on the Gecko engine. Supporting it requires a separate loader and API-instrumentation
+layer but yields genuine \emph{cross-engine} coverage and lets the framework detect behaviour that an
+extension exposes only under one engine.
+\item \dem{Out of scope.} Safari App Extensions (macOS-only, distinct model) are explicitly excluded.
+\end{itemize}
+
+A shared, browser-agnostic trace schema lets the same feature-extraction and scoring stages operate
+over both engines, so the cross-engine capability is an architectural property rather than duplicated
+code.
+
+% =================== Novelty & Contribution ==========================
+\section{Novelty and Academic Contribution}
+The project is positioned to balance engineering with a defensible research contribution. The
+publishable novelty surface is:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=0.25em]
+\item \dem{Update-aware threat formulation.} We analyse the \emph{temporal} supply-chain threat ---
+behavioural divergence between consecutive versions --- rather than scoring an extension in isolation,
+which is what existing dynamic-analysis tools (e.g., Hulk) and IEEE detection work do.
+\item \dem{Cross-engine behavioral diffing.} To our knowledge, no open framework computes a normalised
+behavioural diff for the \emph{same} extension across both Chromium and Gecko engines, surfacing
+engine-specific evasion.
+\item \dem{Determinism via record/replay.} Diffing two versions over identical, replayed page content
+isolates the extension as the only variable --- a methodological contribution that directly attacks
+the dominant false-positive source in runtime extension analysis.
+\item \dem{Explainable, dual-scored output.} A per-update diff report combining an interpretable
+weighted baseline with a learned classifier produces actionable intelligence (which behaviour changed
+and why) rather than an opaque label.
+\end{itemize}
+
+If the empirical results hold (high detection on real incidents at low FPR on legitimate updates),
+this is a natural fit for a short paper / workshop submission in browser or supply-chain security.
+
+% =================== Implementation & division ======================
+\section{Implementation and Division of Work}
+The project relies on an open-source Python stack and divides naturally into two workstreams.
+
+\dem{Student A --- Bind Pratap Singh (Infrastructure).}
+\begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
+\item Docker isolation, egress control, and Playwright browser automation (Chromium + Firefox).
+\item \texttt{mitmproxy} traffic interception, the record/replay layer, and DOM/API event instrumentation.
+\item Browser-agnostic trace-serialisation pipeline and extension-API call logging.
+\end{itemize}
+
+\dem{Student B --- Suhani Deepak Agrawat (Data \& ML).}
+\begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
+\item Synthetic-weaponisation corpus generation, real-incident dataset curation, labelling, and
+feature engineering/weighting.
+\item Weighted-baseline scorer and Random Forest / XGBoost training and cross-validation.
+\item FastAPI backend service and a Streamlit dashboard rendering the per-update diff report.
+\end{itemize}
+
+% ========================= Evaluation ================================
+\section{Evaluation}
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Metric} & \textbf{Target / Method}\\
+\midrule
+Detection Rate (TPR)      & Held-out confirmed malicious update pairs from 2024--25 campaigns \\
+False Positive Rate (FPR) & Legitimate updates from top-100 extensions sampled over time \\
+Cross-Browser Consistency & Agreement of the diff verdict across Chromium and Firefox \\
+Evasion Resistance        & Obfuscated / delayed-activation variants of known payloads \\
+Per-pair Latency          & End-to-end analysis time from extension input to report output \\
+Report Quality            & Qualitative: are flagged diff items accurate and actionable? \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ===================== Scope and phasing =============================
+\section{Scope, Phasing, and Risk}
+Because the full pipeline is substantial for one semester, deliverables are phased so that a working,
+demonstrable system exists by the end of CSD493, with the remainder forming the follow-on project.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=0.2em]
+\item \dem{Project-1 (this semester) --- core, must-have:} sandbox + deterministic browsing + the
+four-dimension trace pipeline on the \emph{Chromium family}; synthetic corpus; the weighted baseline
+plus a first Random Forest; an end-to-end diff report on a small set of real incidents.
+\item \dem{Phase 2 / stretch:} the Firefox (cross-engine) back-end, the Streamlit dashboard,
+evasion-resistance experiments, and ML refinement toward a paper-grade evaluation.
+\item \dem{Key risks \& mitigations:} (i) \emph{Scarcity of real malicious update pairs} --- mitigated
+by training on the synthetic corpus and reserving real incidents for validation; (ii) \emph{trace
+non-determinism} --- mitigated by record/replay; (iii) \emph{safe malware handling} --- mitigated by
+egress-restricted containers and dummy credentials only.
+\end{itemize}
+
+% ========================= References ================================
+\section{References}
+\begin{thebibliography}{99}
+\setlength{\itemsep}{0.25em}
+
+\bibitem{bui2023}
+D. Bui, B. Tang, and K. G. Shin, ``Detection of Inconsistencies in Privacy Practices of Browser
+Extensions (ExtPrivA),'' \emph{IEEE Symposium on Security and Privacy (S\&P)}, 2023.
+\textbf{[Base paper.]}
+\url{https://ieeexplore.ieee.org/document/10179338/}
+
+\bibitem{hulk2014}
+A. Kapravelos, C. Grier, N. Chachra, C. Kruegel, G. Vigna, and V. Paxson, ``Hulk: Eliciting Malicious
+Behavior in Browser Extensions,'' \emph{USENIX Security}, 2014.
+\url{https://www.usenix.org/conference/usenixsecurity14/technical-sessions/presentation/kapravelos}
+
+\bibitem{writ2024}
+G. Vasiliadis \emph{et al.}, ``WRIT: Web Request Integrity and Attestation Against Malicious Browser
+Extensions,'' \emph{IEEE Transactions on Dependable and Secure Computing (TDSC)}, 2024.
+\url{https://ieeexplore.ieee.org/document/10273582/}
+
+\bibitem{vex2010}
+S. Bandhakavi \emph{et al.}, ``VEX: Vetting Browser Extensions for Security Vulnerabilities,''
+\emph{USENIX Security}, 2010.
+\url{https://www.usenix.org/legacy/event/sec10/tech/full_papers/Bandhakavi.pdf}
+
+\bibitem{didivet2024}
+A. Aggarwal \emph{et al.}, ``Did I Vet You Before? Assessing the Chrome Web Store Vetting Process
+through Browser Extension Similarity,'' arXiv:2406.00374, 2024.
+\url{https://arxiv.org/abs/2406.00374}
+
+\bibitem{karami2021}
+S. Karami \emph{et al.}, ``Awakening the Web's Sleeper Agents: Misusing Service Workers for Privacy
+Leakage,'' \emph{NDSS}, 2021.
+\url{https://www.ndss-symposium.org/ndss-paper/awakening-the-webs-sleeper-agents-misusing-service-workers-for-privacy-leakage/}
+
+\bibitem{fass2019}
+A. Fass \emph{et al.}, ``HideNoSeek: Camouflaging Malicious JavaScript in Benign ASTs,''
+\emph{ACM CCS}, 2019.
+\url{https://dl.acm.org/doi/10.1145/3319535.3363196}
+
+\bibitem{singh2025}
+S. Singh \emph{et al.}, ``A Study on Malicious Browser Extensions in 2025,'' arXiv:2503.04292, 2025.
+(Preprint --- motivation reference.)
+\url{https://arxiv.org/abs/2503.04292}
+
+\bibitem{javasith2025}
+``JavaSith: A Client-Side Framework for Analyzing Potentially Malicious Extensions in Browsers,
+VS Code, and NPM Packages,'' arXiv:2505.21263, 2025.
+\url{https://arxiv.org/abs/2505.21263}
+
+\bibitem{tranco2019}
+V. Le Pochat \emph{et al.}, ``Tranco: A Research-Oriented Top Sites Ranking Hardened Against
+Manipulation,'' \emph{NDSS}, 2019.
+\url{https://tranco-list.eu/}
+
+\bibitem{kaspersky2023}
+Kaspersky, ``Malicious extensions in the Chrome Web Store,'' 2023.
+\url{https://kaspersky.co.in/blog/dangerous-chrome-extensions-87-million/25861/}
+
+\end{thebibliography}
+
+\end{document}

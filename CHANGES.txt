@@ -1,0 +1,189 @@
+===============================================================================
+  CSD493 PROJECT-1  |  PROPOSAL REVISION — SUMMARY OF CHANGES & RATIONALE
+  Project: Behavioral-Diff Detection of Malicious Browser Extension Updates
+  Group  : Bind Pratap Singh (2310110084), Suhani Deepak Agrawat (2310110717)
+  Advisor: Dr. Sweta Mishra
+  Date   : June 2026  (revision of the 23 May 2026 proposal)
+===============================================================================
+
+===============================================================================
+  1. BASE PAPER  (the professor's primary request)
+===============================================================================
+
+  CHANGE
+    Replaced the named base paper.
+      OLD: S. Singh et al., "A Study on Malicious Browser Extensions in 2025,"
+           arXiv, 2025.
+      NEW: D. Bui, B. Tang, K. G. Shin, "Detection of Inconsistencies in
+           Privacy Practices of Browser Extensions (ExtPrivA),"
+           IEEE Symposium on Security & Privacy (S&P), 2023.
+
+  WHY
+    - The Singh paper is an arXiv PREPRINT — not peer-reviewed and not formally
+      published — which is exactly why it does not qualify as a base paper.
+    - IEEE S&P is a top-tier, IEEE-published security venue, satisfying the
+      "IEEE published" requirement with a highly credible source.
+    - It is also the closest methodological match available: ExtPrivA emulates
+      user interaction to trigger extension functionality and analyses outbound
+      network requests to detect data leakage — structurally the same as our
+      approach. We can therefore frame our work cleanly as an extension of it
+      from single-version analysis to the UPDATE / version-diff setting.
+    - Singh, JavaSith, and "Did I Vet You Before?" are kept as supporting /
+      motivation references (clearly marked as preprints), not as the base paper.
+
+
+===============================================================================
+  2. REFERENCE LIST FIXES
+===============================================================================
+
+  CHANGE 2a — Removed a fabricated citation.
+    The original reference [9], "G. Stock et al., How Do You Feel About Your
+    Browser Extension?, IEEE S&P 2023," was removed.
+
+  WHY
+    - This paper could not be found in the IEEE S&P 2023 program or any index.
+      It appears to be an auto-generated (hallucinated) citation. Leaving it in
+      is a credibility risk if an examiner spot-checks the references.
+
+  CHANGE 2b — Added foundational and IEEE references.
+      + A. Kapravelos et al., "Hulk: Eliciting Malicious Behavior in Browser
+        Extensions," USENIX Security, 2014.
+      + G. Vasiliadis et al., "WRIT: Web Request Integrity and Attestation
+        Against Malicious Browser Extensions," IEEE TDSC, 2024.
+      + V. Le Pochat et al., "Tranco: A Research-Oriented Top Sites Ranking,"
+        NDSS, 2019.
+
+  WHY
+    - Hulk is THE seminal "dynamically execute + fuzz an extension to elicit
+      hidden malicious behaviour" paper; it is the intellectual ancestor of our
+      method and reviewers expect to see it cited.
+    - WRIT adds a second, recent IEEE-journal anchor specifically about
+      malicious browser extensions.
+    - Tranco supports the methodology change in item 5b below.
+
+  CHANGE 2c — Tightened relevance.
+    Loosely-related entries (e.g., the browser-fingerprinting survey) were
+    dropped in favour of extension-security-specific work.
+
+  WHY
+    - A focused, verifiable reference list reads as more rigorous and is easier
+      to defend.
+
+
+===============================================================================
+  3. MULTI-BROWSER COVERAGE  (the professor's meeting note: "for multiple browsers")
+===============================================================================
+
+  CHANGE
+    Added explicit multi-browser / cross-engine scope (new dedicated section in
+    the detailed proposal; reflected in the official form's problem statement):
+      - Chromium family (Chrome, Edge, Brave) — PRIMARY target.
+      - Firefox — SECOND engine, for genuine cross-engine coverage.
+      - Safari — explicitly OUT OF SCOPE.
+
+  WHY
+    - Directly addresses the advisor's note.
+    - Chrome, Edge, and Brave share the Manifest V3 .crx format and the
+      chrome.* API, so one instrumentation back-end covers all of them with
+      little extra work — and this is the family hit by the Cyberhaven attack.
+    - Firefox uses a different package (.xpi), API (browser.*), and engine
+      (Gecko); supporting it is more work but yields real cross-engine value
+      and exposes behaviour an extension reveals only under one engine.
+    - Safari's App-Extension model is macOS-only and structurally different —
+      not worth the cost, so it is excluded deliberately rather than by omission.
+
+
+===============================================================================
+  4. DATA-PLAN CORRECTION  (feasibility)
+===============================================================================
+
+  CHANGE 4a — Removed CRXcavator as a data source.
+
+  WHY
+    - CRXcavator was sunset by Cisco/Duo in 2023 and no longer exists, so it
+      cannot supply data. Citing a dead tool would undermine feasibility.
+
+  CHANGE 4b — Made the training strategy explicit and honest.
+    Train PRIMARILY on a synthetic weaponisation corpus (clean extensions with
+    known malicious behaviours injected to create labelled version pairs);
+    RESERVE confirmed real 2024-25 incidents as a held-out validation set.
+
+  WHY
+    - Confirmed malicious UPDATE PAIRS (version N vs N+1) are very scarce in the
+      wild — only a handful of well-documented campaigns. A classifier trained
+      only on those would be data-starved and easy to over-claim.
+    - Synthetic-train / real-validate is the honest, defensible framing and
+      pre-empts the obvious examiner question about dataset size.
+
+
+===============================================================================
+  5. TECHNICAL MODERNIZATIONS
+===============================================================================
+
+  CHANGE 5a — Manifest V3 made the explicit target.
+  WHY
+    - Chrome has moved to MV3 (service workers, declarativeNetRequest, no remote
+      code), and the Cyberhaven attack itself was MV3. Naming MV3 shows the
+      project targets the current platform and clarifies how API calls are hooked.
+
+  CHANGE 5b — Replaced "Alexa sites" with the Tranco list.
+  WHY
+    - Alexa rankings were discontinued in 2022. Tranco is the current academic
+      standard for top-sites rankings.
+
+  CHANGE 5c — Added record/replay determinism.
+  WHY
+    - Browsing real sites twice never yields identical network traffic (ads,
+      nonces, timestamps, A/B content). Diffing raw traces would produce false
+      positives. Driving both versions against identical, replayed page content
+      isolates the extension as the only variable — this is also a methodological
+      contribution in its own right.
+
+  CHANGE 5d — Added a transparent weighted-rule baseline alongside the
+              Random Forest.
+  WHY
+    - Strengthens the "explainable output" goal, gives a sanity-check against the
+      learned model, and is robust when real malicious data is thin. Agreement
+      between the two scorers is itself reported as a confidence signal.
+
+
+===============================================================================
+  6. SCOPE, NOVELTY & SPECIALIZATION
+===============================================================================
+
+  CHANGE 6a — Added a Scope / Phasing / Risk section.
+    Must-have this semester: Chromium-family core pipeline + synthetic corpus +
+    baseline & first Random Forest + end-to-end diff report.
+    Stretch / next phase: Firefox engine, Streamlit dashboard, evasion-resistance
+    experiments, paper-grade evaluation.
+  WHY
+    - The full pipeline is large for one semester with two students. Explicit
+      phasing keeps the project realistic for 6 credits and guarantees a
+      demonstrable deliverable, while showing a clear path to deeper results.
+
+  CHANGE 6b — Added a Novelty / Academic-Contribution section.
+    Framed the publishable contribution as: cross-engine, update-aware
+    behavioural diffing with record/replay determinism and explainable,
+    dual-scored output.
+  WHY
+    - Balances research and implementation as intended, and identifies a genuine
+      gap (no open framework does cross-engine, update-aware behavioural diffing)
+      suitable for a short paper / workshop submission if results hold.
+
+  CHANGE 6c — Area of Specialization set to "Cybersecurity" (was "NA").
+  WHY
+    - This is the major project toward the cybersecurity specialization; the
+      field should reflect that.
+
+===============================================================================
+  ITEMS STILL NEEDING YOUR CONFIRMATION
+===============================================================================
+
+  [ ] Confirm with the advisor whether "multiple browsers" is satisfied by the
+      Chromium family alone, or whether Firefox (second engine) is expected in
+      THIS semester rather than as a stretch goal — this materially affects
+      workload.
+
+===============================================================================
+  END OF SUMMARY
+===============================================================================

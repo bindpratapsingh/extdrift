@@ -1,0 +1,104 @@
+% =====================================================================
+%  CSD493: Project-1 (Monsoon 2026) -- OFFICIAL Project Proposal Form
+%  Format preserved as per the official SNIoE template.
+%  Only the FIELD CONTENT has been updated (specialization, motivation,
+%  problem statement) -- the form layout/headings are unchanged.
+%  Compile with pdfLaTeX.
+% =====================================================================
+\documentclass[12pt]{article}
+
+\usepackage[a4paper,top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{mathptmx}            % Times-like font to match the official Word form
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+\onehalfspacing
+
+\begin{document}
+
+% ------------------------- Title block -------------------------------
+\begin{center}
+    {\bfseries Bachelor of Technology (Computer Science \& Engineering)}\\[2pt]
+    {\bfseries CSD493: Project-1, Monsoon 2026}\\[2pt]
+    {\bfseries \underline{Project Proposal Form}}
+\end{center}
+
+\vspace{0.6em}
+
+\textbf{Date:} 23rd May 2026
+
+\vspace{0.6em}
+
+\textbf{Project Title:} Behavioral-Diff Detection of Malicious Browser Extension Updates
+
+\vspace{0.6em}
+
+\textbf{Area of Specialization:} Cybersecurity
+
+\vspace{0.6em}
+
+\textbf{Names and SNU IDs of Group Members (in capital letters):}
+\begin{itemize}
+    \item[(i)] BIND PRATAP SINGH -- 2310110084
+    \item[(ii)] SUHANI DEEPAK AGRAWAT -- 2310110717
+\end{itemize}
+
+\vspace{0.4em}
+
+\textbf{Name of Project Advisor:} Dr. Sweta Mishra
+
+\vspace{0.8em}
+
+% --------------------- Proposal description --------------------------
+\textbf{\underline{Project Proposal Description:}}
+
+\vspace{0.4em}
+
+\textbf{MOTIVATION:}
+
+Browser extensions update silently and automatically across every major browser. A trusted
+extension can become malicious overnight --- the December 2024 Cyberhaven supply-chain attack
+pushed a credential-stealing payload to 400,000 active users within hours, entirely undetected,
+and the same campaign compromised dozens of other Chromium extensions. The browser's trust
+contract is granted once at install time and silently inherited by every later update, with no
+re-consent from the user and no re-review by the store. Static code review and permission analysis
+fail against obfuscated payloads and behaviours that only surface at runtime under specific
+browsing conditions. There is currently no open, systematic, \emph{version-aware} tool that detects
+malicious changes between extension versions through dynamic behavioural comparison --- and none
+that does so across multiple browser families.
+
+\vspace{0.5em}
+
+\textbf{PROBLEM STATEMENT:}
+
+This project builds a sandboxed behavioural-diff framework that flags malicious browser-extension
+updates by comparing runtime traces across consecutive versions, across multiple browser families:
+Chromium-based browsers (Chrome, Edge, Brave) and Firefox. For each browser, the system executes
+both version $N$ and version $N{+}1$ inside an isolated Docker container under identical,
+record/replayed Playwright-automated browsing tasks (targeting Manifest V3), recording outbound
+network calls, DOM field access, extension-API usage, and storage/cookie access for each version.
+To surface dormant logic, it actively triggers condition-gated payloads through synthetic DOM
+interaction (dummy credential/login forms over Tranco-ranked sites, financial login pages, and
+webmail portals). A weighted feature-difference vector $\Delta = f(T_{N+1}) - f(T_N)$ is computed
+between the two traces and scored both by a transparent weighted baseline and by a Random Forest
+classifier, trained primarily on a synthetic weaponisation corpus and validated on confirmed
+malicious update pairs from the 2024--25 supply-chain incidents. The output is an explainable
+per-update diff report that specifies exactly which new behaviours triggered the alert --- giving
+security teams actionable intelligence rather than opaque risk scores. The system is evaluated on
+detection rate, false-positive rate, cross-browser consistency, evasion resistance, and per-update
+latency overhead.
+
+\vfill
+
+% ------------------------- Signatures --------------------------------
+\noindent
+\begin{tabular}{p{0.45\textwidth} p{0.10\textwidth} p{0.45\textwidth}}
+\hrulefill & & \hrulefill \\[2pt]
+{\footnotesize Signature of Group Member(s), Date} & &
+{\footnotesize Signature of Project Advisor, Date}
+\end{tabular}
+
+\end{document}
