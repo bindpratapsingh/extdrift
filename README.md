@@ -9,7 +9,7 @@
 
 ---
 
-## TL;DR — what is this?
+## What it is, in short?
 
 A browser extension you trust can become malicious **overnight** through a single silent
 auto-update — the browser grants its trust *once* at install and never re-checks it. The
