@@ -1,4 +1,4 @@
-# extdrift — Behavioral-Diff Detection of Malicious Browser Extension Updates
+# extdrift - Behavioral-Diff Detection of Malicious Browser Extension Updates
 
 > A sandboxed, cross-browser **runtime-analysis framework** that detects when a browser-extension
 > *update* turns malicious — by running two consecutive versions under identical conditions and
