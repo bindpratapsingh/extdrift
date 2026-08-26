@@ -1,0 +1,15 @@
+# extdrift dependencies.
+#
+# The ANALYSIS half (unpack, features, scoring, report, CLI, tests) is pure standard
+# library and needs nothing here - it runs on the 4 GB laptop as-is.
+#
+# The CAPTURE half (engine/sandbox) needs the two lines below plus a Chromium build:
+#     pip install -r requirements.txt
+#     playwright install chromium
+playwright>=1.40
+
+# Phase E (data & ML tier), added when that work starts:
+# scikit-learn>=1.3
+# xgboost>=2.0
+# pandas>=2.0
+# shap>=0.44
