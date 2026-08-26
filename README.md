@@ -5,7 +5,23 @@
 > **diffing what they actually do**.
 
 **Course:** CSD493 Project-1 (Monsoon 2026) · B.Tech CSE · Shiv Nadar Institution of Eminence
-**Status:** 📄 *Proposal & design stage — documentation only, no code yet.*
+**Status:** 🟢 *Working prototype — full pipeline runs end-to-end on a real browser (Phases A–D
+complete). Heuristic detector done; ML tier next.* See
+[docs/progress/PROGRESS_REPORT.md](docs/progress/PROGRESS_REPORT.md).
+
+## Try it in 30 seconds
+
+```bash
+# No browser needed — scores three committed fixture pairs (BENIGN / SUSPICIOUS / MALICIOUS):
+python scripts/demo_offline.py
+
+# The real thing — loads our extension in Chromium, lets a synthetic payload actually steal
+# credentials, and catches it (needs: pip install -r requirements.txt && playwright install chromium):
+python scripts/demo.py
+
+# The 72-test suite:
+python -m unittest discover -s tests
+```
 
 ---
 
@@ -63,10 +79,31 @@ cookies), storage/cookie access, and extension-API calls (`chrome.*` / `browser.
 
 ```
 extdrift/
-├── README.md                     ← you are here
+├── README.md
+├── requirements.txt
+├── engine/                       ← the analysis pipeline (Python)
+│   ├── cli.py                    ← command-line entry point
+│   ├── runner.py                 ← end-to-end orchestrator (capture→diff→score→report)
+│   ├── unpack/                   ← .crx/.xpi unpacking + static manifest diff
+│   ├── sandbox/                  ← instrumented browser runs (Playwright) + local test site
+│   │   ├── capture.py, rewrite.py, scenarios.py, testsite.py
+│   │   └── prelude.js            ← DOM/cookie/storage/API + service-worker instrumentation
+│   ├── features/                 ← trace schema, feature extraction f(·), delta = f(T2)−f(T1)
+│   ├── scoring/                  ← 12 weighted heuristic rules (the transparent tier)
+│   └── report/                   ← text + JSON verdict rendering
+├── data/
+│   ├── fixtures/                 ← hand-authored traces: benign / grayzone / weaponised pairs
+│   └── corpus/readerlite/        ← a real benign extension + benign & weaponised updates
+├── scripts/                      ← demo.py (live) and demo_offline.py (no browser)
+├── tests/                        ← 72 automated tests (incl. live browser integration)
+├── docs/
+│   ├── progress/PROGRESS_REPORT.md   ← the CSD493 progress report
+│   ├── literature/LITERATURE_REVIEW.md
+│   ├── design/METHODOLOGY.md
+│   └── meeting/TALKING_POINTS.md
 └── Reference Docs/
-    ├── IMPLEMENTATION_GUIDE.md   ← THE build guide (read this first); every term defined
-    ├── ML_Models_Research.md     ← which ML model & why (beginner-friendly, all acronyms spelled out)
+    ├── IMPLEMENTATION_GUIDE.md   ← THE build guide; every term defined
+    ├── ML_Models_Research.md     ← which ML model & why (all acronyms spelled out)
     ├── CHANGES.txt               ← what changed from the first proposal draft, and why
     ├── Instructions.txt          ← raw advisor-meeting notes
     ├── Detailed_Proposal_CSD493.pdf / .tex   ← the full detailed proposal
@@ -74,22 +111,19 @@ extdrift/
     └── Proposal Latex/           ← LaTeX sources for both proposals
 ```
 
-> **Planned code layout** (once we start building, per the implementation guide):
-> ```
-> engine/{sandbox,features,scoring}/   data/   dashboard/   docs/
-> ```
-
 ---
 
 ## 📚 Documentation index — start here
 
 | If you want to… | Read |
 |---|---|
+| **See our progress for the meeting** | [docs/progress/PROGRESS_REPORT.md](docs/progress/PROGRESS_REPORT.md) |
+| **See the paper review & the gap we fill** | [docs/literature/LITERATURE_REVIEW.md](docs/literature/LITERATURE_REVIEW.md) |
+| **Understand the method (reproduce→improve, model tiers)** | [docs/design/METHODOLOGY.md](docs/design/METHODOLOGY.md) |
 | **Understand & build the system** (every concept explained from zero) | [Reference Docs/IMPLEMENTATION_GUIDE.md](Reference%20Docs/IMPLEMENTATION_GUIDE.md) |
 | **Understand the ML model choice** (RF vs XGBoost vs deep learning, all acronyms) | [Reference Docs/ML_Models_Research.md](Reference%20Docs/ML_Models_Research.md) |
 | **Read the formal proposal** | [Reference Docs/Detailed_Proposal_CSD493.pdf](Reference%20Docs/Detailed_Proposal_CSD493.pdf) |
 | **See what changed from draft 1 and why** | [Reference Docs/CHANGES.txt](Reference%20Docs/CHANGES.txt) |
-| **See the advisor's raw notes** | [Reference Docs/Instructions.txt](Reference%20Docs/Instructions.txt) |
 
 ---
 
