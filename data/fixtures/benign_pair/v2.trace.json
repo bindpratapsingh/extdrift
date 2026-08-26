@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.1",
+  "_fixture_note": "SYNTHETIC fixture. An ordinary, harmless feature update of the v2.3.0 fixture: it adds a webfont fetched from the vendor's own CDN and injects a reading-time badge. This is the true-negative case - the tool must notice the change and still not cry wolf.",
+  "extension": {
+    "id": "fixturereadermodeplusaaaaaaaaaaaa",
+    "name": "Reader Mode Plus (fixture)",
+    "version": "2.4.0"
+  },
+  "run": {
+    "browser": "chromium",
+    "browser_version": "127.0.6533.88",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "rb-2026-08-a1b2c3",
+    "pages": ["https://demo-bank.test/login", "https://webmail.test/inbox"],
+    "started_at": "2026-08-18T09:16:40Z",
+    "duration_s": 4.0
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "permissions": ["storage", "activeTab", "scripting"],
+    "host_permissions": ["<all_urls>"],
+    "background": {"service_worker": "sw.js"}
+  },
+  "network": [
+    {"ts": 0.40, "url": "https://demo-bank.test/login", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 0.62, "url": "https://demo-bank.test/static/app.css", "method": "GET", "initiator": "page", "resource_type": "stylesheet", "status": 200, "body_len": 0},
+    {"ts": 0.91, "url": "https://api.readermode.test/v2/config", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0},
+    {"ts": 1.44, "url": "https://fonts.readercdn.test/inter-var.woff2", "method": "GET", "initiator": "extension", "resource_type": "font", "status": 200, "body_len": 0},
+    {"ts": 2.09, "url": "https://webmail.test/inbox", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 2.33, "url": "https://webmail.test/static/mail.js", "method": "GET", "initiator": "page", "resource_type": "script", "status": 200, "body_len": 0}
+  ],
+  "dom": [
+    {"ts": 1.01, "event": "read", "target": "article.main", "value_len": 2413, "origin": "https://demo-bank.test"},
+    {"ts": 1.10, "event": "inject", "target": "div.rm-toolbar", "origin": "https://demo-bank.test"},
+    {"ts": 1.52, "event": "inject", "target": "span.rm-readtime", "origin": "https://demo-bank.test"},
+    {"ts": 2.60, "event": "read", "target": "div.message-body", "value_len": 1804, "origin": "https://webmail.test"}
+  ],
+  "storage": [
+    {"ts": 0.79, "api": "chrome.storage.local.get", "count": 2},
+    {"ts": 1.19, "api": "chrome.storage.local.set", "count": 1}
+  ],
+  "api": [
+    {"ts": 0.69, "api": "chrome.runtime.onInstalled", "frame": "service_worker"},
+    {"ts": 0.79, "api": "chrome.storage.local.get", "frame": "service_worker"},
+    {"ts": 0.99, "api": "chrome.scripting.executeScript", "frame": "service_worker"},
+    {"ts": 1.19, "api": "chrome.storage.local.set", "frame": "service_worker"},
+    {"ts": 1.35, "api": "chrome.runtime.getManifest", "frame": "service_worker"}
+  ]
+}

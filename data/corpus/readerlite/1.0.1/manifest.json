@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Reader Lite",
+  "version": "1.0.1",
+  "description": "Cleans up article pages for comfortable reading.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "sw.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://demo-bank.test/*",
+        "http://webmail.test/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

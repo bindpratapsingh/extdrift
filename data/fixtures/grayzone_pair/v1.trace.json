@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "_fixture_note": "SYNTHETIC fixture. A contact-scraper extension: reading contact details off the page and calling its own backend is its advertised function, not an attack. This pair is the hard case - the one that decides whether our features can separate 'legitimate data access' from 'exfiltration'.",
+  "extension": {
+    "id": "fixturecontactfinderprobbbbbbbbb",
+    "name": "Contact Finder Pro (fixture)",
+    "version": "1.8.0"
+  },
+  "run": {
+    "browser": "chromium",
+    "browser_version": "127.0.6533.88",
+    "scenario": "webmail-then-crm-contacts",
+    "replay_bundle": "rb-2026-08-d4e5f6",
+    "pages": ["https://webmail.test/inbox", "https://crm-demo.test/contacts"],
+    "started_at": "2026-08-19T11:02:15Z",
+    "duration_s": 5.0
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "permissions": ["storage", "activeTab"],
+    "host_permissions": ["https://webmail.test/*", "https://crm-demo.test/*"],
+    "background": {"service_worker": "background.js"}
+  },
+  "network": [
+    {"ts": 0.38, "url": "https://webmail.test/inbox", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 0.71, "url": "https://api.contactfinder.test/v1/lookup", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0},
+    {"ts": 2.44, "url": "https://crm-demo.test/contacts", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 2.81, "url": "https://api.contactfinder.test/v1/lookup", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0}
+  ],
+  "dom": [
+    {"ts": 0.95, "event": "read", "target": "span.contact-email", "value_len": 22, "origin": "https://webmail.test"},
+    {"ts": 0.97, "event": "read", "target": "span.contact-name", "value_len": 13, "origin": "https://webmail.test"},
+    {"ts": 2.95, "event": "read", "target": "td.contact-email", "value_len": 25, "origin": "https://crm-demo.test"},
+    {"ts": 3.02, "event": "inject", "target": "div.cf-badge", "origin": "https://crm-demo.test"}
+  ],
+  "storage": [
+    {"ts": 0.66, "api": "chrome.storage.local.get", "count": 1},
+    {"ts": 3.10, "api": "chrome.storage.local.set", "count": 3}
+  ],
+  "api": [
+    {"ts": 0.66, "api": "chrome.storage.local.get", "frame": "service_worker"},
+    {"ts": 0.90, "api": "chrome.runtime.sendMessage", "frame": "content_script"},
+    {"ts": 3.10, "api": "chrome.storage.local.set", "frame": "service_worker"}
+  ]
+}

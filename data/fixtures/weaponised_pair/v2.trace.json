@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "_fixture_note": "SYNTHETIC WEAPONISATION. v2.4.0 with a Cyberhaven-style payload injected on top: dump the cookie jar, read the login form, and beacon the result from the MV3 service worker to a collector domain. The payload behaviours are modelled on the December 2024 campaign write-ups; the code and hosts are ours and the destination is a reserved .test name that resolves nowhere.",
+  "extension": {
+    "id": "fixturereadermodeplusaaaaaaaaaaaa",
+    "name": "Reader Mode Plus (fixture)",
+    "version": "2.4.1"
+  },
+  "run": {
+    "browser": "chromium",
+    "browser_version": "127.0.6533.88",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "rb-2026-08-a1b2c3",
+    "pages": ["https://demo-bank.test/login", "https://webmail.test/inbox"],
+    "started_at": "2026-08-18T09:19:11Z",
+    "duration_s": 4.5
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "permissions": ["storage", "activeTab", "scripting", "cookies"],
+    "host_permissions": ["<all_urls>"],
+    "background": {"service_worker": "sw.js"}
+  },
+  "network": [
+    {"ts": 0.40, "url": "https://demo-bank.test/login", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 0.62, "url": "https://demo-bank.test/static/app.css", "method": "GET", "initiator": "page", "resource_type": "stylesheet", "status": 200, "body_len": 0},
+    {"ts": 0.91, "url": "https://api.readermode.test/v2/config", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0},
+    {"ts": 1.44, "url": "https://fonts.readercdn.test/inter-var.woff2", "method": "GET", "initiator": "extension", "resource_type": "font", "status": 200, "body_len": 0},
+    {"ts": 2.09, "url": "https://webmail.test/inbox", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 2.33, "url": "https://webmail.test/static/mail.js", "method": "GET", "initiator": "page", "resource_type": "script", "status": 200, "body_len": 0},
+    {"ts": 3.82, "url": "https://collect-analytics.test/ingest", "method": "POST", "initiator": "service_worker", "resource_type": "xhr", "status": 200, "body_len": 2153}
+  ],
+  "dom": [
+    {"ts": 1.01, "event": "read", "target": "article.main", "value_len": 2413, "origin": "https://demo-bank.test"},
+    {"ts": 1.10, "event": "inject", "target": "div.rm-toolbar", "origin": "https://demo-bank.test"},
+    {"ts": 1.52, "event": "inject", "target": "span.rm-readtime", "origin": "https://demo-bank.test"},
+    {"ts": 2.60, "event": "read", "target": "div.message-body", "value_len": 1804, "origin": "https://webmail.test"},
+    {"ts": 3.41, "event": "read", "target": "input#password", "value_len": 14, "origin": "https://demo-bank.test"},
+    {"ts": 3.46, "event": "read", "target": "input[name=username]", "value_len": 11, "origin": "https://demo-bank.test"}
+  ],
+  "storage": [
+    {"ts": 0.79, "api": "chrome.storage.local.get", "count": 2},
+    {"ts": 1.19, "api": "chrome.storage.local.set", "count": 1},
+    {"ts": 3.05, "api": "chrome.cookies.getAll", "count": 47}
+  ],
+  "api": [
+    {"ts": 0.69, "api": "chrome.runtime.onInstalled", "frame": "service_worker"},
+    {"ts": 0.79, "api": "chrome.storage.local.get", "frame": "service_worker"},
+    {"ts": 0.99, "api": "chrome.scripting.executeScript", "frame": "service_worker"},
+    {"ts": 1.19, "api": "chrome.storage.local.set", "frame": "service_worker"},
+    {"ts": 1.35, "api": "chrome.runtime.getManifest", "frame": "service_worker"},
+    {"ts": 3.05, "api": "chrome.cookies.getAll", "frame": "service_worker"},
+    {"ts": 3.70, "api": "chrome.tabs.query", "frame": "service_worker"}
+  ]
+}

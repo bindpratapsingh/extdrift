@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "_fixture_note": "SYNTHETIC fixture. Not a real extension. Hand-written to the trace schema so the analysis half of the pipeline can be exercised before the sandbox capture half is wired up. All hostnames use the reserved .test TLD (RFC 6761).",
+  "extension": {
+    "id": "fixturereadermodeplusaaaaaaaaaaaa",
+    "name": "Reader Mode Plus (fixture)",
+    "version": "2.3.0"
+  },
+  "run": {
+    "browser": "chromium",
+    "browser_version": "127.0.6533.88",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "rb-2026-08-a1b2c3",
+    "pages": ["https://demo-bank.test/login", "https://webmail.test/inbox"],
+    "started_at": "2026-08-18T09:14:02Z",
+    "duration_s": 4.0
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "permissions": ["storage", "activeTab", "scripting"],
+    "host_permissions": ["<all_urls>"],
+    "background": {"service_worker": "sw.js"}
+  },
+  "network": [
+    {"ts": 0.41, "url": "https://demo-bank.test/login", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 0.63, "url": "https://demo-bank.test/static/app.css", "method": "GET", "initiator": "page", "resource_type": "stylesheet", "status": 200, "body_len": 0},
+    {"ts": 0.92, "url": "https://api.readermode.test/v2/config", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0},
+    {"ts": 2.10, "url": "https://webmail.test/inbox", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 2.34, "url": "https://webmail.test/static/mail.js", "method": "GET", "initiator": "page", "resource_type": "script", "status": 200, "body_len": 0}
+  ],
+  "dom": [
+    {"ts": 1.02, "event": "read", "target": "article.main", "value_len": 2413, "origin": "https://demo-bank.test"},
+    {"ts": 1.11, "event": "inject", "target": "div.rm-toolbar", "origin": "https://demo-bank.test"},
+    {"ts": 2.61, "event": "read", "target": "div.message-body", "value_len": 1804, "origin": "https://webmail.test"}
+  ],
+  "storage": [
+    {"ts": 0.80, "api": "chrome.storage.local.get", "count": 2},
+    {"ts": 1.20, "api": "chrome.storage.local.set", "count": 1}
+  ],
+  "api": [
+    {"ts": 0.70, "api": "chrome.runtime.onInstalled", "frame": "service_worker"},
+    {"ts": 0.80, "api": "chrome.storage.local.get", "frame": "service_worker"},
+    {"ts": 1.00, "api": "chrome.scripting.executeScript", "frame": "service_worker"},
+    {"ts": 1.20, "api": "chrome.storage.local.set", "frame": "service_worker"}
+  ]
+}

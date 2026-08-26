@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1",
+  "_fixture_note": "SYNTHETIC fixture. The scraper's v1.9.0 adds a 'data enrichment' feature: the contacts it already read are now batched to a partner service on a domain the previous version never contacted. This is genuinely ambiguous - a plausible product feature and a plausible data grab - and it is the case we expect to land in SUSPICIOUS rather than at either extreme.",
+  "extension": {
+    "id": "fixturecontactfinderprobbbbbbbbb",
+    "name": "Contact Finder Pro (fixture)",
+    "version": "1.9.0"
+  },
+  "run": {
+    "browser": "chromium",
+    "browser_version": "127.0.6533.88",
+    "scenario": "webmail-then-crm-contacts",
+    "replay_bundle": "rb-2026-08-d4e5f6",
+    "pages": ["https://webmail.test/inbox", "https://crm-demo.test/contacts"],
+    "started_at": "2026-08-19T11:05:47Z",
+    "duration_s": 5.0
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "permissions": ["storage", "activeTab"],
+    "host_permissions": ["https://webmail.test/*", "https://crm-demo.test/*"],
+    "background": {"service_worker": "background.js"}
+  },
+  "network": [
+    {"ts": 0.37, "url": "https://webmail.test/inbox", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 0.70, "url": "https://api.contactfinder.test/v1/lookup", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0},
+    {"ts": 1.15, "url": "https://cdn.leadsignal.test/schema.json", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0},
+    {"ts": 2.43, "url": "https://crm-demo.test/contacts", "method": "GET", "initiator": "page", "resource_type": "document", "status": 200, "body_len": 0},
+    {"ts": 2.80, "url": "https://api.contactfinder.test/v1/lookup", "method": "GET", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 0},
+    {"ts": 3.34, "url": "https://enrich-api.leadsignal.test/v1/batch", "method": "POST", "initiator": "extension", "resource_type": "xhr", "status": 200, "body_len": 420}
+  ],
+  "dom": [
+    {"ts": 0.94, "event": "read", "target": "span.contact-email", "value_len": 22, "origin": "https://webmail.test"},
+    {"ts": 0.96, "event": "read", "target": "span.contact-name", "value_len": 13, "origin": "https://webmail.test"},
+    {"ts": 2.94, "event": "read", "target": "td.contact-email", "value_len": 25, "origin": "https://crm-demo.test"},
+    {"ts": 2.98, "event": "read", "target": "td.contact-phone", "value_len": 12, "origin": "https://crm-demo.test"},
+    {"ts": 3.01, "event": "inject", "target": "div.cf-badge", "origin": "https://crm-demo.test"}
+  ],
+  "storage": [
+    {"ts": 0.65, "api": "chrome.storage.local.get", "count": 1},
+    {"ts": 3.09, "api": "chrome.storage.local.set", "count": 3}
+  ],
+  "api": [
+    {"ts": 0.65, "api": "chrome.storage.local.get", "frame": "service_worker"},
+    {"ts": 0.89, "api": "chrome.runtime.sendMessage", "frame": "content_script"},
+    {"ts": 3.09, "api": "chrome.storage.local.set", "frame": "service_worker"}
+  ]
+}
