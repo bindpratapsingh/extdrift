@@ -8,8 +8,15 @@
 #     playwright install chromium
 playwright>=1.40
 
-# Phase E (data & ML tier), added when that work starts:
-# scikit-learn>=1.3
-# xgboost>=2.0
-# pandas>=2.0
+# The DATA & ML tier (engine/synth, engine/batch, engine/ml) needs:
+#     pip install -r requirements.txt
+# These are light enough to train on the laptop; heavy browser capture wants the MacBook.
+scikit-learn>=1.3
+xgboost>=2.0
+pandas>=2.0
+numpy>=1.24
+joblib>=1.3
+
+# Optional: SHAP gives per-prediction attribution. We currently use scikit-learn's
+# permutation_importance instead (lighter to install); enable SHAP if you want it.
 # shap>=0.44

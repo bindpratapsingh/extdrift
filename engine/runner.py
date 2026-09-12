@@ -49,7 +49,14 @@ def run_pair(
 
     delta = behavioral_delta(trace_v1, trace_v2)
     scored = score_delta(delta)
-    record = build_record(delta, scored)
+    # Add the ML probability when a trained model is present; None otherwise (the pipeline
+    # never hard-depends on the ML stack).
+    try:
+        from engine.ml.predict import predict_pair
+        ml = predict_pair(trace_v1, trace_v2)
+    except Exception:
+        ml = None
+    record = build_record(delta, scored, ml)
 
     # Cross-check the verdict against the fake collector's own log: if data actually
     # reached the collector, a MALICIOUS/SUSPICIOUS verdict is corroborated by ground
@@ -61,5 +68,5 @@ def run_pair(
     }
 
     (out_dir / "report.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
-    (out_dir / "report.txt").write_text(render_text(delta, scored), encoding="utf-8")
+    (out_dir / "report.txt").write_text(render_text(delta, scored, ml), encoding="utf-8")
     return record

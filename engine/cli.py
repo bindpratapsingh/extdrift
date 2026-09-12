@@ -144,7 +144,7 @@ def cmd_run_pair(args) -> int:
     t1 = json.loads((Path(args.out_dir) / "v1.trace.json").read_text(encoding="utf-8"))
     t2 = json.loads((Path(args.out_dir) / "v2.trace.json").read_text(encoding="utf-8"))
     delta = behavioral_delta(t1, t2)
-    print(render_text(delta, score_delta(delta)))
+    print(render_text(delta, score_delta(delta), record.get("ml")))
 
     truth = record.get("ground_truth", {})
     print(f"\n[ground truth] collector received data: "

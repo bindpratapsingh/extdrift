@@ -76,10 +76,13 @@ def capture(
     work_dir: str | Path = ".extdrift-work",
     headless: bool = True,
     replay_bundle: str = "local-testsite-v1",
+    noise: bool = False,
 ) -> dict:
     """Run *unpacked_dir* through *scenario_name* against the local test site.
 
-    Returns the validated trace and also writes it to *out_path*.
+    Returns the validated trace and also writes it to *out_path*. When *noise* is True the
+    test site injects a unique third-party resource per page load (the determinism-ablation
+    "noisy web"); leave it False for normal deterministic analysis.
     """
     sync_playwright = _require_playwright()
     scenario = scenarios.get(scenario_name)
@@ -105,10 +108,10 @@ def capture(
     def ts() -> float:
         return round(time.monotonic() - started, 3)
 
-    with TestSite() as site:
+    with TestSite(noise=noise) as site:
         trace["run"].update({
             "pages": list(scenario.pages),
-            "replay_bundle": replay_bundle,
+            "replay_bundle": (replay_bundle if not noise else "noisy-web-ablation"),
             "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "instrumentation": {
                 "technique": prepared["technique"],

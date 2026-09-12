@@ -20,16 +20,24 @@ def _bar(score: float) -> str:
     return "[" + "#" * filled + "-" * (BAR_WIDTH - filled) + "]"
 
 
-def build_record(delta: dict, scored: dict) -> dict:
-    """Assemble the full analysis record from the delta and the scorer output."""
-    return {
+def build_record(delta: dict, scored: dict, ml: dict | None = None) -> dict:
+    """Assemble the full analysis record from the delta and the scorer output.
+
+    *ml* is the optional machine-learning result from engine.ml.predict.predict_pair
+    ({scorer, probability, verdict}); when a trained model is present it is added as a
+    second score alongside the rules, and their agreement is recorded as a confidence cue.
+    """
+    scores = {scored["scorer"]: scored["score"]}
+    if ml:
+        scores[ml["scorer"]] = ml["probability"]
+    record = {
         "tool": "extdrift",
         "record_version": "0.1",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "extension": delta["extension"],
         "run": delta["run"],
         "verdict": scored["verdict"],
-        "scores": {scored["scorer"]: scored["score"]},
+        "scores": scores,
         "fired_rules": scored["fired_rules"],
         "evidence": delta["evidence"],
         "delta": delta["numeric"],
@@ -37,6 +45,10 @@ def build_record(delta: dict, scored: dict) -> dict:
         "features_v2": delta["features_v2"],
         "caveats": _caveats(scored),
     }
+    if ml:
+        record["ml"] = ml
+        record["scorer_agreement"] = (ml["verdict"] == scored["verdict"])
+    return record
 
 
 def _caveats(scored: dict) -> list[str]:
@@ -58,12 +70,12 @@ def _caveats(scored: dict) -> list[str]:
     return notes
 
 
-def render_json(delta: dict, scored: dict, *, indent: int = 2) -> str:
+def render_json(delta: dict, scored: dict, ml: dict | None = None, *, indent: int = 2) -> str:
     """The full record as JSON text."""
-    return json.dumps(build_record(delta, scored), indent=indent, sort_keys=False)
+    return json.dumps(build_record(delta, scored, ml), indent=indent, sort_keys=False)
 
 
-def render_text(delta: dict, scored: dict) -> str:
+def render_text(delta: dict, scored: dict, ml: dict | None = None) -> str:
     """The analyst-facing report."""
     ext = delta["extension"]
     run = delta["run"]
@@ -78,9 +90,13 @@ def render_text(delta: dict, scored: dict) -> str:
                  f" / replay bundle {run.get('replay_bundle')}")
     lines.append("")
     lines.append(f"  VERDICT   : {scored['verdict']}")
-    lines.append(f"  Score     : {scored['score']:.2f}  {_bar(scored['score'])}"
+    lines.append(f"  Rules     : {scored['score']:.2f}  {_bar(scored['score'])}"
                  f"   (weighted rules, {len(scored['fired_rules'])}"
                  f"/{scored['rules_evaluated']} fired)")
+    if ml:
+        agree = "agree" if ml["verdict"] == scored["verdict"] else "DISAGREE"
+        lines.append(f"  ML model  : {ml['probability']:.2f}  {_bar(ml['probability'])}"
+                     f"   ({ml['scorer']}, {ml['verdict']}; rules {agree})")
     lines.append("")
 
     if scored["fired_rules"]:

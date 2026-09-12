@@ -16,6 +16,7 @@ without anything reaching a real endpoint.
 from __future__ import annotations
 
 import json
+import random
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -58,8 +59,10 @@ SITE: dict[str, dict[str, tuple[str, str]]] = {
     },
 }
 
-#: Hosts that exist purely to receive stolen data during an analysis run.
-COLLECTOR_HOSTS = {"collect-analytics.test"}
+#: Hosts that exist purely to receive stolen data during an analysis run. Includes the
+#: collector used by the weaponiser payloads (engine.weaponiser.payloads.COLLECTOR) so a
+#: live-captured synthetic attack is confirmed by the collector's own log (ground truth).
+COLLECTOR_HOSTS = {"collect-analytics.test", "collect-metrics.test"}
 
 
 class _Handler(BaseHTTPRequestHandler):
@@ -96,6 +99,19 @@ class _Handler(BaseHTTPRequestHandler):
             self._send(404, "text/plain", b"not found")
             return
         content_type, body = page
+        # Noise mode models the real web: each page load pulls in a *different* third-party
+        # resource (an ad/nonce host), so two runs of the SAME extension see different
+        # traffic. This is the false-positive source that record/replay determinism removes;
+        # the determinism ablation (experiments/ablation.py) runs with it on and off.
+        if self.server.noise and content_type == "text/html":
+            # A variable number of distinct third-party resources per load — like the real
+            # web, where different visits pull different ads/beacons, so two runs of the
+            # same extension differ in both which hosts and how many are contacted.
+            tags = []
+            for _ in range(random.randint(1, 3)):
+                token = "".join(random.choice("abcdef0123456789") for _ in range(8))
+                tags.append(f'<img src="http://ads-{token}.tracker.test/pixel.gif?n={token}">')
+            body = body.replace("</body>", "".join(tags) + "</body>")
         # A session cookie on the bank gives a credential-stealing payload something
         # real to take, which is the point of the scenario.
         cookie = ("session=demo-session-token-abc123; Path=/"
@@ -125,9 +141,12 @@ class _Handler(BaseHTTPRequestHandler):
 class TestSite:
     """The local site, started on an ephemeral port and stopped on context exit."""
 
-    def __init__(self, port: int = 0):
+    def __init__(self, port: int = 0, noise: bool = False):
         self.server = ThreadingHTTPServer(("127.0.0.1", port), _Handler)
         self.server.collected = []
+        #: When True, each HTML page load injects a unique third-party resource, so two
+        #: runs of the same extension diverge — the determinism ablation's "noisy web".
+        self.server.noise = noise
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
 
     @property

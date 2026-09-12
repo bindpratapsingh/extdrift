@@ -10,6 +10,11 @@ out/
 .extdrift-work/
 *.trace.local.json
 
+# Generated data & model artefacts (reproducible from code; not committed)
+data/dataset/
+engine/ml/models/
+*.joblib
+
 # OS / editor
 .DS_Store
 Thumbs.db
