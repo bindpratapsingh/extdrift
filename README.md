@@ -1,230 +1,154 @@
-# extdrift - Behavioral-Diff Detection of Malicious Browser Extension Updates
+# extdrift
 
-> A sandboxed, cross-browser **runtime-analysis framework** that detects when a browser-extension
-> *update* turns malicious — by running two consecutive versions under identical conditions and
-> **diffing what they actually do**.
+**Catch a browser extension the moment an update turns it malicious — by diffing what it *does*, not what its code says.**
 
-**Course:** CSD493 Project-1 (Monsoon 2026) · B.Tech CSE · Shiv Nadar Institution of Eminence
-**Status:** 🟢 *Working prototype — full pipeline runs end-to-end on a real browser (Phases A–D
-complete). Heuristic detector done; ML tier next.* See
-[docs/progress/PROGRESS_REPORT.md](docs/progress/PROGRESS_REPORT.md).
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
+![Tests](https://img.shields.io/badge/tests-93%20passing-2ea44f)
+![Analysis](https://img.shields.io/badge/analysis-dynamic%20%2B%20ML-0f766e)
+![Status](https://img.shields.io/badge/status-working%20prototype-a4690a)
+![License](https://img.shields.io/badge/license-academic-lightgrey)
 
-## Try it in 30 seconds
+A browser extension you trust can become spyware **overnight** through a single silent
+auto-update — the browser grants its trust *once*, at install, and never re-checks it. The
+**December 2024 Cyberhaven attack** did exactly this: a phished developer account pushed a
+cookie-stealing update to ~2.6M users across dozens of extensions. Store review, permission
+prompts, and code signing had all already passed the *benign* version.
+
+**extdrift scores the *change*.** Give it two consecutive versions of the same extension; it
+runs each in a sealed, deterministic sandbox, records what each actually does, diffs the
+behaviour, and returns an **explainable verdict** — with transparent rules, a machine-learning
+model, and an anomaly detector for the unseen.
+
+---
+
+## How it works
+
+```mermaid
+flowchart TD
+    A["Extension v1 (trusted) + v2 (candidate)"] --> B["Unpack + instrument<br/>(reaches content scripts and the MV3 service worker)"]
+    B --> C1["Sandbox run — v1<br/>headless Chromium · scripted user · egress blocked"]
+    B --> C2["Sandbox run — v2<br/>identical script · byte-identical pages"]
+    C1 --> D["Δ = f(T2) − f(T1)<br/>behavioural delta · 24 features"]
+    C2 --> D
+    D --> E1["Rules<br/>12 explainable heuristics"]
+    D --> E2["ML model<br/>P(malicious update)"]
+    D --> E3["Anomaly<br/>flags the unseen"]
+    E1 --> F["Verdict + evidence<br/>BENIGN / SUSPICIOUS / MALICIOUS"]
+    E2 --> F
+    E3 --> F
+```
+
+Both versions see **identical pages**, so the extension version is the *only* variable — the
+difference is the extension, not the noise of the live web. Each run is recorded across four
+channels: **network, DOM, storage/cookies, and `chrome.*` API calls** (including the MV3
+service worker, a common exfiltration blind spot).
+
+---
+
+## Results that matter
+
+Obfuscation hides the *code*, but the *runtime effect* is still visible — which is why a
+dynamic diff beats static analysis on the case that matters most:
+
+| On a payload that steals cookies | Static code-diff (prior work) | **extdrift (dynamic)** |
+|---|---|---|
+| Clean code | MALICIOUS ✓ | MALICIOUS ✓ |
+| **Obfuscated code** | **BENIGN ✗ (missed)** | **MALICIOUS ✓ (0.99, leak confirmed)** |
+
+And the machine-learning tier earns its place on the metric that decides whether a detector is
+usable — the false-positive rate:
+
+| To catch 90% of malicious updates… | False positives |
+|---|---|
+| Transparent rules alone | flags **66%** of benign updates |
+| **Learned model (Random Forest)** | flags **~0%** |
+
+*Anomaly layer:* trained only on benign updates, it flags **100% of malicious families it never
+saw in training**. *All figures are from a synthetic corpus + live browser captures;
+real-world validation is the next milestone.*
+
+---
+
+## Quickstart
 
 ```bash
-# No browser needed — scores three committed fixture pairs (BENIGN / SUSPICIOUS / MALICIOUS):
+pip install -r requirements.txt && playwright install chromium
+
+# No browser — score three example update pairs instantly:
 python scripts/demo_offline.py
 
-# The real thing — loads our extension in Chromium, lets a synthetic payload actually steal
-# credentials, and catches it (needs: pip install -r requirements.txt && playwright install chromium):
+# The real thing — load an extension in Chromium; a synthetic payload actually steals
+# cookies, and we catch it:
 python scripts/demo.py
+```
 
-# The 72-test suite:
-python -m unittest discover -s tests
+```text
+VERDICT   : MALICIOUS
+Rules     : 0.99  [################################]   (6/12 fired)
+ML model  : 0.84  [###########################-----]   (ml-rf, MALICIOUS; rules agree)
+[ground truth] collector received data: True     ← the leak really happened
 ```
 
 ---
 
-## What it is, in short?
+## The machine-learning approach
 
-A browser extension you trust can become malicious **overnight** through a single silent
-auto-update — the browser grants its trust *once* at install and never re-checks it. The
-**December 2024 Cyberhaven attack** pushed a cookie-stealing update to **400,000 users within
-hours**, and the same campaign hit dozens more extensions. Static review and permission checks
-can't catch this: malicious code can be obfuscated, time-delayed, or only triggered under
-specific conditions.
+The model is chosen by **evidence, not convention**: five candidates race on the same
+behavioural-delta features, judged by PR-AUC and false-positive rate under **cross-validation
+that splits by extension and by time** (so it can't memorise an extension).
 
-**`extdrift` scores the *change*, not the extension.** Give it two versions of the same
-extension (old = trusted baseline, new = suspected). It runs each in a sealed sandbox, records
-everything it does, compares the two, and produces an **explainable report**:
+```mermaid
+flowchart LR
+    P["Labelled update pairs<br/>benign + synthetic malicious"] --> V["Δ feature vectors"]
+    V --> BO["Bake-off<br/>rules · logreg · RF · XGBoost · SVM"]
+    BO --> S["Select by PR-AUC + FPR"]
+    S --> M["Saved model<br/>+ SHAP-style attribution"]
+    V --> AN["Anomaly detector<br/>(benign-only) → unseen threats"]
+```
 
-> *"v3.1 now reads `document.cookie` on banking pages and POSTs form data to `evil-collect.com`
-> — a domain v3.0 never contacted. Verdict: **MALICIOUS** (Random Forest = 0.92, rules = 0.88)."*
-
-It is a **local research/lab tool for security analysts**, not a hosted consumer product.
+Predicts exactly one thing — `P(this update introduced malicious behavioural change)` — and
+never claims more (no zero-day *vulnerability* discovery). The rules stay as the interpretable
+control, and the learned model is reported only when it beats them.
 
 ---
 
-## How it works (the pipeline)
+## Repository layout
 
 ```
-  Extension v1 (.crx/.xpi)        Extension v2
-        │                              │
-   ┌────▼─────────┐             ┌──────▼───────┐
-   │  SANDBOX 1   │             │  SANDBOX 2   │   Docker container, egress-blocked,
-   │ headless     │             │ headless     │   headless browser driven by Playwright,
-   │ browser + v1 │             │ browser + v2 │   all traffic through mitmproxy
-   └────┬─────────┘             └──────┬───────┘   (same RECORD/REPLAYED pages for both)
-     Trace T1                       Trace T2
-        │                              │
-        └──────────┬───────────────────┘
-              Δ = f(T2) − f(T1)        ← feature diff: what's NEW in v2
-                   │
-            ┌──────▼───────┐
-            │   SCORING    │  (a) transparent weighted rules  (heuristics)
-            │              │  (b) machine-learning classifier (RF / XGBoost; deep model later)
-            └──────┬───────┘
-                   ▼
-            REPORT: verdict + exactly which new behaviours fired (+ JSON)
+engine/
+  unpack/       .crx/.xpi unpacking + static manifest diff
+  sandbox/      instrumented browser capture (Playwright) + deterministic test-site
+  features/     trace schema, feature extraction f(·), Δ = f(v2) − f(v1)
+  scoring/      12 explainable heuristic rules
+  synth/        synthetic update-pair corpus generator
+  weaponiser/   real JS payloads (clean + obfuscated) → labelled malicious versions
+  baseline/     static code-delta scorer (the prior-work baseline we beat)
+  ml/           model bake-off, anomaly layer, live prediction
+  collector/    real version-pair collection (disk snapshot + GitHub/crx)
+  report/       explainable text + JSON verdicts
+experiments/    head-to-head (obfuscation) · determinism ablation
+tests/          93 tests (incl. live browser integration)
 ```
-
-Each trace captures **four dimensions**: network requests, DOM access (reading form fields /
-cookies), storage/cookie access, and extension-API calls (`chrome.*` / `browser.*`). The
-**record/replay** step makes both versions see byte-identical pages, so the extension is the
-*only* variable — this kills the main source of false positives.
-
----
-
-## Repository structure
-
-```
-extdrift/
-├── README.md
-├── requirements.txt
-├── engine/                       ← the analysis pipeline (Python)
-│   ├── cli.py                    ← command-line entry point
-│   ├── runner.py                 ← end-to-end orchestrator (capture→diff→score→report)
-│   ├── unpack/                   ← .crx/.xpi unpacking + static manifest diff
-│   ├── sandbox/                  ← instrumented browser runs (Playwright) + local test site
-│   │   ├── capture.py, rewrite.py, scenarios.py, testsite.py
-│   │   └── prelude.js            ← DOM/cookie/storage/API + service-worker instrumentation
-│   ├── features/                 ← trace schema, feature extraction f(·), delta = f(T2)−f(T1)
-│   ├── scoring/                  ← 12 weighted heuristic rules (the transparent tier)
-│   └── report/                   ← text + JSON verdict rendering
-├── data/
-│   ├── fixtures/                 ← hand-authored traces: benign / grayzone / weaponised pairs
-│   └── corpus/readerlite/        ← a real benign extension + benign & weaponised updates
-├── scripts/                      ← demo.py (live) and demo_offline.py (no browser)
-├── tests/                        ← 72 automated tests (incl. live browser integration)
-├── docs/
-│   ├── progress/PROGRESS_REPORT.md   ← the CSD493 progress report
-│   ├── literature/LITERATURE_REVIEW.md
-│   ├── design/METHODOLOGY.md
-│   └── meeting/TALKING_POINTS.md
-└── Reference Docs/
-    ├── IMPLEMENTATION_GUIDE.md   ← THE build guide; every term defined
-    ├── ML_Models_Research.md     ← which ML model & why (all acronyms spelled out)
-    ├── CHANGES.txt               ← what changed from the first proposal draft, and why
-    ├── Instructions.txt          ← raw advisor-meeting notes
-    ├── Detailed_Proposal_CSD493.pdf / .tex   ← the full detailed proposal
-    ├── Project_Proposal_CSD493.pdf           ← the official one-page proposal form
-    └── Proposal Latex/           ← LaTeX sources for both proposals
-```
-
----
-
-## 📚 Documentation index — start here
-
-| If you want to… | Read |
-|---|---|
-| **See our progress for the meeting** | [docs/progress/PROGRESS_REPORT.md](docs/progress/PROGRESS_REPORT.md) |
-| **See the paper review & the gap we fill** | [docs/literature/LITERATURE_REVIEW.md](docs/literature/LITERATURE_REVIEW.md) |
-| **Understand the method (reproduce→improve, model tiers)** | [docs/design/METHODOLOGY.md](docs/design/METHODOLOGY.md) |
-| **Understand & build the system** (every concept explained from zero) | [Reference Docs/IMPLEMENTATION_GUIDE.md](Reference%20Docs/IMPLEMENTATION_GUIDE.md) |
-| **Understand the ML model choice** (RF vs XGBoost vs deep learning, all acronyms) | [Reference Docs/ML_Models_Research.md](Reference%20Docs/ML_Models_Research.md) |
-| **Read the formal proposal** | [Reference Docs/Detailed_Proposal_CSD493.pdf](Reference%20Docs/Detailed_Proposal_CSD493.pdf) |
-| **See what changed from draft 1 and why** | [Reference Docs/CHANGES.txt](Reference%20Docs/CHANGES.txt) |
-
----
 
 ## Tech stack
 
-| Layer | Tool | Why |
-|---|---|---|
-| Language | **Python 3.11+** | best ecosystem for automation + ML |
-| Browser automation | **Playwright** | one library drives Chromium **and** Firefox; can load extensions |
-| Traffic capture | **mitmproxy** | scriptable HTTPS proxy with built-in record/replay |
-| Sandbox | **Docker** | isolated, reproducible, network-egress-controlled containers |
-| ML | **scikit-learn** (Random Forest), **XGBoost**; deep models later (Transformer/GNN) | tabular baseline now, state-of-the-art stretch later — see the model doc |
-| Data | **pandas / NumPy** | feature tables and math |
-| API / UI | **FastAPI** (optional) + **Streamlit** | local dashboard for the demo |
-| Firefox (stretch) | **web-ext** | loading `.xpi` extensions |
+**Python** · **Playwright** (Chromium automation) · **scikit-learn** + **XGBoost** (the model
+tier) · **pandas / NumPy** · standard-library sandbox test-site. The analysis + ML half is
+dependency-light and runs on a laptop; only live browser capture needs Chromium.
+
+## Scope & honesty
+
+- **This project:** dynamic, behavioural, cross-version diffing with record/replay determinism
+  and explainable output — the open gap next to static update-diffing (*You've Changed*, CCS
+  2020) and single-version dynamic analysis (*Hulk*; *ExtPrivA*, IEEE S&P 2023).
+- **Deliberately out of scope:** consumer-side prevention before an update runs, discovery of
+  unknown code vulnerabilities, and language-specific analysis — positioned instead for
+  store / enterprise / researcher use.
+- **Safety:** only synthetic, self-contained samples run, inside a network-restricted sandbox
+  against fake pages with dummy credentials. Nothing is redistributed or hosted.
 
 ---
 
-## Scope & roadmap
-
-**This semester (must-have):** Chromium-family core pipeline (Chrome/Edge/Brave share the
-Manifest V3 `.crx` format + `chrome.*` API) → record/replay determinism → 4-dimension trace →
-synthetic weaponisation corpus → weighted-rule baseline + Random Forest/XGBoost → end-to-end diff
-report on a small set of real incidents.
-
-**Stretch / Phase 2:** Firefox (Gecko, `.xpi`, `browser.*`) second engine · Streamlit dashboard ·
-a state-of-the-art **sequence/graph deep model** · evasion-resistance experiments · paper-grade
-evaluation. **Safari is explicitly out of scope.**
-
-| Weeks | Milestone |
-|---|---|
-| 1 | Setup, repo structure, tools installed |
-| 2–3 | First Playwright + mitmproxy trace of one extension |
-| 3–4 | Two-version diff working end to end |
-| 4–6 | Record/replay determinism + Docker sandbox |
-| 6–9 | Synthetic dataset + rule scorer + Random Forest / XGBoost |
-| 9–11 | Streamlit dashboard + real-incident validation |
-| 11–13 | Firefox engine (stretch) + full evaluation + report |
-
-*(Full week-by-week plan with setup commands is in the implementation guide.)*
-
----
-
-## Quick start (when development begins)
-
-> Heavy runs (browser + sandbox) target **Suhani's Mac** or a **cloud VM / GitHub Codespaces** —
-> Bind's i3/4 GB laptop is for coding, writing, and light ML only.
-
-```bash
-git clone https://github.com/<owner>/extdrift.git
-cd extdrift
-
-python -m venv .venv
-# Windows:  .venv\Scripts\activate
-# Mac/Linux: source .venv/bin/activate
-
-pip install playwright mitmproxy pandas scikit-learn xgboost streamlit
-playwright install chromium firefox
-```
-
-The first concrete goal (implementation guide, Phase B): a small Playwright script that launches
-Chromium, loads a known extension, visits a test page, and routes traffic through `mitmdump` to
-save the list of requested URLs to `trace.json`. **That first trace is the foundation everything
-else builds on.**
-
----
-
-## Academic context
-
-- **Base paper:** D. Bui, B. Tang, K. G. Shin, *"Detection of Inconsistencies in Privacy
-  Practices of Browser Extensions (ExtPrivA),"* IEEE S&P 2023 — analyses a *single* version; we
-  extend it to the **update / version-diff** setting.
-- **Lineage:** Hulk (USENIX Security 2014), WRIT (IEEE TDSC 2024), VEX, Tranco (NDSS 2019).
-- **Novelty:** to our knowledge, no open framework does **cross-engine, update-aware behavioural
-  diffing with record/replay determinism and explainable dual-scored output** — a natural fit for
-  a short paper/workshop if the results hold.
-
----
-
-## ⚠️ Safety & ethics
-
-This project **runs real malware** (malicious extensions) for analysis. Therefore:
-- Everything runs inside an **egress-restricted Docker sandbox** — malware cannot reach the real
-  internet or steal anything.
-- Only **dummy credentials** and **fake test pages** are ever used.
-- TLS interception happens **only inside the local sandbox**, never on third-party machines.
-- Downloaded extensions are for **analysis only — never redistributed**.
-- The tool is **never** hosted publicly.
-
----
-
-## Team
-
-| Member | SNU ID | Role |
-|---|---|---|
-| **Bind Pratap Singh** | 2310110084 | Infrastructure — sandbox, Docker, Playwright, mitmproxy, instrumentation, tracing |
-| **Suhani Deepak Agrawat** | 2310110717 | Data & ML — corpus, feature engineering, scoring models, dashboard |
-
-**Advisor:** Dr. Sweta Mishra · **Area of Specialization:** Cybersecurity
-
----
-
-*This is an academic research prototype built for CSD493 and is provided as-is for educational and
-defensive security research purposes only.*
+<sub>**CSD493 Project-1** · B.Tech CSE · Shiv Nadar Institution of Eminence · Bind Pratap Singh
+& Suhani Deepak Agrawat · Advisor: Dr. Sweta Mishra. Academic research prototype for defensive
+security research.</sub>
