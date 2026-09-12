@@ -25,23 +25,27 @@ model, and an anomaly detector for the unseen.
 
 ```mermaid
 flowchart TD
-    A["Extension v1 (trusted) + v2 (candidate)"] --> B["Unpack + instrument<br/>(reaches content scripts and the MV3 service worker)"]
-    B --> C1["Sandbox run — v1<br/>headless Chromium · scripted user · egress blocked"]
-    B --> C2["Sandbox run — v2<br/>identical script · byte-identical pages"]
-    C1 --> D["Δ = f(T2) − f(T1)<br/>behavioural delta · 24 features"]
-    C2 --> D
-    D --> E1["Rules<br/>12 explainable heuristics"]
-    D --> E2["ML model<br/>P(malicious update)"]
-    D --> E3["Anomaly<br/>flags the unseen"]
-    E1 --> F["Verdict + evidence<br/>BENIGN / SUSPICIOUS / MALICIOUS"]
-    E2 --> F
-    E3 --> F
+    IN["Extension v1 and v2"] --> PREP["Unpack and instrument"]
+    PREP --> R1["Sandbox run: v1"]
+    PREP --> R2["Sandbox run: v2"]
+    R1 --> DIFF["Behavioural diff"]
+    R2 --> DIFF
+    DIFF --> RULES["Rules"]
+    DIFF --> ML["ML model"]
+    DIFF --> ANOM["Anomaly"]
+    RULES --> OUT["Verdict and evidence"]
+    ML --> OUT
+    ANOM --> OUT
 ```
 
-Both versions see **identical pages**, so the extension version is the *only* variable — the
-difference is the extension, not the noise of the live web. Each run is recorded across four
-channels: **network, DOM, storage/cookies, and `chrome.*` API calls** (including the MV3
-service worker, a common exfiltration blind spot).
+Each version runs in a headless Chromium sandbox — same scripted user actions, **byte-identical
+pages**, network egress blocked — so the extension version is the *only* variable, and the
+difference is the extension, not the noise of the live web. Four channels are recorded —
+**network, DOM, storage/cookies, and `chrome.*` API calls** — reaching both content scripts and
+the MV3 service worker (a common exfiltration blind spot). The **behavioural delta**
+`Δ = f(v2) − f(v1)` (24 features) is then scored three ways: transparent **rules**, an **ML
+model**, and an **anomaly** detector, producing a `BENIGN / SUSPICIOUS / MALICIOUS` verdict with
+the exact new behaviours that fired.
 
 ---
 
@@ -93,22 +97,26 @@ ML model  : 0.84  [###########################-----]   (ml-rf, MALICIOUS; rules 
 
 ## The machine-learning approach
 
-The model is chosen by **evidence, not convention**: five candidates race on the same
-behavioural-delta features, judged by PR-AUC and false-positive rate under **cross-validation
-that splits by extension and by time** (so it can't memorise an extension).
+The model is chosen by **evidence, not convention**: five candidates — the interpretable rules,
+Logistic Regression, Random Forest, XGBoost, and an SVM — race on the same behavioural-delta
+features, judged by PR-AUC and false-positive rate under **cross-validation that splits by
+extension and by time** (so it can't memorise an extension).
 
 ```mermaid
 flowchart LR
-    P["Labelled update pairs<br/>benign + synthetic malicious"] --> V["Δ feature vectors"]
-    V --> BO["Bake-off<br/>rules · logreg · RF · XGBoost · SVM"]
-    BO --> S["Select by PR-AUC + FPR"]
-    S --> M["Saved model<br/>+ SHAP-style attribution"]
-    V --> AN["Anomaly detector<br/>(benign-only) → unseen threats"]
+    P["Labelled pairs"] --> V["Feature vectors"]
+    V --> BO["Model bake-off"]
+    BO --> SEL["Select best"]
+    SEL --> MOD["Saved model"]
+    V --> AN["Anomaly detector"]
 ```
 
-Predicts exactly one thing — `P(this update introduced malicious behavioural change)` — and
-never claims more (no zero-day *vulnerability* discovery). The rules stay as the interpretable
-control, and the learned model is reported only when it beats them.
+Selection is by PR-AUC and false-positive rate; the winner ships with SHAP-style feature
+attribution. A separate **anomaly detector**, trained only on benign updates, flags behaviour no
+model was trained on. The system predicts exactly one thing —
+`P(this update introduced malicious behavioural change)` — and never claims more (no zero-day
+*vulnerability* discovery). The rules stay as the interpretable control, and the learned model is
+reported only when it beats them.
 
 ---
 
