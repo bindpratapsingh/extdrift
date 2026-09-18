@@ -170,7 +170,7 @@ FEATURE_DOCS: dict[str, tuple[str, str]] = {
     "host_perm_breadth":       ("1.0 when the extension may act on every site", "VEX NDSS'10"),
     "exfil_flows":             ("Sensitive read followed by an outbound request", "ExtPrivA S&P'23"),
     "exfil_flows_third_party": ("...where the destination is a third-party host", "Cyberhaven Dec'24"),
-    "msg_passing":             ("Cross-component message-passing calls (IPC)", "EDG pitfall (CCS'21)"),
+    "msg_passing":             ("Cross-component message-passing calls (IPC)", "EmPoWeb S&P'19"),
     "net_lowrep_hosts":        ("Upload destinations with DGA/NRD-like domains", "Antonakakis USENIX'12"),
 }
 
