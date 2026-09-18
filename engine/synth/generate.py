@@ -149,6 +149,12 @@ def _base_trace(persona_key, ext_id, name, version, rng, browser="chromium"):
         _api(1.0, "chrome.scripting.executeScript"),
         _api(t, "chrome.storage.local.set"),
     ]
+    # Baseline component IPC every extension has (popup/content <-> service worker). Present
+    # in BOTH versions so it cancels in the delta; the signal is the *extra* hops an update
+    # adds, not the mere presence of messaging.
+    for _ in range(rng.randint(1, 2)):
+        tr["api"].append(_api(0.9, "chrome.runtime.onMessage", frame="service_worker"))
+        tr["api"].append(_api(1.1, "chrome.runtime.sendMessage", frame="content_script"))
     tr["run"]["duration_s"] = round(t + 1.0, 2)
     return tr, t, origin
 
@@ -159,7 +165,7 @@ def _base_trace(persona_key, ext_id, name, version, rng, browser="chromium"):
 
 def _apply_benign_update(tr, t, origin, rng):
     """Add realistic benign changes; some are 'hard' and look like exfiltration."""
-    pool = ["cdn", "dom", "perm", "analytics", "partner_beacon", "morecalls", "nothing"]
+    pool = ["cdn", "dom", "perm", "analytics", "partner_beacon", "morecalls", "messaging", "nothing"]
     for c in rng.sample(pool, k=rng.randint(1, 3)):
         if c == "cdn":
             tr["network"].append(_net(t, "https://cdn.jsdelivr-mirror.test/lib.js",
@@ -184,6 +190,9 @@ def _apply_benign_update(tr, t, origin, rng):
         elif c == "morecalls":
             for _ in range(rng.randint(1, 3)):
                 tr["network"].append(_net(t, f"https://{_ownhost(tr)}/v1/sync", initiator="extension")); t += 0.2
+        elif c == "messaging":  # a benign feature that adds component IPC (e.g. a new popup panel)
+            for _ in range(rng.randint(1, 3)):
+                tr["api"].append(_api(t, "chrome.runtime.sendMessage", frame="content_script")); t += 0.1
     return t
 
 
@@ -209,10 +218,19 @@ def _apply_family(tr, t, origin, family, rng, stealth=False):
                                 "sync-telemetry.test", "data-ingest.test"])
         body = lambda lo, hi: rng.randint(lo, hi)
 
+    # Split-component evasion: a content script harvests, then hands the loot to the service
+    # worker over runtime messaging, which does the exfil. Adds cross-component IPC hops on
+    # top of the baseline. Probabilistic so msg_passing stays a soft signal, not a giveaway.
+    def _relay():
+        if rng.random() < 0.7:
+            for _ in range(rng.randint(1, 3)):
+                tr["api"].append(_api(t + 0.05, "chrome.runtime.sendMessage", frame="content_script"))
+
     if family == "cookie_theft":
         tr["dom"].append(_dom(t, "read", "document.cookie", rng.randint(30, 120), origin))
         tr["storage"].append(_sto(t + 0.1, "chrome.cookies.getAll", rng.randint(20, 60)))
         tr["api"].append(_api(t + 0.1, "chrome.cookies.getAll"))
+        _relay()
         tr["network"].append(_net(t + 0.4, f"https://{collector}/ingest", method="POST",
                                   initiator="service_worker", body_len=body(800, 3000)))
         if not stealth and "cookies" not in tr["manifest"]["permissions"]:
@@ -235,6 +253,7 @@ def _apply_family(tr, t, origin, family, rng, stealth=False):
     elif family == "keylogger":
         for i in range(rng.randint(4, 9)):
             tr["dom"].append(_dom(t + i * 0.05, "read", "input.field", rng.randint(1, 12), origin))
+        _relay()
         tr["network"].append(_net(t + 0.8, f"https://{collector}/k", method="POST",
                                   initiator="extension", body_len=body(60, 300)))
     elif family == "history_exfil":
@@ -246,6 +265,7 @@ def _apply_family(tr, t, origin, family, rng, stealth=False):
     elif family == "form_jacking":
         tr["dom"].append(_dom(t, "inject", "form#overlay-login", 0, origin))
         tr["dom"].append(_dom(t + 0.1, "read", "input#password", rng.randint(8, 20), origin))
+        _relay()
         tr["network"].append(_net(t + 0.5, f"https://{collector}/f", method="POST",
                                   initiator="content_script", body_len=body(150, 700)))
     elif family == "redirect_hijack":
@@ -255,6 +275,7 @@ def _apply_family(tr, t, origin, family, rng, stealth=False):
             tr["manifest"]["permissions"].append("declarativeNetRequest")
     elif family == "clipboard_steal":
         tr["dom"].append(_dom(t, "read", "clipboard.readText", rng.randint(10, 80), origin))
+        _relay()
         tr["network"].append(_net(t + 0.4, f"https://{collector}/cl", method="POST",
                                   initiator="content_script", body_len=body(60, 400)))
     else:

@@ -43,6 +43,17 @@ HIGH_RISK_API_RE = re.compile(
     re.IGNORECASE,
 )
 
+#: Cross-component IPC.  Extensions are multi-component (content script <-> background
+#: service worker <-> popup); the dangerous updates split the kill-chain across components
+#: (content script harvests, service worker exfiltrates) precisely to evade single-file
+#: analysis.  Counting the message-passing calls is the tabular proxy for the Extension
+#: Dependency Graph that pitfall #1 in the literature says students miss.
+MESSAGE_PASSING_RE = re.compile(
+    r"(runtime|tabs)\.(sendMessage|onMessage|connect|onConnect|onMessageExternal)|"
+    r"\.postMessage\b",
+    re.IGNORECASE,
+)
+
 #: Permissions that materially widen what an update is able to do.
 HIGH_RISK_PERMISSIONS = frozenset({
     "cookies", "webRequest", "webRequestBlocking", "declarativeNetRequest",
@@ -79,6 +90,29 @@ def shannon_entropy(s: str) -> float:
 def looks_encoded(value: str) -> bool:
     """True if *value* looks like base64/hex-encoded data rather than a plain identifier."""
     return bool(_BASE64ISH_RE.match(value)) and shannon_entropy(value) >= ENCODED_MIN_ENTROPY
+
+
+def domain_low_reputation(hostname: str) -> bool:
+    """Lexical low-reputation test for a destination host (a DGA/NRD-style proxy).
+
+    Real detectors score a domain's reputation from newly-registered-domain feeds and
+    DGA classifiers; without live WHOIS/DNS we use the *lexical* half of that signal, the
+    part those classifiers agree on (Antonakakis USENIX'12): algorithmically-generated or
+    throwaway exfil domains have high-entropy, digit-bearing, hyphenated, or over-long
+    registrable labels.  It is deliberately soft — plenty of legitimate vendor telemetry
+    domains trip it too, so it is a feature for a model to weigh, never a rule.
+    """
+    parts = [p for p in hostname.split(".") if p]
+    if len(parts) < 2:
+        return False
+    label = parts[-2]  # the registrable-domain main label (eTLD+1 minus the suffix)
+    signals = (
+        (shannon_entropy(label) >= 3.3)
+        + any(c.isdigit() for c in label)
+        + ("-" in label)
+        + (len(label) >= 14)
+    )
+    return signals >= 2
 
 
 def host_of(url: str) -> str:
@@ -136,6 +170,8 @@ FEATURE_DOCS: dict[str, tuple[str, str]] = {
     "host_perm_breadth":       ("1.0 when the extension may act on every site", "VEX NDSS'10"),
     "exfil_flows":             ("Sensitive read followed by an outbound request", "ExtPrivA S&P'23"),
     "exfil_flows_third_party": ("...where the destination is a third-party host", "Cyberhaven Dec'24"),
+    "msg_passing":             ("Cross-component message-passing calls (IPC)", "EDG pitfall (CCS'21)"),
+    "net_lowrep_hosts":        ("Upload destinations with DGA/NRD-like domains", "Antonakakis USENIX'12"),
 }
 
 #: Stable column order.  The ML tier consumes vectors in exactly this order, so it must
@@ -285,6 +321,13 @@ def extract_features(trace: dict) -> dict[str, float]:
                               else min(1.0, len(host_permissions) / 10.0)),
         "exfil_flows": float(flows),
         "exfil_flows_third_party": float(third_party_flows),
+        "msg_passing": float(sum(
+            1 for e in api if MESSAGE_PASSING_RE.search(str(e.get("api", ""))))),
+        "net_lowrep_hosts": float(len({
+            registrable_domain(host_of(e["url"]))
+            for e in ext_initiated
+            if _is_upload(e) and domain_low_reputation(host_of(e["url"]))
+        } - {""})),
     }
     assert set(features) == set(FEATURE_ORDER), "feature catalogue drifted from FEATURE_DOCS"
     return features

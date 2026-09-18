@@ -31,6 +31,7 @@ GROUPS = {
     "static":   ["perm_count", "perm_high_risk", "host_perm_breadth",
                  "stat_added_highrisk_perms", "stat_escalated_broad_host", "stat_added_hosts"],
     "exfil":    ["exfil_flows", "exfil_flows_third_party"],
+    "ipc":      ["msg_passing"],   # cross-component message-passing (EDG pitfall #1)
 }
 OUT = Path("out/ablation_features")
 

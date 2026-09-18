@@ -43,7 +43,8 @@ pages**, network egress blocked — so the extension version is the *only* varia
 difference is the extension, not the noise of the live web. Four channels are recorded —
 **network, DOM, storage/cookies, and `chrome.*` API calls** — reaching both content scripts and
 the MV3 service worker (a common exfiltration blind spot). The **behavioural delta**
-`Δ = f(v2) − f(v1)` (24 features) is then scored three ways: transparent **rules**, an **ML
+`Δ = f(v2) − f(v1)` (26 features, incl. cross-component message-passing and destination-domain
+reputation) is then scored three ways: transparent **rules**, an **ML
 model**, and an **anomaly** detector, producing a `BENIGN / SUSPICIOUS / MALICIOUS` verdict with
 the exact new behaviours that fired.
 

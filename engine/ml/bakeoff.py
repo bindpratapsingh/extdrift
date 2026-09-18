@@ -49,6 +49,44 @@ def load_dataset(path: str | Path):
     return df, X, y, groups, order
 
 
+def _smote(X, y, seed=0, k=5):
+    """Minority-class oversampling by kNN interpolation — a dependency-free SMOTE.
+
+    Chawla et al. (JAIR'02). We call this on TRAINING folds only, from inside the CV loop,
+    so no synthetic sample can ever leak into the held-out evaluation (the classic SMOTE
+    mistake). It is offered as an alternative to `class_weight="balanced"`: the panel can
+    compare the two ways of handling class imbalance rather than take one on faith.
+    """
+    from sklearn.neighbors import NearestNeighbors
+    rng = np.random.RandomState(seed)
+    y = np.asarray(y); X = np.asarray(X, dtype=float)
+    out_X, out_y = [X], [y]
+    for cls in (0, 1):
+        idx = np.where(y == cls)[0]
+        need = int((y != cls).sum()) - len(idx)   # bring the minority up to parity
+        if need <= 0 or len(idx) < 2:
+            continue
+        Xc = X[idx]
+        kk = min(k, len(idx) - 1)
+        _, nbrs = NearestNeighbors(n_neighbors=kk + 1).fit(Xc).kneighbors(Xc)
+        synth = np.empty((need, X.shape[1]), dtype=float)
+        for i in range(need):
+            a = rng.randint(len(idx))
+            b = nbrs[a, rng.randint(1, kk + 1)]    # a random neighbour (col 0 is self)
+            synth[i] = Xc[a] + rng.rand() * (Xc[b] - Xc[a])
+        out_X.append(synth); out_y.append(np.full(need, cls))
+    return np.vstack(out_X), np.concatenate(out_y)
+
+
+def _fit(model, X, y, use_smote):
+    """Fit a clone of *model*, optionally SMOTE-balancing the training data first."""
+    m = _clone(model)
+    if use_smote:
+        X, y = _smote(X, y)
+    m.fit(X, y)
+    return m
+
+
 def _build_models():
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
@@ -108,7 +146,7 @@ def _metrics(y_true, scores, threshold=0.5):
     }
 
 
-def _cv_scores(name, model, X, y, groups, df):
+def _cv_scores(name, model, X, y, groups, df, use_smote=False):
     """Out-of-fold scores for one model under StratifiedGroupKFold(ext_id)."""
     from sklearn.model_selection import StratifiedGroupKFold
     n_splits = min(5, len(np.unique(groups)), int(y.sum()), int((1 - y).sum()))
@@ -119,8 +157,7 @@ def _cv_scores(name, model, X, y, groups, df):
         if name == "rules":
             oof[te] = df["rule_score"].to_numpy()[te]
             continue
-        m = _clone(model)
-        m.fit(X[tr], y[tr])
+        m = _fit(model, X[tr], y[tr], use_smote)
         oof[te] = _proba(m, X[te])
     return oof
 
@@ -137,7 +174,7 @@ def _proba(model, X):
     return (d - d.min()) / (d.max() - d.min() + 1e-9)
 
 
-def _time_split_eval(name, model, X, y, order, df):
+def _time_split_eval(name, model, X, y, order, df, use_smote=False):
     """Train on the older 70% of pairs, test on the newer 30% (concept-drift probe)."""
     cut = int(len(order) * 0.7)
     tr, te = order[:cut], order[cut:]
@@ -146,11 +183,11 @@ def _time_split_eval(name, model, X, y, order, df):
     if name == "rules":
         scores = df["rule_score"].to_numpy()[te]
     else:
-        m = _clone(model); m.fit(X[tr], y[tr]); scores = _proba(m, X[te])
+        m = _fit(model, X[tr], y[tr], use_smote); scores = _proba(m, X[te])
     return _metrics(y[te], scores, threshold=(0.5 if name != "rules" else 0.5))
 
 
-def run_bakeoff(path="data/dataset/deltas.csv", save=True):
+def run_bakeoff(path="data/dataset/deltas.csv", save=True, use_smote=False):
     df, X, y, groups, order = load_dataset(path)
     models = _build_models()
     results = {}
@@ -158,10 +195,10 @@ def run_bakeoff(path="data/dataset/deltas.csv", save=True):
     # Rules control first (no fitting)
     for name in ["rules"] + list(models):
         model = models.get(name)
-        oof = _cv_scores(name, model, X, y, groups, df)
+        oof = _cv_scores(name, model, X, y, groups, df, use_smote=use_smote)
         thr = 0.5
         cv = _metrics(y, oof, threshold=thr)
-        ts = _time_split_eval(name, model, X, y, order, df)
+        ts = _time_split_eval(name, model, X, y, order, df, use_smote=use_smote)
         results[name] = {"cv": cv, "time_split": ts}
 
     # Winner: highest CV PR-AUC, tie-break lower FPR@recall90
@@ -172,19 +209,20 @@ def run_bakeoff(path="data/dataset/deltas.csv", save=True):
 
     importances = None
     if winner not in ("rules",):
-        importances = _feature_importance(winner, models[winner], X, y)
+        importances = _feature_importance(winner, models[winner], X, y, use_smote=use_smote)
         if save:
-            _save_winner(winner, models[winner], X, y, results, importances)
+            _save_winner(winner, models[winner], X, y, results, importances, use_smote=use_smote)
 
     summary = {"dataset": str(path), "rows": len(y), "positives": int(y.sum()),
                "extensions": int(len(np.unique(groups))), "winner": winner,
+               "smote": bool(use_smote),
                "results": results, "winner_importances": importances}
     return summary
 
 
-def _feature_importance(name, model, X, y, top=12):
+def _feature_importance(name, model, X, y, top=12, use_smote=False):
     from sklearn.inspection import permutation_importance
-    m = _clone(model); m.fit(X, y)
+    m = _fit(model, X, y, use_smote)
     if hasattr(m, "feature_importances_"):
         imp = m.feature_importances_
     else:
@@ -193,10 +231,10 @@ def _feature_importance(name, model, X, y, top=12):
     return [{"feature": FEATURES[i], "importance": round(float(imp[i]), 4)} for i in idx]
 
 
-def _save_winner(name, model, X, y, results, importances):
+def _save_winner(name, model, X, y, results, importances, use_smote=False):
     import joblib
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
-    m = _clone(model); m.fit(X, y)
+    m = _fit(model, X, y, use_smote)
     joblib.dump({"name": name, "features": FEATURES, "model": m}, MODELS_DIR / "winner.joblib")
     (MODELS_DIR / "metrics.json").write_text(
         json.dumps({"winner": name, "results": results, "importances": importances}, indent=2),
@@ -205,8 +243,11 @@ def _save_winner(name, model, X, y, results, importances):
 
 def _print(summary):
     r = summary["results"]
+    balance = "SMOTE oversampling (train folds only)" if summary.get("smote") else \
+              "class_weight='balanced'"
     print(f"\nDataset: {summary['rows']} pairs · {summary['positives']} malicious · "
           f"{summary['extensions']} extensions")
+    print(f"Class-imbalance handling: {balance}")
     print("Cross-validation (StratifiedGroupKFold by extension) — the leakage-free numbers\n")
     hdr = f"{'model':10s} {'PR-AUC':>7s} {'ROC-AUC':>8s} {'prec':>6s} {'recall':>7s} " \
           f"{'F1':>6s} {'FPR@rec90':>10s}"
@@ -255,8 +296,11 @@ def main(argv=None):
     ap.add_argument("dataset", nargs="?", default="data/dataset/deltas.csv")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--no-save", action="store_true")
+    ap.add_argument("--smote", action="store_true",
+                    help="oversample the minority class with SMOTE (train folds only) "
+                         "instead of relying on class_weight")
     args = ap.parse_args(argv)
-    summary = run_bakeoff(args.dataset, save=not args.no_save)
+    summary = run_bakeoff(args.dataset, save=not args.no_save, use_smote=args.smote)
     if args.json:
         print(json.dumps(summary, indent=2))
     else:
