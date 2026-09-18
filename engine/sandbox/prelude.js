@@ -50,6 +50,66 @@
   };
   globalScope.__extdriftReport = report;
 
+  // ---- Network channel (self-reported) -------------------------------------------
+  // On Chromium the driver reads outbound requests off CDP, so the prelude need not
+  // report them. Firefox/Selenium exposes no such hook, so here the extension's own
+  // fetch / XHR / sendBeacon calls report themselves. The Chromium report absorber
+  // ignores channel:"network", so this never double-counts there. We hook the PUBLIC
+  // APIs (grabbing the natives first) and always skip the reporting URL to avoid
+  // recursion; the underlying call is left untouched so the sample behaves normally.
+  const isReportUrl = (u) => typeof u === "string" && u.indexOf("extdrift-report.invalid") !== -1;
+  const bodyLenOf = (b) => {
+    try {
+      if (!b) return 0;
+      if (typeof b === "string") return b.length;
+      if (b.byteLength != null) return b.byteLength;   // ArrayBuffer / TypedArray
+      if (b.size != null) return b.size;                // Blob / FormData-ish
+    } catch (_) {}
+    return 0;
+  };
+  const reportNet = (url, method, bodyLen, kind) => {
+    if (isReportUrl(url)) return;
+    try {
+      report({ channel: "network", ts: now(), url: String(url || ""),
+               method: String(method || "GET").toUpperCase(), body_len: bodyLen | 0,
+               resource_type: kind || "xhr", initiator: frame });
+    } catch (_) {}
+  };
+
+  if (nativeFetch) {
+    globalScope.fetch = function (input, init) {
+      try {
+        const url = (typeof input === "string") ? input : (input && input.url) || "";
+        const method = (init && init.method) || (input && input.method) || "GET";
+        reportNet(url, method, bodyLenOf(init && init.body), "fetch");
+      } catch (_) {}
+      return nativeFetch(input, init);
+    };
+  }
+  try {
+    const XHR = globalScope.XMLHttpRequest;
+    if (XHR && XHR.prototype) {
+      const nativeOpen = XHR.prototype.open, nativeSend = XHR.prototype.send;
+      XHR.prototype.open = function (method, url) {
+        this.__extdriftMethod = method; this.__extdriftUrl = url;
+        return nativeOpen.apply(this, arguments);
+      };
+      XHR.prototype.send = function (bodyArg) {
+        reportNet(this.__extdriftUrl, this.__extdriftMethod, bodyLenOf(bodyArg), "xhr");
+        return nativeSend.apply(this, arguments);
+      };
+    }
+  } catch (_) {}
+  try {
+    if (globalScope.navigator && navigator.sendBeacon) {
+      const nativeBeacon = navigator.sendBeacon.bind(navigator);
+      navigator.sendBeacon = function (url, data) {
+        reportNet(url, "POST", bodyLenOf(data), "beacon");
+        return nativeBeacon(url, data);
+      };
+    }
+  } catch (_) {}
+
   const describe = (el) => {
     try {
       if (!el || !el.tagName) return "unknown";

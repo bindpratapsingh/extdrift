@@ -3,10 +3,14 @@
 # The ANALYSIS half (unpack, features, scoring, report, CLI, tests) is pure standard
 # library and needs nothing here - it runs on the 4 GB laptop as-is.
 #
-# The CAPTURE half (engine/sandbox) needs the two lines below plus a Chromium build:
-#     pip install -r requirements.txt
-#     playwright install chromium
+# The CAPTURE half (engine/sandbox) needs a browser driver:
+#   * Chromium engine (engine/sandbox/capture.py): playwright + a Chromium build
+#       pip install -r requirements.txt && playwright install chromium
+#   * Firefox engine (engine/sandbox/firefox_capture.py): selenium + a Firefox binary
+#       pip install -r requirements.txt   # then install Firefox; Selenium Manager
+#       fetches geckodriver automatically. Turns real AMO .xpi pairs into behavioural rows.
 playwright>=1.40
+selenium>=4.15
 
 # The DATA & ML tier (engine/synth, engine/batch, engine/ml) needs:
 #     pip install -r requirements.txt

@@ -24,8 +24,13 @@ take our word for what was in the artefact.
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
+
+#: <script src="..."> references in a background page (MV2 uses an HTML background page
+#: rather than a bare script list; its scripts must be instrumented too).
+_SCRIPT_SRC_RE = re.compile(r"""<script[^>]*\bsrc=["']([^"']+)["']""", re.IGNORECASE)
 
 PRELUDE_JS = Path(__file__).with_name("prelude.js")
 
@@ -63,6 +68,30 @@ def scripts_declared_by(manifest: dict) -> list[str]:
     return ordered
 
 
+def _background_page_scripts(work_dir: Path, manifest: dict) -> list[str]:
+    """Scripts pulled in by an MV2 ``background.page`` HTML file, in document order.
+
+    MV2 extensions (common on AMO/Firefox) often declare an HTML background page instead
+    of a script list; the code we need to instrument lives in the ``<script src>`` files
+    that page loads. Paths are normalised relative to the extension root.
+    """
+    background = manifest.get("background", {}) or {}
+    page = background.get("page") if isinstance(background, dict) else None
+    if not page:
+        return []
+    page_path = (work_dir / page)
+    if not page_path.exists():
+        return []
+    base = Path(page).parent
+    out = []
+    for src in _SCRIPT_SRC_RE.findall(page_path.read_text(encoding="utf-8", errors="ignore")):
+        if src.startswith(("http://", "https://", "//")):
+            continue
+        rel = (base / src).as_posix().lstrip("./")
+        out.append(rel)
+    return out
+
+
 def instrument_extension(unpacked_dir: str | Path, work_dir: str | Path) -> dict:
     """Copy *unpacked_dir* to *work_dir* and prepend the prelude to its scripts.
 
@@ -80,8 +109,14 @@ def instrument_extension(unpacked_dir: str | Path, work_dir: str | Path) -> dict
     manifest = json.loads((work_dir / "manifest.json").read_text(encoding="utf-8"))
     prelude = PRELUDE_JS.read_text(encoding="utf-8")
 
+    targets = scripts_declared_by(manifest) + _background_page_scripts(work_dir, manifest)
+    seen_t, ordered_t = set(), []
+    for t in targets:
+        if t not in seen_t:
+            seen_t.add(t); ordered_t.append(t)
+
     instrumented, missing = [], []
-    for relative in scripts_declared_by(manifest):
+    for relative in ordered_t:
         target = work_dir / relative
         if not target.exists():
             missing.append(relative)
