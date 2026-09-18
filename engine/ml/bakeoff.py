@@ -5,12 +5,14 @@ Compares, on the identical delta features:
   * logreg  — Logistic Regression (the floor baseline)
   * rf      — Random Forest
   * xgboost — gradient-boosted trees (the usual tabular state-of-the-art)
+  * histgb  — scikit-learn's histogram gradient boosting (a 2nd boosting implementation)
   * svm     — RBF Support Vector Machine
 
-Evaluation is leakage-free:
+Evaluation is leakage-free and reports both protocols the literature requires:
   * StratifiedGroupKFold by `ext_id` — all versions of one extension stay in one fold, so
     the model cannot memorise an extension and inflate the score.
-  * a separate time-based split (train older, test newer) exposes concept drift.
+  * a **strict temporal split** (train earlier updates, test later ones) — the anti-leakage
+    protocol for concept drift: a random split lets the model "train on the future".
 
 Metrics: accuracy, precision, recall, F1, ROC-AUC, PR-AUC, and FPR at recall >= 0.90.
 Selection rule: highest mean PR-AUC, tie-broken by lower FPR. Winner + its metrics card and
@@ -230,6 +232,22 @@ def _print(summary):
         verdict = "YES — the learned model beats the rules" if beat else \
                   "NO — the rules hold their own at this data scale (an honest finding)"
         print(f"\nDoes ML earn its place? {verdict}.")
+
+    # Strict temporal validation — train on older updates, test on newer ones. This is the
+    # anti-leakage protocol top-tier papers require (concept drift): a random split lets the
+    # model "train on the future", which flatters it; the temporal split does not.
+    have_ts = any(r[n]["time_split"] for n in r)
+    if have_ts:
+        print("\nStrict temporal validation (train earlier updates, test later ones):")
+        th = f"   {'model':10s} {'PR-AUC':>7s} {'FPR@rec90':>10s}"
+        print(th); print("   " + "-" * (len(th) - 3))
+        for n in ordered:
+            ts = r[n]["time_split"]
+            if not ts:
+                continue
+            fpr = f"{ts['fpr_at_recall90']:.3f}" if ts['fpr_at_recall90'] is not None else "   -"
+            print(f"   {n:10s} {ts['pr_auc'] or 0:7.3f} {fpr:>10s}")
+        print("   (holding up here = the model generalises to future updates, not just memorised past ones)")
 
 
 def main(argv=None):
