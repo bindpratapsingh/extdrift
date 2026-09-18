@@ -27,3 +27,6 @@ Thumbs.db
 
 # Downloaded Firefox extension code (AMO) — third-party, do not redistribute
 data/real/amo/
+
+# extensiondeltas corpus (Pantelaios et al. CCS'20) — third-party, do not redistribute
+data/real/extensiondeltas/
