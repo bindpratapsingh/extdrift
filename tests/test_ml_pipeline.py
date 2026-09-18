@@ -81,7 +81,7 @@ class TestBakeoff(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             out = self._dataset(tmp)
             summary = run_bakeoff(out, save=False)
-            self.assertIn(summary["winner"], {"rules", "logreg", "rf", "xgboost", "svm"})
+            self.assertIn(summary["winner"], {"rules", "logreg", "rf", "xgboost", "histgb", "svm"})
             for name in ("rules", "rf", "xgboost", "logreg", "svm"):
                 self.assertIn(name, summary["results"])
                 self.assertIsNotNone(summary["results"][name]["cv"]["pr_auc"])

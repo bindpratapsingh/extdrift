@@ -51,6 +51,7 @@ def _build_models():
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.svm import SVC
+    from sklearn.ensemble import HistGradientBoostingClassifier
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import StandardScaler
     import xgboost as xgb
@@ -63,6 +64,10 @@ def _build_models():
         "xgboost": xgb.XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1,
                                      subsample=0.9, colsample_bytree=0.9, eval_metric="logloss",
                                      random_state=0, n_jobs=-1),
+        # scikit-learn's own fast gradient boosting — a second boosting implementation so the
+        # comparison does not hinge on one library.
+        "histgb": HistGradientBoostingClassifier(max_depth=4, learning_rate=0.1,
+                                                 class_weight="balanced", random_state=0),
         # No probability=True (deprecated in sklearn 1.9); ranking metrics use the
         # decision_function score, which _proba() min-max normalises.
         "svm": make_pipeline(StandardScaler(),
