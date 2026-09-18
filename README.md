@@ -60,16 +60,17 @@ dynamic diff beats static analysis on the case that matters most:
 | **Obfuscated code** | **BENIGN ✗ (missed)** | **MALICIOUS ✓ (0.99, leak confirmed)** |
 
 And the machine-learning tier earns its place on the metric that decides whether a detector is
-usable — the false-positive rate:
+usable — the false-positive rate. On a hard **~1,000-pair** dataset (built with deliberate
+overlap), under cross-validation that splits by extension:
 
 | To catch 90% of malicious updates… | False positives |
 |---|---|
-| Transparent rules alone | flags **66%** of benign updates |
-| **Learned model (Random Forest)** | flags **~0%** |
+| Transparent rules alone | flags **52%** of benign updates |
+| **Learned model (XGBoost, the tabular SOTA)** | flags **~7%** |
 
-*Anomaly layer:* trained only on benign updates, it flags **100% of malicious families it never
-saw in training**. *All figures are from a synthetic corpus + live browser captures;
-real-world validation is the next milestone.*
+*Anomaly layer:* trained only on benign updates, it flags malicious families it **never saw in
+training** at **43–100%** (100% on credential/cookie theft, lower on stealthy families). *Figures
+are from a synthetic corpus; real-world validation is the next milestone — see below.*
 
 ---
 
@@ -89,7 +90,7 @@ python scripts/demo.py
 ```text
 VERDICT   : MALICIOUS
 Rules     : 0.99  [################################]   (6/12 fired)
-ML model  : 0.84  [###########################-----]   (ml-rf, MALICIOUS; rules agree)
+ML model  : 0.88  [############################----]   (ml-xgboost, MALICIOUS; rules agree)
 [ground truth] collector received data: True     ← the leak really happened
 ```
 
@@ -135,8 +136,16 @@ engine/
   collector/    real version-pair collection (disk snapshot + GitHub/crx)
   report/       explainable text + JSON verdicts
 experiments/    head-to-head (obfuscation) · determinism ablation
+data/
+  dataset/      the generated ~1,000-pair delta table (deltas.csv)
+  real/         7,382 known-malicious extension IDs (public IOC DB, CC BY 4.0)
 tests/          93 tests (incl. live browser integration)
 ```
+
+> **Data.** The synthetic corpus is generated (`python -m engine.batch`) and committed as
+> `data/dataset/deltas.csv`. Real known-malicious extension IDs come from the
+> [chrome-mal-ids](https://github.com/mallorybowes/chrome-mal-ids) IOC database. Downloaded
+> third-party extension code is **not** redistributed here.
 
 ## Tech stack
 

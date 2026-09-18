@@ -10,10 +10,14 @@ out/
 .extdrift-work/
 *.trace.local.json
 
-# Generated data & model artefacts (reproducible from code; not committed)
-data/dataset/
+# Trained model artefacts (reproducible from code; binary, not committed)
 engine/ml/models/
 *.joblib
+
+# Downloaded third-party extension code — NEVER redistribute (see README "Safety").
+# The malicious-ID list (data/real/mallorybowes, CC BY 4.0) and the generated
+# dataset (data/dataset) ARE committed; only the fetched .crx / unpacked code is not.
+data/real/crx/
 
 # OS / editor
 .DS_Store

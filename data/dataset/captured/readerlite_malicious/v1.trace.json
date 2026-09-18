@@ -1,0 +1,149 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "readerlite",
+    "name": "Reader Lite",
+    "version": "1.0.0"
+  },
+  "run": {
+    "browser": "chromium",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "local-testsite-v1",
+    "started_at": "2026-08-26T22:10:16Z",
+    "duration_s": 14.33,
+    "pages": [
+      "http://demo-bank.test/login",
+      "http://webmail.test/inbox"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "sw.js",
+        "content.js"
+      ],
+      "testsite_port": 19747
+    },
+    "collector_received": []
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "name": "Reader Lite",
+    "version": "1.0.0",
+    "description": "Cleans up article pages for comfortable reading.",
+    "permissions": [
+      "storage"
+    ],
+    "host_permissions": [
+      "http://*/*"
+    ],
+    "background": {
+      "service_worker": "sw.js"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "http://demo-bank.test/*",
+          "http://webmail.test/*"
+        ],
+        "js": [
+          "content.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ]
+  },
+  "network": [
+    {
+      "ts": 1.633,
+      "url": "http://demo-bank.test/login",
+      "method": "GET",
+      "initiator": "page",
+      "resource_type": "document",
+      "body_len": 0
+    },
+    {
+      "ts": 1.787,
+      "url": "http://api.readermode.test/v2/config",
+      "method": "GET",
+      "initiator": "service_worker",
+      "resource_type": "fetch",
+      "body_len": 0
+    },
+    {
+      "ts": 3.038,
+      "url": "http://demo-bank.test/session",
+      "method": "POST",
+      "initiator": "page",
+      "resource_type": "document",
+      "body_len": 62
+    },
+    {
+      "ts": 3.121,
+      "url": "http://api.readermode.test/v2/config",
+      "method": "GET",
+      "initiator": "service_worker",
+      "resource_type": "fetch",
+      "body_len": 0
+    },
+    {
+      "ts": 5.118,
+      "url": "http://webmail.test/inbox",
+      "method": "GET",
+      "initiator": "page",
+      "resource_type": "document",
+      "body_len": 0
+    },
+    {
+      "ts": 5.245,
+      "url": "http://api.readermode.test/v2/config",
+      "method": "GET",
+      "initiator": "service_worker",
+      "resource_type": "fetch",
+      "body_len": 0
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.001,
+      "event": "inject",
+      "target": "div.rl-toolbar",
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.004,
+      "event": "inject",
+      "target": "div.rl-toolbar",
+      "origin": "http://webmail.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.012,
+      "event": "inject",
+      "target": "div.rl-toolbar",
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.002,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "readerlite",
+    "name": "Reader Lite",
+    "version": "1.1.0"
+  },
+  "run": {
+    "browser": "chromium",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "local-testsite-v1",
+    "started_at": "2026-08-26T22:10:31Z",
+    "duration_s": 14.23,
+    "pages": [
+      "http://demo-bank.test/login",
+      "http://webmail.test/inbox"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "sw.js",
+        "content.js"
+      ],
+      "testsite_port": 34010
+    },
+    "collector_received": [
+      {
+        "host": "collect-analytics.test",
+        "method": "POST",
+        "path": "/ingest",
+        "body_len": 165,
+        "body_preview": "{\"username\":\"test.user@example.test\",\"password\":\"Fixture-Passw0rd!\",\"page_cookie\":\"session=demo-session-token-abc123\",\"jar_count\":1,\"origin\":\"http://demo-bank.test\"}"
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "name": "Reader Lite",
+    "version": "1.1.0",
+    "description": "Cleans up article pages for comfortable reading.",
+    "permissions": [
+      "storage",
+      "cookies"
+    ],
+    "host_permissions": [
+      "http://*/*"
+    ],
+    "background": {
+      "service_worker": "sw.js"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "http://demo-bank.test/*",
+          "http://webmail.test/*"
+        ],
+        "js": [
+          "content.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ]
+  },
+  "network": [
+    {
+      "ts": 1.41,
+      "url": "http://demo-bank.test/login",
+      "method": "GET",
+      "initiator": "page",
+      "resource_type": "document",
+      "body_len": 0
+    },
+    {
+      "ts": 1.806,
+      "url": "http://api.readermode.test/v2/config",
+      "method": "GET",
+      "initiator": "service_worker",
+      "resource_type": "fetch",
+      "body_len": 0
+    },
+    {
+      "ts": 2.863,
+      "url": "http://demo-bank.test/session",
+      "method": "POST",
+      "initiator": "page",
+      "resource_type": "document",
+      "body_len": 62
+    },
+    {
+      "ts": 2.899,
+      "url": "http://collect-analytics.test/ingest",
+      "method": "POST",
+      "initiator": "service_worker",
+      "resource_type": "fetch",
+      "body_len": 165
+    },
+    {
+      "ts": 2.955,
+      "url": "http://api.readermode.test/v2/config",
+      "method": "GET",
+      "initiator": "service_worker",
+      "resource_type": "fetch",
+      "body_len": 0
+    },
+    {
+      "ts": 4.978,
+      "url": "http://webmail.test/inbox",
+      "method": "GET",
+      "initiator": "page",
+      "resource_type": "document",
+      "body_len": 0
+    },
+    {
+      "ts": 5.053,
+      "url": "http://api.readermode.test/v2/config",
+      "method": "GET",
+      "initiator": "service_worker",
+      "resource_type": "fetch",
+      "body_len": 0
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.001,
+      "event": "inject",
+      "target": "div.rl-toolbar",
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.004,
+      "event": "inject",
+      "target": "div.rl-toolbar",
+      "origin": "http://webmail.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.014,
+      "event": "inject",
+      "target": "div.rl-toolbar",
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.298,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.299,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.299,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.301,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 1.102,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "service_worker"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.003,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.301,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}
