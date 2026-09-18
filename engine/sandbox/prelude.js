@@ -68,9 +68,13 @@
     return 0;
   };
   const reportNet = (url, method, bodyLen, kind) => {
-    if (isReportUrl(url)) return;
+    const s = String(url || "");
+    if (isReportUrl(s)) return;
+    // Only external http(s) egress is behaviour we score; skip the extension's own
+    // internal loads (moz-extension:/chrome-extension:, relative paths, data:/blob:).
+    if (!/^https?:\/\//i.test(s)) return;
     try {
-      report({ channel: "network", ts: now(), url: String(url || ""),
+      report({ channel: "network", ts: now(), url: s,
                method: String(method || "GET").toUpperCase(), body_len: bodyLen | 0,
                resource_type: kind || "xhr", initiator: frame });
     } catch (_) {}
@@ -177,32 +181,40 @@
   }
 
   // ---- Extension API channel -----------------------------------------------------
-  // Wrapping the namespace objects in place works in both the isolated world and the
-  // service worker, because this code is part of the extension's own bundle.
-  const api = globalScope.chrome || globalScope.browser;
-  if (api) {
-    const watched = ["cookies", "tabs", "storage", "scripting", "webRequest", "downloads",
-                     "history", "identity", "management", "runtime"];
-    // Calls whose only effect is our own plumbing; wrapping them adds noise, not signal.
-    const skip = new Set(["runtime.getURL", "runtime.id", "runtime.getManifest"]);
-
+  // Wrapping the namespace objects in place works in the isolated world, the service
+  // worker and the MV2 background page, because this code is part of the extension's own
+  // bundle. Firefox exposes BOTH `browser.*` (promise-based) and `chrome.*` (callback)
+  // as distinct wrapper objects, so we wrap each distinct namespace object we find, or a
+  // browser.* call slips past a chrome.*-only hook.
+  const watched = ["cookies", "tabs", "storage", "scripting", "webRequest",
+                   "declarativeNetRequest", "downloads", "history", "identity",
+                   "management", "runtime"];
+  const skip = new Set(["runtime.getURL", "runtime.id", "runtime.getManifest"]);
+  const wrapNamespaces = (root, rootName) => {
+    if (!root) return;
     for (const namespace of watched) {
-      const target = api[namespace];
-      if (!target || typeof target !== "object") continue;
+      const target = root[namespace];
+      if (!target || typeof target !== "object" || target.__extdriftWrapped) continue;
+      try { Object.defineProperty(target, "__extdriftWrapped", { value: true }); } catch (_) {}
       for (const method of Object.keys(target)) {
         const original = target[method];
         if (typeof original !== "function") continue;
         if (skip.has(`${namespace}.${method}`)) continue;
         try {
           target[method] = function (...args) {
-            const channel = namespace === "cookies" || namespace === "storage"
+            const channel = (namespace === "cookies" || namespace === "storage")
               ? "storage" : "api";
-            report({ channel, ts: now(), api: `chrome.${namespace}.${method}`,
+            report({ channel, ts: now(), api: `${rootName}.${namespace}.${method}`,
                      arg_count: args.length });
             return original.apply(this, args);
           };
         } catch (_) { /* some namespaces are read-only; skip them */ }
       }
     }
+  };
+  // Wrap chrome first; wrap browser only if it is a *different* object (dedupe the alias).
+  wrapNamespaces(globalScope.chrome, "chrome");
+  if (globalScope.browser && globalScope.browser !== globalScope.chrome) {
+    wrapNamespaces(globalScope.browser, "browser");
   }
 })();
