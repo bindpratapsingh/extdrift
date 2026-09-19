@@ -41,11 +41,14 @@ def _pairs():
     return out
 
 
-def run(n_exts: int = 3, families=FAMILIES, headless: bool = True) -> dict:
+def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | None = None) -> dict:
     from engine.sandbox.firefox_capture import capture_firefox
     from engine.weaponiser import weaponise
 
-    pairs = _pairs()[:n_exts]
+    pairs = _pairs()
+    if only:
+        pairs = [p for p in pairs if p["slug"] == only]
+    pairs = pairs[:n_exts]
     if not pairs:
         print("No AMO pairs on disk. Run the AMO collector first (see data/real/amo).")
         return {"captured": 0}
@@ -102,9 +105,10 @@ def run(n_exts: int = 3, families=FAMILIES, headless: bool = True) -> dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="extdrift-capture-weaponised")
     ap.add_argument("--exts", type=int, default=3, help="how many real extensions to weaponise")
+    ap.add_argument("--only", default=None, help="capture only this slug (e.g. darkreader)")
     ap.add_argument("--show", action="store_true", help="run with a visible browser window")
     args = ap.parse_args(argv)
-    run(n_exts=args.exts, headless=not args.show)
+    run(n_exts=args.exts, headless=not args.show, only=args.only)
     return 0
 
 

