@@ -24,7 +24,9 @@ from pathlib import Path
 AMO = Path("data/real/amo")
 CAPTURED = Path("data/dataset/captured")
 WORK = Path("out/ff-work-mal")
-SCENARIO = "bank-login-then-webmail"
+# HoneyPage scenario (Hulk USENIX'14) elicits trigger-dependent payloads the bank scenario
+# left dormant — see experiments/real_behavioural_eval.py for the recall it recovers.
+SCENARIO = "honeypage-harvest"
 # Families whose payload includes a content-script component, so they run even on an
 # MV2 extension whose background we deliberately do not replace.
 FAMILIES = ["cookie_theft", "credential_theft"]

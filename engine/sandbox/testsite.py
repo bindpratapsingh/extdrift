@@ -51,6 +51,29 @@ SITE: dict[str, dict[str, tuple[str, str]]] = {
   </ul>
 </body></html>"""),
     },
+    # Hulk-style HoneyPage (Kapravelos USENIX'14): one page dense with every element a
+    # data-stealing extension or payload looks for — a login form, credential and card
+    # fields, contact data — so dormant behaviour is elicited rather than waited for. The
+    # bank cookie is set on this host too (see do_GET), giving a cookie thief something real.
+    "honeypage.test": {
+        "/harvest": ("text/html", """<!doctype html>
+<html><head><title>Account - Sign in</title></head>
+<body>
+  <h1>Your Account</h1>
+  <form id="login" method="post" action="/session">
+    <label>Username <input name="username" type="text" autocomplete="username"></label>
+    <label>Email <input name="email" type="email" class="contact-email"></label>
+    <label>Password <input id="password" name="password" type="password"></label>
+    <label>Card <input name="cardnumber" type="text" autocomplete="cc-number"></label>
+    <label>CVV <input name="cvv" type="text"></label>
+    <button type="submit">Sign in</button>
+  </form>
+  <ul id="messages">
+    <li class="message"><span class="contact-email">alex@example.test</span></li>
+  </ul>
+  <div class="product"><span class="price">$42.00</span></div>
+</body></html>"""),
+    },
     "api.readermode.test": {
         "/v2/config": ("application/json", json.dumps({"theme": "sepia", "width": 720})),
     },
@@ -115,7 +138,7 @@ class _Handler(BaseHTTPRequestHandler):
         # A session cookie on the bank gives a credential-stealing payload something
         # real to take, which is the point of the scenario.
         cookie = ("session=demo-session-token-abc123; Path=/"
-                  if host == "demo-bank.test" else None)
+                  if host in ("demo-bank.test", "honeypage.test") else None)
         self._send(200, content_type, body.encode("utf-8"), cookie=cookie)
 
     def do_POST(self):  # noqa: N802
@@ -161,7 +184,11 @@ class TestSite:
         reads report payloads off the outgoing request, so the request must never
         actually be delivered anywhere.
         """
-        return (f"MAP *.test 127.0.0.1:{self.port},"
+        # The report host is dead-mapped BEFORE the general .test rule (Chromium takes the
+        # first match), so instrumentation reports never reach the test site; the driver
+        # reads them off the CDP request event instead.
+        return (f"MAP extdrift-report.test 127.0.0.1:1,"
+                f"MAP *.test 127.0.0.1:{self.port},"
                 "MAP extdrift-report.invalid 127.0.0.1:1")
 
     @property

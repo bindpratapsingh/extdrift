@@ -32,7 +32,7 @@ class TestScenarios(unittest.TestCase):
         self.assertIn("bank-login-then-webmail", str(ctx.exception))
 
     def test_steps_only_use_known_actions(self):
-        known = {"goto", "fill", "click", "wait", "scroll"}
+        known = {"goto", "fill", "click", "wait", "scroll", "fire_events"}
         for name, scenario in scenarios.SCENARIOS.items():
             for step in scenario.steps:
                 with self.subTest(scenario=name, action=step.action):
@@ -60,7 +60,7 @@ class TestInstrumentation(unittest.TestCase):
     def test_prelude_exists_and_is_guarded(self):
         source = PRELUDE_JS.read_text(encoding="utf-8")
         self.assertIn("__extdriftInstalled", source)   # must be idempotent per world
-        self.assertIn("extdrift-report.invalid", source)  # dead reporting host
+        self.assertIn("extdrift-report.test", source)  # sealed reporting host
 
     def test_prelude_never_stores_captured_values(self):
         """Only lengths leave the page. Traces must be safe to commit and to hand over."""

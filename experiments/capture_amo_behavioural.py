@@ -28,7 +28,9 @@ CAPTURED = Path("data/dataset/captured")
 # and MUST NOT land under the committed data/dataset tree — third-party code is never
 # redistributed. It goes to out/ (gitignored) and is deleted after each capture.
 WORK = Path("out/ff-work")
-SCENARIO = "bank-login-then-webmail"
+# Same HoneyPage scenario as the weaponised captures, so real benign and real malicious
+# rows are directly comparable (identical pages/interaction; only the extension differs).
+SCENARIO = "honeypage-harvest"
 
 
 def _pairs() -> list[dict]:

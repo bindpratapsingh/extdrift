@@ -29,7 +29,7 @@ from urllib.parse import urlsplit
 
 from engine.sandbox.testsite import COLLECTOR_HOSTS, SITE
 
-REPORT_HOST = "extdrift-report.invalid"
+REPORT_HOST = "extdrift-report.test"
 _REPORT_CHANNELS = ("dom", "storage", "api", "network")
 
 
@@ -93,7 +93,7 @@ class _ProxyHandler(BaseHTTPRequestHandler):
             return self._reply(204, "text/plain", b"")            # blackhole (egress control)
         content_type, text = page
         cookie = ("session=demo-session-token-abc123; Path=/"
-                  if host == "demo-bank.test" else None)
+                  if host in ("demo-bank.test", "honeypage.test") else None)
         self._reply(200, content_type, text.encode("utf-8"), cookie=cookie)
 
     def do_HEAD(self):  # noqa: N802

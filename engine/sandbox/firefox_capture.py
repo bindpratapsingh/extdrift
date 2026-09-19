@@ -106,11 +106,17 @@ def _patch_manifest_for_capture(ext_dir: Path) -> dict:
 def _run_steps(driver, scenario) -> None:
     """Execute the scenario's fixed script through Selenium (mirrors the Chromium runner)."""
     from selenium.webdriver.common.by import By
+    from engine.sandbox.scenarios import EVENT_FUZZING_JS
     for step in scenario.steps:
         if step.action == "goto":
             driver.get(step.value)
         elif step.action == "wait":
             time.sleep(step.seconds)
+        elif step.action == "fire_events":
+            try:
+                driver.execute_script(EVENT_FUZZING_JS)   # Hulk-style event-handler fuzzing
+            except Exception:
+                pass
         elif step.action == "scroll":
             driver.execute_script("window.scrollBy(0, 2000);")
             time.sleep(step.seconds)

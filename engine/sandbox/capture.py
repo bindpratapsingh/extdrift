@@ -15,9 +15,10 @@ How a run is made deterministic
   (:mod:`engine.sandbox.rewrite`), which reaches content scripts in the isolated world
   and the MV3 service worker alike.
 
-The instrumentation reports events by POSTing to ``extdrift-report.invalid``; we read
-those payloads off the outgoing CDP request event and strip them from the trace, so the
-reporting channel never appears as extension behaviour and never actually connects.
+The instrumentation reports events by POSTing to ``extdrift-report.test`` (dead-mapped in
+the host-resolver rules); we read those payloads off the outgoing CDP request event and
+strip them from the trace, so the reporting channel never appears as extension behaviour
+and never actually connects.
 """
 
 from __future__ import annotations
@@ -31,7 +32,7 @@ from engine.sandbox import scenarios
 from engine.sandbox.rewrite import instrument_extension
 from engine.sandbox.testsite import COLLECTOR_HOSTS, TestSite
 
-REPORT_HOST = "extdrift-report.invalid"
+REPORT_HOST = "extdrift-report.test"
 
 
 class CaptureError(RuntimeError):
@@ -246,6 +247,12 @@ def _run_steps(page, scenario) -> None:
             page.goto(step.value, wait_until="load")
         elif step.action == "wait":
             page.wait_for_timeout(int(step.seconds * 1000))
+        elif step.action == "fire_events":
+            from engine.sandbox.scenarios import EVENT_FUZZING_JS
+            try:
+                page.evaluate(EVENT_FUZZING_JS)          # Hulk-style event-handler fuzzing
+            except Exception:
+                pass
         elif step.action == "scroll":
             page.mouse.wheel(0, 2000)
             page.wait_for_timeout(int(step.seconds * 1000))

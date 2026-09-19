@@ -34,7 +34,7 @@ class TestCaptureProxy(unittest.TestCase):
                            ("storage", {"api": "chrome.cookies.getAll"}),
                            ("api", {"api": "chrome.tabs.query"})]:
                 payload = json.dumps({"channel": ch, "ts": 0.1, **ev}).encode()
-                op.open(urllib.request.Request("http://extdrift-report.invalid/e", data=payload), timeout=5).read()
+                op.open(urllib.request.Request("http://extdrift-report.test/e", data=payload), timeout=5).read()
             self.assertEqual(len(px.channels["network"]), 1)
             self.assertEqual(len(px.channels["dom"]), 1)
             self.assertEqual(px.channels["network"][0]["body_len"], 9)
@@ -76,12 +76,12 @@ class TestCaptureManifestPatch(unittest.TestCase):
     def test_mv2_gets_report_host_in_permissions(self):
         out = self._patch({"manifest_version": 2, "name": "x", "version": "1",
                             "permissions": ["storage"]})
-        self.assertTrue(any("extdrift-report.invalid" in p for p in out["permissions"]))
+        self.assertTrue(any("extdrift-report.test" in p for p in out["permissions"]))
         self.assertIn("storage", out["permissions"])
 
     def test_mv3_gets_report_host_in_host_permissions(self):
         out = self._patch({"manifest_version": 3, "name": "x", "version": "1"})
-        self.assertTrue(any("extdrift-report.invalid" in p for p in out["host_permissions"]))
+        self.assertTrue(any("extdrift-report.test" in p for p in out["host_permissions"]))
 
 
 if __name__ == "__main__":

@@ -24,12 +24,36 @@ DUMMY_PASSWORD = "Fixture-Passw0rd!"
 
 @dataclass(frozen=True)
 class Step:
-    """One action in a scenario. ``action`` is one of goto/fill/click/wait/scroll."""
+    """One action in a scenario. ``action`` is goto/fill/click/wait/scroll/fire_events.
+
+    ``fire_events`` is Hulk-style event-handler fuzzing (Kapravelos USENIX'14): it
+    dispatches a battery of synthetic DOM events across the page's elements so dormant
+    handlers (a payload's ``submit``/``input`` listener, an extension's lazy hooks) fire
+    without a real navigation that would race the trace.
+    """
 
     action: str
     selector: str | None = None
     value: str | None = None
     seconds: float = 0.0
+
+
+#: The event-fuzzing script run by a ``fire_events`` step. Kept here (not in the engines) so
+#: both capture engines fire the identical events, preserving determinism across v1 and v2.
+EVENT_FUZZING_JS = """
+(() => {
+  const types = ['focus','input','change','keydown','keyup','keypress','click',
+                 'mousedown','mouseup','blur'];
+  const nodes = document.querySelectorAll('input,textarea,select,button,a,form,body,div,span');
+  nodes.forEach((el) => types.forEach((t) => {
+    try { el.dispatchEvent(new Event(t, { bubbles: true, cancelable: true })); } catch (e) {}
+  }));
+  // Fire submit on every form explicitly (it does not navigate — it only runs handlers).
+  document.querySelectorAll('form').forEach((f) => {
+    try { f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); } catch (e) {}
+  });
+})();
+"""
 
 
 @dataclass(frozen=True)
@@ -97,7 +121,33 @@ IDLE = Scenario(
     settle_seconds=10.0,
 )
 
-SCENARIOS = {s.name: s for s in (BANK_LOGIN, CONTACTS, IDLE)}
+HONEYPAGE = Scenario(
+    name="honeypage-harvest",
+    description=(
+        "A Hulk-style HoneyPage (Kapravelos USENIX'14): one page dense with credential, "
+        "card and contact fields plus a session cookie, where the fields are filled, "
+        "event-handler fuzzing fires dormant handlers, and the page is dwelt on long "
+        "enough for delayed beacons — so a data-stealing payload is elicited, not waited "
+        "for. This closes the trigger-dependent recall gap the bank scenario leaves."
+    ),
+    pages=("http://honeypage.test/harvest",),
+    steps=(
+        Step("goto", value="http://honeypage.test/harvest"),
+        Step("wait", seconds=1.0),
+        Step("fill", selector="input[name=username]", value=DUMMY_USERNAME),
+        Step("fill", selector="input#password", value=DUMMY_PASSWORD),
+        Step("fill", selector="input[name=cardnumber]", value="4111 1111 1111 1111"),
+        Step("fill", selector="input[name=cvv]", value="123"),
+        Step("fire_events"),                # trigger dormant submit/input handlers
+        Step("wait", seconds=3.5),          # let setTimeout-delayed payloads (e.g. 2.5s) fire
+        Step("scroll", seconds=0.5),
+        Step("fire_events"),                # second volley after any late DOM setup
+        Step("wait", seconds=2.0),
+    ),
+    settle_seconds=6.0,
+)
+
+SCENARIOS = {s.name: s for s in (BANK_LOGIN, CONTACTS, IDLE, HONEYPAGE)}
 
 
 def get(name: str) -> Scenario:

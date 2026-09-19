@@ -9,23 +9,35 @@
 //
 // REPORTING CHANNEL
 // -----------------
-// Events are POSTed to http://extdrift-report.invalid/e.  ".invalid" is reserved by
-// RFC 2606 and never resolves, so the request always fails at DNS - but Chromium raises
-// the CDP request event *before* it tries to connect, so the driver reads the payload
-// off the outgoing request and the data never leaves the machine.  Using the network as
-// the reporting channel is what lets one mechanism cover page scripts, content scripts
-// in the isolated world, and the MV3 service worker, which has no DOM to hook at all.
+// Events are POSTed to http://extdrift-report.test/e. Chromium dead-maps this host and
+// reads the payload off the CDP request event before it connects; the Firefox capture
+// proxy serves it and absorbs the payload. A reserved .test host (not .invalid) is used
+// because a Firefox content script will send to .test but refuses the .invalid TLD.
+// Either way the data never leaves the machine. Using the network as the reporting
+// channel is what lets one mechanism cover page scripts, content scripts in the isolated
+// world, and the MV3 service worker, which has no DOM to hook at all.
 //
 // The driver strips every report request out of the trace before scoring, so the
 // instrumentation cannot show up as extension behaviour.
 
 (() => {
   "use strict";
-  const globalScope = (typeof window !== "undefined") ? window : self;
+  // Use the CURRENT realm's global, not window. In a Firefox content script `window` is the
+  // page's Xray-wrapped window, whose fetch/XHR is a different function from the one the
+  // content-script code (and any payload) actually calls; hooking it captured nothing and
+  // our own reports went out through the page realm (CORS-blocked). globalThis is the
+  // content-script sandbox global in a content script, `self` in a worker, and window in a
+  // page — always the realm where this code runs.
+  const globalScope = (typeof globalThis !== "undefined") ? globalThis
+                    : ((typeof self !== "undefined") ? self : window);
   if (globalScope.__extdriftInstalled) return;
   globalScope.__extdriftInstalled = true;
 
-  const REPORT_URL = "http://extdrift-report.invalid/e";
+  // Report over a reserved .test host, not .invalid: a Firefox content script will send to
+  // a .test host (which the capture proxy serves) but refuses the .invalid TLD, so
+  // content-script dom/network events were being lost. The Chromium engine dead-maps this
+  // host and reads the payload off the CDP request event, so it still never leaves the box.
+  const REPORT_URL = "http://extdrift-report.test/e";
   const t0 = Date.now();
   const now = () => (Date.now() - t0) / 1000;
 
@@ -40,11 +52,14 @@
     try {
       event.frame = event.frame || frame;
       const body = JSON.stringify(event);
-      if (!inServiceWorker && navigator.sendBeacon) {
+      // Prefer a plain fetch: it works from the service worker, the MV2 background page and
+      // the content script alike. A content script drops a keepalive/no-cors report and a
+      // sendBeacon, so those were losing every content-script dom/network event; a plain
+      // POST (the same shape the payloads themselves use successfully) lands.
+      if (nativeFetch) {
+        nativeFetch(REPORT_URL, { method: "POST", body }).catch(() => {});
+      } else if (!inServiceWorker && navigator.sendBeacon) {
         navigator.sendBeacon(REPORT_URL, body);
-      } else if (nativeFetch) {
-        nativeFetch(REPORT_URL, { method: "POST", body, mode: "no-cors", keepalive: true })
-          .catch(() => {});
       }
     } catch (_) { /* instrumentation must never break the sample */ }
   };
@@ -57,7 +72,7 @@
   // ignores channel:"network", so this never double-counts there. We hook the PUBLIC
   // APIs (grabbing the natives first) and always skip the reporting URL to avoid
   // recursion; the underlying call is left untouched so the sample behaves normally.
-  const isReportUrl = (u) => typeof u === "string" && u.indexOf("extdrift-report.invalid") !== -1;
+  const isReportUrl = (u) => typeof u === "string" && u.indexOf("extdrift-report.test") !== -1;
   const bodyLenOf = (b) => {
     try {
       if (!b) return 0;
