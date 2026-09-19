@@ -1,0 +1,297 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "uBlock0@raymondhill.net",
+    "name": "uBlock Origin",
+    "version": "1.75.0"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-19T03:16:11Z",
+    "duration_s": 66.94,
+    "pages": [
+      "http://demo-bank.test/login",
+      "http://webmail.test/inbox"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "lib/lz4/lz4-block-codec-any.js",
+        "js/vapi.js",
+        "js/start.js"
+      ],
+      "proxy_port": 23109,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox-settings-attachments.cdn.mozilla.net",
+        "method": "CONNECT"
+      },
+      {
+        "host": "demo-bank.test",
+        "method": "GET"
+      },
+      {
+        "host": "pgl.yoyo.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "webmail.test",
+        "method": "GET"
+      }
+    ]
+  },
+  "manifest": {
+    "author": "Raymond Hill & contributors",
+    "background": {
+      "page": "background.html"
+    },
+    "browser_action": {
+      "browser_style": false,
+      "default_area": "navbar",
+      "default_icon": {
+        "16": "img/icon_16.png",
+        "32": "img/icon_32.png",
+        "64": "img/icon_64.png"
+      },
+      "default_popup": "popup-fenix.html",
+      "default_title": "uBlock Origin"
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "data_collection_permissions": {
+          "required": [
+            "none"
+          ]
+        },
+        "id": "uBlock0@raymondhill.net",
+        "strict_min_version": "115.0"
+      },
+      "gecko_android": {
+        "strict_min_version": "115.0"
+      }
+    },
+    "commands": {
+      "_execute_browser_action": {},
+      "launch-element-picker": {
+        "description": "__MSG_popupTipPicker__"
+      },
+      "launch-element-zapper": {
+        "description": "__MSG_popupTipZapper__"
+      },
+      "launch-logger": {
+        "description": "__MSG_popupTipLog__"
+      },
+      "open-dashboard": {
+        "description": "__MSG_popupTipDashboard__"
+      },
+      "relax-blocking-mode": {
+        "description": "__MSG_relaxBlockingMode__"
+      },
+      "toggle-cosmetic-filtering": {
+        "description": "__MSG_toggleCosmeticFiltering__"
+      },
+      "toggle-javascript": {
+        "description": "__MSG_toggleJavascript__"
+      }
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "js": [
+          "/js/vapi.js",
+          "/js/vapi-client.js",
+          "/js/contentscript.js"
+        ],
+        "match_about_blank": true,
+        "matches": [
+          "http://*/*",
+          "https://*/*",
+          "file://*/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "/js/scriptlets/subscriber.js"
+        ],
+        "matches": [
+          "https://easylist.to/*",
+          "https://*.fanboy.co.nz/*",
+          "https://filterlists.com/*",
+          "https://forums.lanik.us/*",
+          "https://github.com/*",
+          "https://*.github.io/*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "/js/scriptlets/updater.js"
+        ],
+        "matches": [
+          "https://github.com/uBlockOrigin/*",
+          "https://ublockorigin.github.io/*",
+          "https://*.reddit.com/r/uBlockOrigin/*"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "default_locale": "en",
+    "description": "__MSG_extShortDesc__",
+    "icons": {
+      "128": "img/ublock.svg",
+      "16": "img/ublock.svg",
+      "32": "img/ublock.svg",
+      "48": "img/ublock.svg",
+      "64": "img/ublock.svg",
+      "96": "img/ublock.svg"
+    },
+    "manifest_version": 2,
+    "name": "uBlock Origin",
+    "options_ui": {
+      "open_in_tab": true,
+      "page": "dashboard.html"
+    },
+    "permissions": [
+      "alarms",
+      "dns",
+      "menus",
+      "privacy",
+      "storage",
+      "tabs",
+      "unlimitedStorage",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "<all_urls>",
+      "http://extdrift-report.invalid/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "short_name": "uBlock\u2080",
+    "version": "1.75.0",
+    "web_accessible_resources": [
+      "/web_accessible_resources/*"
+    ]
+  },
+  "network": [
+    {
+      "ts": 12.14,
+      "url": "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 9.466,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.112,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.202,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.228,
+      "api": "browser.webRequest.handlerBehaviorChanged",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.38,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.61,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.695,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.756,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.809,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 13.774,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 13.831,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 13.845,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 13.946,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 13.977,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 14.071,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

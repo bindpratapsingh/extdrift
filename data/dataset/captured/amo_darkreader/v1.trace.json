@@ -1,0 +1,196 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "addon@darkreader.org",
+    "name": "Dark Reader",
+    "version": "4.9.130"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-18T22:40:01Z",
+    "duration_s": 22.86,
+    "pages": [
+      "http://demo-bank.test/login",
+      "http://webmail.test/inbox"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "inject/fallback.js",
+        "inject/index.js",
+        "background/index.js"
+      ],
+      "proxy_port": 60475,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "darkreader.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "darkreader.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "demo-bank.test",
+        "method": "GET"
+      },
+      {
+        "host": "webmail.test",
+        "method": "GET"
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "Dark Reader",
+    "version": "4.9.130",
+    "author": "Alexander Shutau",
+    "description": "__MSG_extension_description__",
+    "default_locale": "en",
+    "browser_action": {
+      "default_title": "Dark Reader",
+      "default_icon": {
+        "19": "icons/dr_active_19.png",
+        "38": "icons/dr_active_38.png"
+      },
+      "default_popup": "ui/popup/index.html"
+    },
+    "icons": {
+      "16": "icons/dr_16.png",
+      "48": "icons/dr_48.png",
+      "128": "icons/dr_128.png"
+    },
+    "background": {
+      "page": "background/index.html"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "inject/fallback.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true,
+        "match_about_blank": true,
+        "world": "MAIN"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "inject/index.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true,
+        "match_about_blank": true,
+        "world": "ISOLATED"
+      }
+    ],
+    "permissions": [
+      "alarms",
+      "contextMenus",
+      "storage",
+      "tabs",
+      "theme",
+      "<all_urls>",
+      "http://extdrift-report.invalid/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [],
+    "commands": {
+      "toggle": {
+        "suggested_key": {
+          "default": "Alt+Shift+D"
+        },
+        "description": "__MSG_toggle_extension__"
+      },
+      "addSite": {
+        "suggested_key": {
+          "default": "Alt+Shift+A"
+        },
+        "description": "__MSG_toggle_current_site__"
+      },
+      "switchEngine": {
+        "description": "__MSG_theme_generation_mode__"
+      }
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "addon@darkreader.org",
+        "strict_min_version": "78.0"
+      },
+      "gecko_android": {}
+    }
+  },
+  "network": [
+    {
+      "ts": 0.235,
+      "url": "https://darkreader.org/blog/posts.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [],
+  "storage": [
+    {
+      "ts": 0.001,
+      "api": "localStorage.getItem",
+      "key": "__darkreader__wasEnabledForHost",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.001,
+      "api": "localStorage.getItem",
+      "key": "__darkreader__wasEnabledForHost",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.004,
+      "api": "localStorage.getItem",
+      "key": "__darkreader__wasEnabledForHost",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.019,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.234,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

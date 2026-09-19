@@ -1,0 +1,218 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-BoFifL9Vbdl2zQ@jetpack",
+    "name": "Decentraleyes",
+    "version": "3.0.3"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "bank-login-then-webmail",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-19T03:34:13Z",
+    "duration_s": 86.82,
+    "pages": [
+      "http://demo-bank.test/login",
+      "http://webmail.test/inbox"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "code/main.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 39980,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox-settings-attachments.cdn.mozilla.net",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "demo-bank.test",
+        "method": "GET"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "content-signature-2.cdn.mozilla.net",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "webmail.test",
+        "method": "GET"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.invalid",
+        "method": "CONNECT"
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "name": "Decentraleyes",
+    "version": "3.0.3",
+    "author": "Thomas Rientjes",
+    "default_locale": "en_US",
+    "description": "__MSG_extensionDescription__",
+    "icons": {
+      "16": "images/icons/extension/16.png",
+      "48": "images/icons/extension/48.png",
+      "96": "images/icons/extension/96.png",
+      "128": "images/icons/extension/128.png"
+    },
+    "permissions": [
+      "privacy",
+      "webNavigation",
+      "webRequestBlocking",
+      "webRequest",
+      "unlimitedStorage",
+      "storage",
+      "tabs",
+      "cookies"
+    ],
+    "host_permissions": [
+      "*://*/*",
+      "http://*.test/*",
+      "http://extdrift-report.invalid/*",
+      "https://*.test/*"
+    ],
+    "background": {
+      "scripts": [
+        "code/main.js"
+      ],
+      "type": "module"
+    },
+    "action": {
+      "default_icon": {
+        "16": "images/icons/action/default/16.png",
+        "18": "images/icons/action/default/18.png",
+        "19": "images/icons/action/default/19.png",
+        "32": "images/icons/action/default/32.png",
+        "36": "images/icons/action/default/36.png",
+        "38": "images/icons/action/default/38.png",
+        "64": "images/icons/action/default/64.png"
+      },
+      "default_popup": "pages/popup/popup.html"
+    },
+    "options_ui": {
+      "page": "pages/options/options.html"
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "jid1-BoFifL9Vbdl2zQ@jetpack",
+        "strict_min_version": "115.0",
+        "data_collection_permissions": {
+          "required": [
+            "none"
+          ]
+        }
+      },
+      "gecko_android": {
+        "strict_min_version": "115.0"
+      }
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "resources/*"
+        ],
+        "matches": [
+          "<all_urls>"
+        ]
+      }
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [],
+  "dom": [
+    {
+      "ts": 1.531,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://demo-bank.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.531,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "http://webmail.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": []
+}
