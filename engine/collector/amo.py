@@ -24,6 +24,7 @@ from pathlib import Path
 from engine.unpack.crx import unpack_extension
 
 API = "https://addons.mozilla.org/api/v5/addons/addon"
+SEARCH_API = "https://addons.mozilla.org/api/v5/addons/search/"
 USER_AGENT = "extdrift-collector/0.1 (academic research; CSD493)"
 
 
@@ -31,6 +32,27 @@ def _get(url: str, timeout: int = 60) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 - fixed host
         return resp.read()
+
+
+def amo_top_slugs(n: int = 20, category: str | None = None) -> list[dict]:
+    """Enumerate the most-installed Firefox extensions (the store-crawl collection method).
+
+    Papers build their corpora by crawling the store for popular extensions and pulling each
+    one's version history (You've Changed CCS'20; ExtPrivA S&P'23). AMO's search API sorts by
+    install base, so this returns [{slug, users, name}] for the top *n* extensions — the seed
+    list for large-scale real-pair collection, no hardcoding.
+    """
+    url = (f"{SEARCH_API}?app=firefox&type=extension&sort=users"
+           f"&page_size={min(n, 50)}" + (f"&category={category}" if category else ""))
+    data = json.loads(_get(url))
+    out = []
+    for a in data.get("results", [])[:n]:
+        slug = a.get("slug")
+        if slug:
+            out.append({"slug": slug, "users": a.get("average_daily_users"),
+                        "name": (a.get("name") or {}).get("en-US") if isinstance(a.get("name"), dict)
+                        else a.get("name")})
+    return out
 
 
 def amo_versions(slug: str, page_size: int = 25) -> list[dict]:
@@ -80,3 +102,65 @@ def amo_consecutive_pairs(slug: str, dest: str | Path, n_pairs: int = 1) -> list
             pairs.append({"slug": slug, "error": str(exc)[:120],
                           "v1": older["version"], "v2": newer["version"]})
     return pairs
+
+
+def collect_top(n_addons: int = 20, n_pairs: int = 1, dest: str | Path = "data/real/amo",
+                merge: bool = True) -> dict:
+    """Crawl the top *n_addons* Firefox extensions and pull *n_pairs* real update pairs each.
+
+    Writes/merges <dest>/pairs.json — the manifest the behavioural + static capture runners
+    consume. This is the scaled version of the collection the papers describe: real,
+    consecutive, benign-by-construction pairs across a broad, popularity-weighted sample.
+    """
+    dest = Path(dest)
+    manifest_path = dest / "pairs.json"
+    existing = []
+    if merge and manifest_path.exists():
+        existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+    have = {(p.get("slug"), p.get("v1"), p.get("v2")) for p in existing if "v1_dir" in p}
+
+    added, skipped = [], 0
+    for a in amo_top_slugs(n_addons):
+        slug = a["slug"]
+        for p in amo_consecutive_pairs(slug, dest / slug, n_pairs=n_pairs):
+            if "v1_dir" not in p:
+                skipped += 1
+                continue
+            if (p["slug"], p["v1"], p["v2"]) in have:
+                continue
+            added.append(p); have.add((p["slug"], p["v1"], p["v2"]))
+
+    combined = existing + added
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(combined, indent=2), encoding="utf-8")
+    return {"added": len(added), "skipped": skipped, "total": len(combined),
+            "manifest": str(manifest_path)}
+
+
+def main(argv=None) -> int:
+    import argparse
+    ap = argparse.ArgumentParser(prog="extdrift-amo", description="Collect real AMO update pairs.")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    t = sub.add_parser("top", help="crawl the top-N extensions and pull pairs")
+    t.add_argument("-n", type=int, default=20); t.add_argument("--pairs", type=int, default=1)
+    p = sub.add_parser("pull", help="pull pairs for one slug")
+    p.add_argument("slug"); p.add_argument("--pairs", type=int, default=1)
+    s = sub.add_parser("slugs", help="just list the top-N slugs (no download)")
+    s.add_argument("-n", type=int, default=20)
+    args = ap.parse_args(argv)
+
+    if args.cmd == "top":
+        r = collect_top(n_addons=args.n, n_pairs=args.pairs)
+        print(f"[amo] added {r['added']} pairs (skipped {r['skipped']}); {r['total']} total "
+              f"-> {r['manifest']}")
+    elif args.cmd == "pull":
+        r = amo_consecutive_pairs(args.slug, Path("data/real/amo") / args.slug, n_pairs=args.pairs)
+        print(f"[amo] {args.slug}: {sum('v1_dir' in p for p in r)} pairs")
+    else:
+        for a in amo_top_slugs(args.n):
+            print(f"  {a['slug']:30s} users={a['users']}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
