@@ -38,11 +38,16 @@ flowchart TD
     ANOM --> OUT
 ```
 
-Each version runs in a headless Chromium sandbox — same scripted user actions, **byte-identical
+Each version runs in a headless sandbox — same scripted user actions, **byte-identical
 pages**, network egress blocked — so the extension version is the *only* variable, and the
-difference is the extension, not the noise of the live web. Four channels are recorded —
-**network, DOM, storage/cookies, and `chrome.*` API calls** — reaching both content scripts and
-the MV3 service worker (a common exfiltration blind spot). The **behavioural delta**
+difference is the extension, not the noise of the live web. There are **two capture engines
+behind one trace schema**: a Chromium engine (Playwright + `--host-resolver-rules`) and a
+**Firefox engine** (Selenium temporary add-on + a local capture proxy) that turns the real
+Firefox update pairs from the AMO collector into behavioural rows in the *same* format — so
+real captured data trains the *same* model as the synthetic data, not a separate one. Four
+channels are recorded — **network, DOM, storage/cookies, and `chrome.*`/`browser.*` API
+calls** — reaching content scripts, the MV3 service worker and the MV2 background page (all
+common exfiltration blind spots). The **behavioural delta**
 `Δ = f(v2) − f(v1)` (26 features, incl. cross-component message-passing and destination-domain
 reputation) is then scored three ways: transparent **rules**, an **ML
 model**, and an **anomaly** detector, producing a `BENIGN / SUSPICIOUS / MALICIOUS` verdict with
@@ -127,16 +132,16 @@ reported only when it beats them.
 ```
 engine/
   unpack/       .crx/.xpi unpacking + static manifest diff
-  sandbox/      instrumented browser capture (Playwright) + deterministic test-site
-  features/     trace schema, feature extraction f(·), Δ = f(v2) − f(v1)
+  sandbox/      two capture engines (Chromium/Playwright + Firefox/Selenium) + proxy + test-site
+  features/     trace schema, dynamic + static-code feature extraction, Δ = f(v2) − f(v1)
   scoring/      12 explainable heuristic rules
   synth/        synthetic update-pair corpus generator
   weaponiser/   real JS payloads (clean + obfuscated) → labelled malicious versions
   baseline/     static code-delta scorer (the prior-work baseline we beat)
   ml/           model bake-off, anomaly layer, live prediction
-  collector/    real version-pair collection (disk snapshot + GitHub/crx)
+  collector/    real version-pair collection (AMO API, disk snapshot, extensiondeltas corpus)
   report/       explainable text + JSON verdicts
-experiments/    head-to-head (obfuscation) · determinism ablation
+experiments/    ablations · learning curve · real static + behavioural capture (AMO/weaponised)
 data/
   dataset/      the generated ~1,000-pair delta table (deltas.csv)
   real/         7,382 known-malicious extension IDs (public IOC DB, CC BY 4.0)
@@ -150,9 +155,10 @@ tests/          93 tests (incl. live browser integration)
 
 ## Tech stack
 
-**Python** · **Playwright** (Chromium automation) · **scikit-learn** + **XGBoost** (the model
-tier) · **pandas / NumPy** · standard-library sandbox test-site. The analysis + ML half is
-dependency-light and runs on a laptop; only live browser capture needs Chromium.
+**Python** · **Playwright** (Chromium) + **Selenium** (Firefox) for the two capture engines ·
+**scikit-learn** + **XGBoost** (the model tier) · **pandas / NumPy** · standard-library sandbox
+test-site + capture proxy. The analysis + ML half is dependency-light and runs on a laptop;
+only live browser capture needs a browser.
 
 ## Scope & honesty
 

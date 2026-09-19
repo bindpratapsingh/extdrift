@@ -40,6 +40,15 @@ class _ProxyHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # noqa: A003 - silence; the trace is the record
         pass
 
+    def handle_one_request(self):
+        # The browser resets pooled connections on teardown; that surfaces as a noisy
+        # ConnectionResetError from the base handler. It is expected and irrelevant to the
+        # capture, so swallow it rather than letting it print a traceback per socket.
+        try:
+            super().handle_one_request()
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+            self.close_connection = True
+
     # -- helpers ----------------------------------------------------------------------
     def _target(self) -> tuple[str, str]:
         """(host, path) from the absolute-form request line a proxy receives."""

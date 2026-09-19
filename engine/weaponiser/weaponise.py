@@ -50,10 +50,41 @@ def _first_content_script_file(manifest: dict, work: Path) -> Path:
     return work / "extdrift_cs.js"
 
 
-def _service_worker_file(manifest: dict, work: Path) -> Path:
+def _background_file(manifest: dict, work: Path) -> Path:
+    """A background JS file to append the payload to, PRESERVING the existing background.
+
+    Handles MV3 ``service_worker``, MV2 ``background.scripts``, and MV2 ``background.page``
+    (whose ``<script src>`` files are the real code). Real extensions — especially the
+    MV2 ones on AMO — must keep their original background, or weaponising corrupts the
+    sample; only when there is no background at all do we create one.
+    """
     bg = manifest.get("background") or {}
-    if bg.get("service_worker"):
-        return work / bg["service_worker"]
+    if isinstance(bg, dict):
+        if bg.get("service_worker"):
+            return work / bg["service_worker"]
+        scripts = bg.get("scripts") or []
+        if scripts:
+            return work / scripts[0]
+        page = bg.get("page")
+        if page:
+            payload_rel = (Path(page).parent / "extdrift_bg.js").as_posix().lstrip("./")
+            target = work / payload_rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if not target.exists():
+                target.write_text("// payload host background\n", encoding="utf-8")
+            page_path = work / page
+            if page_path.exists():                      # make the page actually load it
+                html = page_path.read_text(encoding="utf-8", errors="ignore")
+                tag = f'<script src="{target.name}"></script>'
+                if tag not in html:
+                    if "</body>" in html:
+                        html = html.replace("</body>", tag + "</body>")
+                    elif "</html>" in html:
+                        html = html.replace("</html>", tag + "</html>")
+                    else:
+                        html += tag
+                    page_path.write_text(html, encoding="utf-8")
+            return target
     (work / "extdrift_sw.js").write_text("// payload host service worker\n", encoding="utf-8")
     manifest["background"] = {"service_worker": "extdrift_sw.js"}
     return work / "extdrift_sw.js"
@@ -85,7 +116,7 @@ def weaponise(benign_dir, out_dir, family="cookie_theft", obfuscated=False) -> d
         _append(target, _payload(spec["content_script"]))
         injected.append(target.name)
     if spec["service_worker"]:
-        target = _service_worker_file(manifest, out_dir)
+        target = _background_file(manifest, out_dir)
         _append(target, _payload(spec["service_worker"]))
         injected.append(target.name)
 

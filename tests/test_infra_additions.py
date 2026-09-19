@@ -57,6 +57,24 @@ class TestWeaponiser(unittest.TestCase):
         after = (Path(BENIGN) / "sw.js").read_text(encoding="utf-8")
         self.assertEqual(before, after)
 
+    def test_mv2_background_page_is_preserved_not_replaced(self):
+        # Real AMO extensions are MV2 with a background page; weaponising must inject into
+        # it, never replace it with a service worker (which would corrupt the sample).
+        with tempfile.TemporaryDirectory() as tmp:
+            ext = Path(tmp) / "ext"; ext.mkdir()
+            (ext / "manifest.json").write_text(json.dumps({
+                "manifest_version": 2, "name": "P", "version": "2.0",
+                "background": {"page": "bg/index.html"},
+                "content_scripts": [{"matches": ["<all_urls>"], "js": ["cs.js"]}]}))
+            (ext / "cs.js").write_text("// cs\n")
+            (ext / "bg").mkdir(); (ext / "bg" / "index.html").write_text("<html><body></body></html>")
+            r = weaponise(ext, Path(tmp) / "mal", family="cookie_theft", obfuscated=False)
+            m = json.loads((Path(r["out_dir"]) / "manifest.json").read_text())
+            self.assertEqual(m["background"], {"page": "bg/index.html"})   # preserved
+            html = (Path(r["out_dir"]) / "bg" / "index.html").read_text()
+            self.assertIn("extdrift_bg.js", html)                          # payload wired in
+            self.assertIn("cookies", m["permissions"])
+
     def test_unknown_family_is_rejected(self):
         from engine.weaponiser import WeaponiseError
         with tempfile.TemporaryDirectory() as tmp:
