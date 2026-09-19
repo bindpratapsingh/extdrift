@@ -75,8 +75,22 @@ overlap), under cross-validation that splits by extension:
 | **Learned model (XGBoost, the tabular SOTA)** | flags **~7%** |
 
 *Anomaly layer:* trained only on benign updates, it flags malicious families it **never saw in
-training** at **43–100%** (100% on credential/cookie theft, lower on stealthy families). *Figures
-are from a synthetic corpus; real-world validation is the next milestone — see below.*
+training** at **43–100%** (100% on credential/cookie theft, lower on stealthy families).
+
+**Real-world validation — the synthetic distribution transfers to real extensions.** Real
+Firefox update pairs are captured through the Firefox engine into the *same* feature schema:
+real benign updates and the same real extensions (uBlock, Dark Reader, Privacy Badger,
+Decentraleyes, ClearURLs) weaponised with a real payload and elicited by a Hulk-style
+HoneyPage. The decisive test trains on **synthetic data only** and evaluates on the real rows
+it never saw:
+
+| Held-out test on real extensions | Result |
+|---|---|
+| Rules, malicious recall on real weaponised extensions | **10/10 (100%)** |
+| **Model trained on synthetic only → tested on real** | **PR-AUC 1.0 · recall 0.90 · precision 1.0 · 0% FPR** |
+
+A benign Privacy Badger update trips a *rule* (a real false positive) but the *learned model*
+correctly calls it benign (0.04) — the concrete case for ML over rules, on real data.
 
 ---
 
@@ -168,8 +182,12 @@ only live browser capture needs a browser.
 - **Deliberately out of scope:** consumer-side prevention before an update runs, discovery of
   unknown code vulnerabilities, and language-specific analysis — positioned instead for
   store / enterprise / researcher use.
-- **Safety:** only synthetic, self-contained samples run, inside a network-restricted sandbox
-  against fake pages with dummy credentials. Nothing is redistributed or hosted.
+- **Safety:** every run is inside a network-sealed sandbox against fake pages with dummy
+  credentials — all egress is blackholed by the capture proxy, so nothing (real extension
+  traffic or injected-payload exfil) ever leaves the machine. Real extensions are analysed
+  locally; their downloaded code is **never redistributed** (only our own behavioural traces
+  and generated dataset are committed). Injected payloads are synthetic and beacon only to the
+  local sandbox.
 
 ---
 
