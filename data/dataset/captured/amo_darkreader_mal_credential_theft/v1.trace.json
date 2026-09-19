@@ -7,13 +7,12 @@
   },
   "run": {
     "browser": "firefox",
-    "scenario": "bank-login-then-webmail",
+    "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T03:22:01Z",
-    "duration_s": 31.0,
+    "started_at": "2026-09-19T17:36:02Z",
+    "duration_s": 25.7,
     "pages": [
-      "http://demo-bank.test/login",
-      "http://webmail.test/inbox"
+      "http://honeypage.test/harvest"
     ],
     "instrumentation": {
       "technique": "static prelude injection into the extension's own bundle",
@@ -22,7 +21,7 @@
         "inject/index.js",
         "background/index.js"
       ],
-      "proxy_port": 46016,
+      "proxy_port": 43445,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -40,12 +39,18 @@
         "method": "CONNECT"
       },
       {
-        "host": "demo-bank.test",
+        "host": "honeypage.test",
         "method": "GET"
       },
       {
-        "host": "webmail.test",
-        "method": "GET"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       }
     ]
   },
@@ -105,7 +110,7 @@
       "tabs",
       "theme",
       "<all_urls>",
-      "http://extdrift-report.invalid/*",
+      "http://extdrift-report.test/*",
       "http://*.test/*",
       "https://*.test/*"
     ],
@@ -137,7 +142,7 @@
   },
   "network": [
     {
-      "ts": 0.542,
+      "ts": 0.378,
       "url": "https://darkreader.org/blog/posts.json",
       "method": "GET",
       "body_len": 0,
@@ -146,22 +151,18 @@
       "frame": "content_script"
     }
   ],
-  "dom": [],
+  "dom": [
+    {
+      "ts": 0.041,
+      "event": "inject",
+      "target": "meta[name=darkreader]",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
   "storage": [
     {
-      "ts": 0.002,
-      "api": "localStorage.getItem",
-      "key": "__darkreader__wasEnabledForHost",
-      "frame": "content_script"
-    },
-    {
       "ts": 0.004,
-      "api": "localStorage.getItem",
-      "key": "__darkreader__wasEnabledForHost",
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.006,
       "api": "localStorage.getItem",
       "key": "__darkreader__wasEnabledForHost",
       "frame": "content_script"
@@ -169,27 +170,57 @@
   ],
   "api": [
     {
-      "ts": 0.059,
+      "ts": 0.025,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.031,
       "api": "chrome.runtime.setUninstallURL",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.069,
+      "ts": 0.039,
       "api": "chrome.tabs.query",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.117,
+      "ts": 0.055,
       "api": "chrome.tabs.create",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.541,
+      "ts": 0.378,
       "api": "chrome.tabs.query",
       "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.38,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.132,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.305,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
       "frame": "content_script"
     }
   ]

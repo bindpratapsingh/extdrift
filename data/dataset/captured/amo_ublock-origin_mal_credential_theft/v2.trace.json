@@ -7,13 +7,12 @@
   },
   "run": {
     "browser": "firefox",
-    "scenario": "bank-login-then-webmail",
+    "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T03:20:14Z",
-    "duration_s": 50.27,
+    "started_at": "2026-09-19T17:34:22Z",
+    "duration_s": 34.81,
     "pages": [
-      "http://demo-bank.test/login",
-      "http://webmail.test/inbox"
+      "http://honeypage.test/harvest"
     ],
     "instrumentation": {
       "technique": "static prelude injection into the extension's own bundle",
@@ -23,7 +22,7 @@
         "js/vapi.js",
         "js/start.js"
       ],
-      "proxy_port": 45987,
+      "proxy_port": 35632,
       "manifest_patched_for_capture": true
     },
     "collector_received": [
@@ -32,7 +31,21 @@
         "method": "POST",
         "path": "http://collect-metrics.test/ingest",
         "body_len": 82,
-        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://demo-bank.test\"}"
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
       }
     ],
     "blocked_egress": [
@@ -41,24 +54,22 @@
         "method": "CONNECT"
       },
       {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
-      },
-      {
-        "host": "demo-bank.test",
+        "host": "honeypage.test",
         "method": "GET"
       },
       {
-        "host": "firefox-settings-attachments.cdn.mozilla.net",
-        "method": "CONNECT"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       },
       {
         "host": "pgl.yoyo.org",
         "method": "CONNECT"
       },
       {
-        "host": "webmail.test",
-        "method": "GET"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       }
     ]
   },
@@ -197,7 +208,7 @@
       "webRequest",
       "webRequestBlocking",
       "<all_urls>",
-      "http://extdrift-report.invalid/*",
+      "http://extdrift-report.test/*",
       "http://*.test/*",
       "https://*.test/*"
     ],
@@ -213,104 +224,212 @@
   },
   "network": [
     {
-      "ts": 8.442,
+      "ts": 1.296,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.644,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.644,
       "url": "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext",
       "method": "GET",
       "body_len": 0,
       "resource_type": "xhr",
       "initiator": "content_script",
       "frame": "content_script"
+    },
+    {
+      "ts": 5.347,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
     }
   ],
-  "dom": [],
+  "dom": [
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "inject",
+      "target": "script",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.292,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.293,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.296,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.639,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.639,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.64,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.345,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.345,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.346,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
   "storage": [],
   "api": [
     {
-      "ts": 6.191,
+      "ts": 0.035,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.558,
       "api": "browser.tabs.query",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 6.431,
+      "ts": 2.623,
       "api": "browser.tabs.query",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 6.463,
-      "api": "browser.tabs.executeScript",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 6.626,
+      "ts": 2.682,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 6.921,
+      "ts": 2.793,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.909,
+      "api": "browser.tabs.insertCSS",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.914,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.025,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.289,
       "api": "browser.webRequest.handlerBehaviorChanged",
       "arg_count": 0,
       "frame": "content_script"
     },
     {
-      "ts": 7.963,
+      "ts": 4.187,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 8.039,
+      "ts": 4.244,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 8.114,
+      "ts": 8.221,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 10.116,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 10.169,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 10.185,
-      "api": "browser.tabs.executeScript",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 10.223,
-      "api": "browser.tabs.executeScript",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 10.236,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 10.312,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 10.337,
+      "ts": 8.282,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"

@@ -3,14 +3,14 @@
   "extension": {
     "id": "jid1-MnnxcxisBPnSXQ@jetpack",
     "name": "__MSG_name__",
-    "version": "2026.9.16"
+    "version": "2026.8.7"
   },
   "run": {
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:43:33Z",
-    "duration_s": 25.82,
+    "started_at": "2026-09-19T17:22:20Z",
+    "duration_s": 28.92,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -21,40 +21,19 @@
         "js/firstparties/facebook.js",
         "js/firstparties/google.js",
         "js/contentscripts/utils.js",
-        "js/contentscripts/clobberstorage.js",
+        "js/contentscripts/clobbercookie.js",
+        "js/contentscripts/clobberlocalstorage.js",
+        "js/contentscripts/dnt.js",
         "js/contentscripts/fingerprinting.js",
         "js/contentscripts/collapser.js",
         "js/contentscripts/socialwidgets.js",
         "js/contentscripts/supercookie.js",
-        "extdrift_cs.js",
         "js/background.js"
       ],
-      "proxy_port": 54605,
+      "proxy_port": 10649,
       "manifest_patched_for_capture": true
     },
-    "collector_received": [
-      {
-        "host": "collect-metrics.test",
-        "method": "POST",
-        "path": "http://collect-metrics.test/ingest",
-        "body_len": 82,
-        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
-      },
-      {
-        "host": "collect-metrics.test",
-        "method": "POST",
-        "path": "http://collect-metrics.test/ingest",
-        "body_len": 82,
-        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
-      },
-      {
-        "host": "collect-metrics.test",
-        "method": "POST",
-        "path": "http://collect-metrics.test/ingest",
-        "body_len": 82,
-        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
-      }
-    ],
+    "collector_received": [],
     "blocked_egress": [
       {
         "host": "firefox.settings.services.mozilla.com",
@@ -81,7 +60,7 @@
     ]
   },
   "manifest": {
-    "version": "2026.9.16",
+    "version": "2026.8.7",
     "author": "privacybadger-owner@eff.org",
     "browser_specific_settings": {
       "gecko": {
@@ -91,10 +70,10 @@
             "none"
           ]
         },
-        "strict_min_version": "128.0"
+        "strict_min_version": "78.0"
       },
       "gecko_android": {
-        "strict_min_version": "128.0"
+        "strict_min_version": "78.0"
       }
     },
     "incognito": "spanning",
@@ -102,7 +81,6 @@
       "<all_urls>",
       "alarms",
       "privacy",
-      "scripting",
       "storage",
       "tabs",
       "webNavigation",
@@ -526,7 +504,9 @@
       {
         "js": [
           "js/contentscripts/utils.js",
-          "js/contentscripts/clobberstorage.js",
+          "js/contentscripts/clobbercookie.js",
+          "js/contentscripts/clobberlocalstorage.js",
+          "js/contentscripts/dnt.js",
           "js/contentscripts/fingerprinting.js"
         ],
         "matches": [
@@ -547,15 +527,6 @@
         ],
         "all_frames": true,
         "match_about_blank": true,
-        "run_at": "document_idle"
-      },
-      {
-        "matches": [
-          "<all_urls>"
-        ],
-        "js": [
-          "extdrift_cs.js"
-        ],
         "run_at": "document_idle"
       }
     ],
@@ -587,134 +558,30 @@
     },
     "web_accessible_resources": [
       "data/web_accessible_resources/*"
-    ],
-    "_extdrift_synthetic": {
-      "family": "credential_theft",
-      "obfuscated": false
-    }
+    ]
   },
   "network": [
     {
-      "ts": 0.746,
+      "ts": 1.188,
       "url": "https://www.eff.org/files/pbconfig.json",
       "method": "GET",
       "body_len": 0,
       "resource_type": "fetch",
       "initiator": "content_script",
       "frame": "content_script"
-    },
-    {
-      "ts": 1.217,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 82,
-      "resource_type": "fetch",
-      "initiator": "content_script",
-      "frame": "content_script"
-    },
-    {
-      "ts": 3.201,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 82,
-      "resource_type": "fetch",
-      "initiator": "content_script",
-      "frame": "content_script"
-    },
-    {
-      "ts": 5.261,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 82,
-      "resource_type": "fetch",
-      "initiator": "content_script",
-      "frame": "content_script"
     }
   ],
-  "dom": [
-    {
-      "ts": 1.215,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.216,
-      "event": "read",
-      "target": "input[name=username]",
-      "value_len": 22,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.216,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 3.199,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 3.2,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 3.2,
-      "event": "read",
-      "target": "input[name=username]",
-      "value_len": 22,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 5.259,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 5.26,
-      "event": "read",
-      "target": "input[name=username]",
-      "value_len": 22,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 5.26,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    }
-  ],
+  "dom": [],
   "storage": [],
   "api": [
     {
-      "ts": 0.021,
+      "ts": 0.04,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.038,
+      "ts": 0.042,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
@@ -726,91 +593,97 @@
       "frame": "content_script"
     },
     {
-      "ts": 0.052,
+      "ts": 0.083,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.055,
+      "ts": 0.093,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.077,
+      "ts": 0.099,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.077,
+      "ts": 0.106,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.092,
+      "ts": 0.125,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.236,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.168,
+      "ts": 0.353,
       "api": "chrome.tabs.query",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.19,
-      "api": "browser.scripting.updateContentScripts",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.192,
-      "api": "browser.scripting.registerContentScripts",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.197,
+      "ts": 0.515,
       "api": "chrome.tabs.create",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.749,
+      "ts": 1.201,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.916,
+      "ts": 1.213,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.162,
+      "ts": 1.466,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.242,
+      "ts": 1.609,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 2.516,
+      "ts": 1.764,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 6.548,
+      "ts": 3.042,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.069,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"

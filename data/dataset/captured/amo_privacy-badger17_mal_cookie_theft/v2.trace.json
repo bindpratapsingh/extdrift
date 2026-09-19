@@ -7,13 +7,12 @@
   },
   "run": {
     "browser": "firefox",
-    "scenario": "bank-login-then-webmail",
+    "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T03:28:29Z",
-    "duration_s": 33.2,
+    "started_at": "2026-09-19T17:42:00Z",
+    "duration_s": 28.06,
     "pages": [
-      "http://demo-bank.test/login",
-      "http://webmail.test/inbox"
+      "http://honeypage.test/harvest"
     ],
     "instrumentation": {
       "technique": "static prelude injection into the extension's own bundle",
@@ -31,7 +30,7 @@
         "js/background.js",
         "extdrift_bg.js"
       ],
-      "proxy_port": 43822,
+      "proxy_port": 59610,
       "manifest_patched_for_capture": true
     },
     "collector_received": [
@@ -41,13 +40,6 @@
         "path": "http://collect-metrics.test/ingest",
         "body_len": 63,
         "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
-      },
-      {
-        "host": "collect-metrics.test",
-        "method": "POST",
-        "path": "http://collect-metrics.test/ingest",
-        "body_len": 30,
-        "body_preview": "{\"cookies\":1,\"page_cookie\":\"\"}"
       }
     ],
     "blocked_egress": [
@@ -60,12 +52,18 @@
         "method": "CONNECT"
       },
       {
-        "host": "demo-bank.test",
+        "host": "honeypage.test",
         "method": "GET"
       },
       {
-        "host": "webmail.test",
-        "method": "GET"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       }
     ]
   },
@@ -98,7 +96,7 @@
       "webRequest",
       "webRequestBlocking",
       "cookies",
-      "http://extdrift-report.invalid/*",
+      "http://extdrift-report.test/*",
       "http://*.test/*",
       "https://*.test/*"
     ],
@@ -585,7 +583,7 @@
   },
   "network": [
     {
-      "ts": 1.607,
+      "ts": 0.746,
       "url": "https://www.eff.org/files/pbconfig.json",
       "method": "GET",
       "body_len": 0,
@@ -594,34 +592,28 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.99,
+      "ts": 3.381,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 63,
       "resource_type": "fetch",
       "initiator": "content_script",
       "frame": "content_script"
-    },
+    }
+  ],
+  "dom": [
     {
-      "ts": 8.332,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 30,
-      "resource_type": "fetch",
-      "initiator": "content_script",
+      "ts": 2.112,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
       "frame": "content_script"
     }
   ],
-  "dom": [],
   "storage": [
     {
-      "ts": 5.956,
-      "api": "chrome.cookies.getAll",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 8.324,
+      "ts": 3.375,
       "api": "chrome.cookies.getAll",
       "arg_count": 2,
       "frame": "content_script"
@@ -629,73 +621,121 @@
   ],
   "api": [
     {
-      "ts": 0.118,
+      "ts": 0.013,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
       "api": "chrome.runtime.getPlatformInfo",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.283,
+      "ts": 0.086,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.088,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.095,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.145,
       "api": "chrome.tabs.query",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.319,
+      "ts": 0.165,
       "api": "browser.scripting.updateContentScripts",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.325,
+      "ts": 0.168,
       "api": "browser.scripting.registerContentScripts",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.334,
+      "ts": 0.174,
       "api": "chrome.tabs.create",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.638,
+      "ts": 0.748,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 2.025,
+      "ts": 0.75,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 2.219,
+      "ts": 0.906,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 3.849,
+      "ts": 1.152,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 3.894,
+      "ts": 1.208,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 5.963,
+      "ts": 2.113,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.547,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 6.043,
+      "ts": 6.586,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"

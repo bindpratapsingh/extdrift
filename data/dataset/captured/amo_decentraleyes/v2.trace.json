@@ -3,28 +3,31 @@
   "extension": {
     "id": "jid1-BoFifL9Vbdl2zQ@jetpack",
     "name": "Decentraleyes",
-    "version": "3.0.3"
+    "version": "3.0.2"
   },
   "run": {
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:48:41Z",
-    "duration_s": 47.13,
+    "started_at": "2026-09-19T17:27:00Z",
+    "duration_s": 46.85,
     "pages": [
       "http://honeypage.test/harvest"
     ],
     "instrumentation": {
       "technique": "static prelude injection into the extension's own bundle",
       "instrumented_scripts": [
-        "code/main.js",
-        "extdrift_cs.js"
+        "code/main.js"
       ],
-      "proxy_port": 9440,
+      "proxy_port": 13698,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
     "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
       {
         "host": "firefox.settings.services.mozilla.com",
         "method": "CONNECT"
@@ -46,10 +49,6 @@
         "method": "GET"
       },
       {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
-      },
-      {
         "host": "honeypage.test",
         "method": "POST",
         "body_len": 108
@@ -59,7 +58,15 @@
         "method": "CONNECT"
       },
       {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
         "host": "firefox-settings-attachments.cdn.mozilla.net",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
         "method": "CONNECT"
       },
       {
@@ -76,7 +83,7 @@
   "manifest": {
     "manifest_version": 3,
     "name": "Decentraleyes",
-    "version": "3.0.3",
+    "version": "3.0.2",
     "author": "Thomas Rientjes",
     "default_locale": "en_US",
     "description": "__MSG_extensionDescription__",
@@ -145,117 +152,10 @@
           "<all_urls>"
         ]
       }
-    ],
-    "content_scripts": [
-      {
-        "matches": [
-          "<all_urls>"
-        ],
-        "js": [
-          "extdrift_cs.js"
-        ],
-        "run_at": "document_idle"
-      }
-    ],
-    "_extdrift_synthetic": {
-      "family": "credential_theft",
-      "obfuscated": false
-    }
+    ]
   },
-  "network": [
-    {
-      "ts": 1.138,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 82,
-      "resource_type": "fetch",
-      "initiator": "content_script",
-      "frame": "content_script"
-    },
-    {
-      "ts": 2.53,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 82,
-      "resource_type": "fetch",
-      "initiator": "content_script",
-      "frame": "content_script"
-    }
-  ],
-  "dom": [
-    {
-      "ts": 1.136,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.138,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.138,
-      "event": "read",
-      "target": "input[name=username]",
-      "value_len": 22,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 2.53,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 2.53,
-      "event": "read",
-      "target": "input[name=username]",
-      "value_len": 22,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 2.53,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 5.198,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 5.199,
-      "event": "read",
-      "target": "input[name=username]",
-      "value_len": 22,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 5.2,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    }
-  ],
+  "network": [],
+  "dom": [],
   "storage": [],
   "api": []
 }

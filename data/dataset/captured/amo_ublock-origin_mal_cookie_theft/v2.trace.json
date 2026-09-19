@@ -7,13 +7,12 @@
   },
   "run": {
     "browser": "firefox",
-    "scenario": "bank-login-then-webmail",
+    "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T03:18:11Z",
-    "duration_s": 57.77,
+    "started_at": "2026-09-19T17:32:41Z",
+    "duration_s": 31.92,
     "pages": [
-      "http://demo-bank.test/login",
-      "http://webmail.test/inbox"
+      "http://honeypage.test/harvest"
     ],
     "instrumentation": {
       "technique": "static prelude injection into the extension's own bundle",
@@ -24,7 +23,7 @@
         "js/start.js",
         "extdrift_bg.js"
       ],
-      "proxy_port": 17209,
+      "proxy_port": 25312,
       "manifest_patched_for_capture": true
     },
     "collector_received": [
@@ -34,13 +33,6 @@
         "path": "http://collect-metrics.test/ingest",
         "body_len": 63,
         "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
-      },
-      {
-        "host": "collect-metrics.test",
-        "method": "POST",
-        "path": "http://collect-metrics.test/ingest",
-        "body_len": 30,
-        "body_preview": "{\"cookies\":1,\"page_cookie\":\"\"}"
       }
     ],
     "blocked_egress": [
@@ -49,24 +41,22 @@
         "method": "CONNECT"
       },
       {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
-      },
-      {
-        "host": "demo-bank.test",
+        "host": "honeypage.test",
         "method": "GET"
       },
       {
-        "host": "firefox-settings-attachments.cdn.mozilla.net",
-        "method": "CONNECT"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       },
       {
         "host": "pgl.yoyo.org",
         "method": "CONNECT"
       },
       {
-        "host": "webmail.test",
-        "method": "GET"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       }
     ]
   },
@@ -206,7 +196,7 @@
       "webRequestBlocking",
       "<all_urls>",
       "cookies",
-      "http://extdrift-report.invalid/*",
+      "http://extdrift-report.test/*",
       "http://*.test/*",
       "https://*.test/*"
     ],
@@ -222,16 +212,7 @@
   },
   "network": [
     {
-      "ts": 9.927,
-      "url": "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext",
-      "method": "GET",
-      "body_len": 0,
-      "resource_type": "xhr",
-      "initiator": "content_script",
-      "frame": "content_script"
-    },
-    {
-      "ts": 11.078,
+      "ts": 4.481,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 63,
@@ -240,25 +221,42 @@
       "frame": "content_script"
     },
     {
-      "ts": 13.406,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 30,
-      "resource_type": "fetch",
+      "ts": 4.657,
+      "url": "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
       "initiator": "content_script",
       "frame": "content_script"
     }
   ],
-  "dom": [],
-  "storage": [
+  "dom": [
     {
-      "ts": 11.065,
-      "api": "browser.cookies.getAll",
-      "arg_count": 2,
+      "ts": 0.038,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "http://honeypage.test",
       "frame": "content_script"
     },
     {
-      "ts": 13.403,
+      "ts": 0.04,
+      "event": "inject",
+      "target": "script",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.676,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 4.474,
       "api": "browser.cookies.getAll",
       "arg_count": 2,
       "frame": "content_script"
@@ -266,91 +264,97 @@
   ],
   "api": [
     {
-      "ts": 7.533,
+      "ts": 0.028,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.677,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.557,
       "api": "browser.tabs.query",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 7.909,
+      "ts": 2.641,
       "api": "browser.tabs.query",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 7.946,
+      "ts": 2.717,
       "api": "browser.tabs.executeScript",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 8.122,
+      "ts": 2.733,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 8.342,
+      "ts": 2.874,
+      "api": "browser.tabs.insertCSS",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.876,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.929,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.055,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.29,
       "api": "browser.webRequest.handlerBehaviorChanged",
       "arg_count": 0,
       "frame": "content_script"
     },
     {
-      "ts": 9.415,
+      "ts": 4.168,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 9.496,
+      "ts": 4.228,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 9.572,
+      "ts": 8.205,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 11.566,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 11.636,
-      "api": "browser.tabs.executeScript",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 11.64,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 11.695,
-      "api": "browser.tabs.executeScript",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 11.712,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 11.803,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 11.857,
+      "ts": 8.272,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"

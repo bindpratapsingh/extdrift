@@ -7,13 +7,12 @@
   },
   "run": {
     "browser": "firefox",
-    "scenario": "bank-login-then-webmail",
+    "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T03:38:55Z",
-    "duration_s": 32.65,
+    "started_at": "2026-09-19T17:50:27Z",
+    "duration_s": 25.42,
     "pages": [
-      "http://demo-bank.test/login",
-      "http://webmail.test/inbox"
+      "http://honeypage.test/harvest"
     ],
     "instrumentation": {
       "technique": "static prelude injection into the extension's own bundle",
@@ -35,7 +34,7 @@
         "core_js/google_link_fix.js",
         "core_js/yandex_link_fix.js"
       ],
-      "proxy_port": 38749,
+      "proxy_port": 9480,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -49,12 +48,18 @@
         "method": "CONNECT"
       },
       {
-        "host": "demo-bank.test",
+        "host": "honeypage.test",
         "method": "GET"
       },
       {
-        "host": "webmail.test",
-        "method": "GET"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       }
     ]
   },
@@ -113,7 +118,7 @@
       "webNavigation",
       "tabs",
       "downloads",
-      "http://extdrift-report.invalid/*",
+      "http://extdrift-report.test/*",
       "http://*.test/*",
       "https://*.test/*"
     ],
@@ -367,8 +372,31 @@
       "page": "html/settings.html"
     }
   },
-  "network": [],
+  "network": [
+    {
+      "ts": 0.077,
+      "url": "https://rules2.clearurls.xyz/rules.minify.hash",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
   "dom": [],
   "storage": [],
-  "api": []
+  "api": [
+    {
+      "ts": 0.083,
+      "api": "chrome.runtime.getPlatformInfo",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.085,
+      "api": "chrome.runtime.getPlatformInfo",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
 }

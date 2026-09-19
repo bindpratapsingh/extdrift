@@ -7,13 +7,12 @@
   },
   "run": {
     "browser": "firefox",
-    "scenario": "bank-login-then-webmail",
+    "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T03:34:13Z",
-    "duration_s": 86.82,
+    "started_at": "2026-09-19T17:46:54Z",
+    "duration_s": 46.75,
     "pages": [
-      "http://demo-bank.test/login",
-      "http://webmail.test/inbox"
+      "http://honeypage.test/harvest"
     ],
     "instrumentation": {
       "technique": "static prelude injection into the extension's own bundle",
@@ -21,7 +20,7 @@
         "code/main.js",
         "extdrift_cs.js"
       ],
-      "proxy_port": 39980,
+      "proxy_port": 5688,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -31,7 +30,44 @@
         "method": "CONNECT"
       },
       {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
         "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "collect-metrics.test",
         "method": "CONNECT"
       },
       {
@@ -39,68 +75,9 @@
         "method": "CONNECT"
       },
       {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "demo-bank.test",
-        "method": "GET"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
-      },
-      {
-        "host": "content-signature-2.cdn.mozilla.net",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "collect-metrics.test",
-        "method": "CONNECT"
-      },
-      {
-        "host": "webmail.test",
-        "method": "GET"
-      },
-      {
-        "host": "collect-metrics.test",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
-      },
-      {
-        "host": "extdrift-report.invalid",
-        "method": "CONNECT"
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
       }
     ]
   },
@@ -130,7 +107,7 @@
     "host_permissions": [
       "*://*/*",
       "http://*.test/*",
-      "http://extdrift-report.invalid/*",
+      "http://extdrift-report.test/*",
       "https://*.test/*"
     ],
     "background": {
@@ -197,22 +174,21 @@
   "network": [],
   "dom": [
     {
-      "ts": 1.531,
+      "ts": 1.529,
       "event": "read",
       "target": "document.cookie",
       "value_len": 33,
-      "origin": "http://demo-bank.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.531,
-      "event": "read",
-      "target": "document.cookie",
-      "value_len": 0,
-      "origin": "http://webmail.test",
+      "origin": "http://honeypage.test",
       "frame": "content_script"
     }
   ],
   "storage": [],
-  "api": []
+  "api": [
+    {
+      "ts": 1.53,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
 }

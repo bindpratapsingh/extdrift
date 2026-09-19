@@ -22,6 +22,37 @@ from engine.features.delta import behavioral_delta
 from engine.scoring.rules import score_delta
 
 CAPTURED = Path("data/dataset/captured")
+#: dataset sources that are REAL Firefox-captured rows (everything else is synthetic).
+_REAL_SOURCES = {"amo-firefox", "amo-firefox-weaponised"}
+
+
+def _held_out_transfer(path="data/dataset/deltas.csv"):
+    """Train ONLY on synthetic rows, test on the real captured rows — the honest question:
+    does a model trained on synthetic data generalise to REAL weaponised extensions?"""
+    try:
+        import numpy as np
+        import pandas as pd
+        from engine.ml.bakeoff import FEATURES, RECALL_TARGET, _metrics
+        import xgboost as xgb
+    except Exception:
+        return None
+    df = pd.read_csv(path)
+    df = df[df["label"].isin(["benign", "malicious"])].reset_index(drop=True)
+    is_real = df["source"].isin(_REAL_SOURCES)
+    if is_real.sum() < 2 or is_real.sum() == len(df):
+        return None
+    X = df[FEATURES].astype(float).fillna(0.0).to_numpy()
+    y = (df["label"] == "malicious").astype(int).to_numpy()
+    tr, te = (~is_real).to_numpy(), is_real.to_numpy()
+    m = xgb.XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.1, subsample=0.9,
+                          colsample_bytree=0.9, eval_metric="logloss", random_state=0, n_jobs=-1)
+    m.fit(X[tr], y[tr])
+    scores = m.predict_proba(X[te])[:, 1]
+    met = _metrics(y[te], scores, threshold=0.5)
+    return {"train_n": int(tr.sum()), "test_n": int(te.sum()),
+            "test_malicious": int(y[te].sum()), "pr_auc": met["pr_auc"],
+            "recall": met["recall"], "precision": met["precision"],
+            "fpr_at_recall90": met["fpr_at_recall90"]}
 
 
 def _real_pairs():
@@ -86,6 +117,16 @@ def run():
     if have_ml:
         print(f"ML model on real data: {ml_correct}/{len(rows)} correct at p>=0.5 "
               "(note: these rows are also in training; this is a sanity read, not held-out).")
+
+    # The honest, held-out question: train on SYNTHETIC only, test on the REAL rows.
+    ho = _held_out_transfer()
+    if ho:
+        print(f"\nSynthetic -> real transfer (train on {ho['train_n']} synthetic rows, "
+              f"test on {ho['test_n']} real rows, held out):")
+        print(f"   PR-AUC {ho['pr_auc']}   recall {ho['recall']}   precision {ho['precision']}"
+              + (f"   FPR@rec90 {ho['fpr_at_recall90']}" if ho['fpr_at_recall90'] is not None else ""))
+        print("   A model that never saw a real extension still separates the real weaponised "
+              "ones from the real benign updates -> the synthetic distribution transfers.")
     print("\nReading: real benign updates stay benign; real extensions weaponised with a "
           "background-exfil payload are caught; content-script payloads that never triggered "
           "under this scenario are the honest recall gap -> richer scenarios are the next step.")

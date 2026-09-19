@@ -3,14 +3,14 @@
   "extension": {
     "id": "{74145f27-f039-47ce-a470-a662b129930a}",
     "name": "ClearURLs",
-    "version": "1.27.4"
+    "version": "1.27.3"
   },
   "run": {
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:51:56Z",
-    "duration_s": 33.64,
+    "started_at": "2026-09-19T17:30:20Z",
+    "duration_s": 28.35,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -32,26 +32,13 @@
         "core_js/watchdog.js",
         "core_js/eTagFilter.js",
         "core_js/google_link_fix.js",
-        "core_js/yandex_link_fix.js",
-        "extdrift_cs.js"
+        "core_js/yandex_link_fix.js"
       ],
-      "proxy_port": 23672,
+      "proxy_port": 13781,
       "manifest_patched_for_capture": true
     },
-    "collector_received": [
-      {
-        "host": "collect-metrics.test",
-        "method": "POST",
-        "path": "http://collect-metrics.test/ingest",
-        "body_len": 63,
-        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
-      }
-    ],
+    "collector_received": [],
     "blocked_egress": [
-      {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
-      },
       {
         "host": "firefox.settings.services.mozilla.com",
         "method": "CONNECT"
@@ -79,7 +66,7 @@
   "manifest": {
     "manifest_version": 2,
     "name": "ClearURLs",
-    "version": "1.27.4",
+    "version": "1.27.3",
     "author": "Kevin Roebert",
     "description": "__MSG_extension_description__",
     "homepage_url": "https://docs.clearurls.xyz",
@@ -131,7 +118,6 @@
       "webNavigation",
       "tabs",
       "downloads",
-      "cookies",
       "http://extdrift-report.test/*",
       "http://*.test/*",
       "https://*.test/*"
@@ -380,79 +366,35 @@
           "core_js/yandex_link_fix.js"
         ],
         "run_at": "document_end"
-      },
-      {
-        "matches": [
-          "<all_urls>"
-        ],
-        "js": [
-          "extdrift_cs.js"
-        ],
-        "run_at": "document_idle"
       }
     ],
     "options_ui": {
       "page": "html/settings.html"
-    },
-    "_extdrift_synthetic": {
-      "family": "cookie_theft",
-      "obfuscated": false
     }
   },
   "network": [
     {
-      "ts": 0.07,
+      "ts": 0.081,
       "url": "https://rules2.clearurls.xyz/rules.minify.hash",
       "method": "GET",
       "body_len": 0,
       "resource_type": "fetch",
       "initiator": "content_script",
       "frame": "content_script"
-    },
-    {
-      "ts": 2.912,
-      "url": "http://collect-metrics.test/ingest",
-      "method": "POST",
-      "body_len": 63,
-      "resource_type": "fetch",
-      "initiator": "content_script",
-      "frame": "content_script"
     }
   ],
-  "dom": [
-    {
-      "ts": 1.68,
-      "event": "read",
-      "target": "document.cookie",
-      "value_len": 33,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    }
-  ],
-  "storage": [
-    {
-      "ts": 2.896,
-      "api": "chrome.cookies.getAll",
-      "arg_count": 2,
-      "frame": "content_script"
-    }
-  ],
+  "dom": [],
+  "storage": [],
   "api": [
     {
-      "ts": 0.075,
+      "ts": 0.085,
       "api": "chrome.runtime.getPlatformInfo",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.078,
+      "ts": 0.087,
       "api": "chrome.runtime.getPlatformInfo",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.681,
-      "api": "chrome.runtime.sendMessage",
       "arg_count": 1,
       "frame": "content_script"
     }
