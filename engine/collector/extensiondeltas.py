@@ -18,11 +18,14 @@ What the corpus actually ships (verified against the repo tree):
 Two entry points, matching how the corpus is distributed:
   * ``sample_descriptions`` streams the plain-text description files straight from GitHub
     (they need no unzip) -- enough to prototype a description/NLP policy-consistency signal;
-  * ``load_local_corpus`` reads the **unzipped** tables once the full multi-GB corpus is
-    downloaded locally. That download + unzip is the data-acquisition step (run where there
-    is disk and bandwidth for it); this loader is schema-tolerant so it works when it lands.
+  * ``download_corpus`` fetches the corpus zips (~90 MB total: apiCategories 3.8 MB,
+    clusters 21 MB, reviews 62 MB) -- it is not multi-GB, so it downloads in one step;
+  * ``discriminative_apis`` reads the empirically most-discriminative API/sink tokens the
+    paper derived (apiCategories/sixtyAPIs.txt); engine.features.static_code adopts the
+    high-value ones, so our static feature set is grounded in the paper's parameters;
+  * ``load_local_corpus`` reads any unzipped label tables (clusters/anomalies) tolerantly.
 
-Nothing here is redistributed: fetched text and any unzipped tables live under
+Nothing is redistributed: fetched text, zips and any unzipped tables live under
 ``data/real/extensiondeltas/`` which is gitignored (third-party content).
 """
 
@@ -33,6 +36,7 @@ import csv
 import json
 import re
 import subprocess
+import urllib.request
 from pathlib import Path
 
 REPO = "wspr-ncsu/extensiondeltas"
@@ -45,6 +49,71 @@ CITATION = ("Pantelaios, Nikiforakis, Kapravelos, "
 
 #: a<idx>_<categoryId>_<category_name>.txt  (e.g. a1001_38_search_tools.txt)
 _DESC_NAME_RE = re.compile(r"^a(\d+)_(\d+)_(.+)\.txt$")
+
+
+_RAW_BASE = f"https://raw.githubusercontent.com/{REPO}/master"
+#: corpus zips -> repo path. Small enough (~90 MB total) to download in one step.
+_CORPUS_ZIPS = {"anomalies.zip": "data/anomalies.zip",
+                "apiCategories.zip": "data/apiCategories.zip",
+                "clusters.zip": "results/clusters.zip",
+                "crawledReviewsScores.zip": "results/crawledReviewsScores.zip"}
+
+
+def download_corpus(dest: str | Path = DEST, include_reviews: bool = False) -> dict:
+    """Download the corpus zips (apiCategories, clusters, anomalies; reviews are optional).
+
+    Writes to ``dest`` (gitignored). Returns {name: bytes|error}. Skips files already present.
+    """
+    dest = Path(dest)
+    dest.mkdir(parents=True, exist_ok=True)
+    got = {}
+    for name, path in _CORPUS_ZIPS.items():
+        if name == "crawledReviewsScores.zip" and not include_reviews:
+            continue
+        out = dest / name
+        if out.exists():
+            got[name] = out.stat().st_size
+            continue
+        try:
+            req = urllib.request.Request(f"{_RAW_BASE}/{path}", headers={"User-Agent": "extdrift"})
+            with urllib.request.urlopen(req, timeout=120) as r:  # noqa: S310 - fixed host
+                data = r.read()
+            out.write_bytes(data)
+            got[name] = len(data)
+        except Exception as exc:  # noqa: BLE001
+            got[name] = f"error: {str(exc)[:80]}"
+    return got
+
+
+def discriminative_apis(root: str | Path = DEST, which: str = "sixtyAPIs") -> list[str]:
+    """The empirically most-discriminative API/sink tokens from the corpus.
+
+    Reads apiCategories/<which>.txt (``sixtyAPIs`` or ``thirtyOnlyApis``) from the downloaded
+    corpus — from apiCategories.zip if present, else an unzipped copy. These are the tokens
+    *You've Changed* found separate malicious from benign update deltas; engine.features.
+    static_code adopts the high-value ones. Returns [] if the corpus is not downloaded.
+    """
+    import zipfile
+    root = Path(root)
+    name = f"{which}.txt"
+    zip_path = root / "apiCategories.zip"
+    if zip_path.exists():
+        try:
+            with zipfile.ZipFile(zip_path) as z:
+                raw = z.read(name).decode("utf-8", "replace")
+        except (KeyError, zipfile.BadZipFile):
+            return []
+    else:
+        loose = next(root.rglob(name), None)
+        if not loose:
+            return []
+        raw = loose.read_text(encoding="utf-8", errors="replace")
+    seen, out = set(), []
+    for line in raw.splitlines():
+        tok = line.strip()
+        if tok and tok not in seen:
+            seen.add(tok); out.append(tok)
+    return out
 
 
 def _gh(args: list[str]) -> bytes:
@@ -160,6 +229,9 @@ def main(argv=None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("sample", help="download a sample of store-description text files")
     s.add_argument("-n", type=int, default=50)
+    d = sub.add_parser("download", help="download the corpus zips (~90 MB; reviews optional)")
+    d.add_argument("--reviews", action="store_true")
+    sub.add_parser("apis", help="print the discriminative API tokens (needs the corpus)")
     sub.add_parser("load", help="load the locally-downloaded (unzipped) corpus tables")
     args = ap.parse_args(argv)
 
@@ -167,6 +239,15 @@ def main(argv=None) -> int:
         r = sample_descriptions(n=args.n)
         print(f"[extensiondeltas] downloaded {r['downloaded']} descriptions -> {r['dest']}")
         print(f"[extensiondeltas] index: {r['index']}")
+    elif args.cmd == "download":
+        r = download_corpus(include_reviews=args.reviews)
+        for name, val in r.items():
+            print(f"   {name}: {val if isinstance(val, str) else str(val)+' bytes'}")
+    elif args.cmd == "apis":
+        apis = discriminative_apis()
+        print(f"[extensiondeltas] {len(apis)} discriminative API tokens (You've Changed CCS'20):")
+        for a in apis:
+            print("  ", a)
     else:
         r = load_local_corpus()
         print(f"[extensiondeltas] {CITATION}")

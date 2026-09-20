@@ -148,6 +148,29 @@ class TestCollectorCorpus(unittest.TestCase):
                             v1_dir="a", v2_dir="b", label="evil")
 
 
+class TestPaperGroundedStaticTokens(unittest.TestCase):
+    def test_youve_changed_tokens_present_and_detected(self):
+        from engine.features.static_code import STATIC_CODE_FEATURES, static_code_features
+        for t in ("sc_ad_inject", "sc_self_preserve", "sc_dom_scriptwrite", "sc_data_broad"):
+            self.assertIn(t, STATIC_CODE_FEATURES)
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "manifest.json").write_text('{"manifest_version":3,"name":"x","version":"1"}')
+            (Path(tmp) / "p.js").write_text(
+                "googleTag.defineSlot('/x',[1,1],'d');"
+                "chrome.runtime.setUninstallURL('http://e.test');"
+                "document.write('<b>');"
+                "chrome.bookmarks.getTree(function(){});")
+            f = static_code_features(tmp)
+            self.assertGreaterEqual(f["sc_ad_inject"], 1.0)
+            self.assertGreaterEqual(f["sc_self_preserve"], 1.0)
+            self.assertGreaterEqual(f["sc_dom_scriptwrite"], 1.0)
+            self.assertGreaterEqual(f["sc_data_broad"], 1.0)
+
+    def test_discriminative_apis_graceful_without_corpus(self):
+        from engine.collector.extensiondeltas import discriminative_apis
+        self.assertEqual(discriminative_apis(Path(tempfile.gettempdir()) / "no-corpus-xyz"), [])
+
+
 class TestChromeCollector(unittest.TestCase):
     def test_parse_update_xml_listed(self):
         from engine.collector.chrome import _parse_update_xml

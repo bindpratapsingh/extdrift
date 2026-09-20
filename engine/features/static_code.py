@@ -45,6 +45,16 @@ _TOKENS = {
     "sc_dom_password":     r"input#password|type=[\"']password[\"']|input\[name=username\]",
     "sc_obf_eval":         r"\beval\s*\(|new Function\s*\(",
     "sc_obf_decode":       r"\batob\s*\(|fromCharCode|unescape\s*\(",
+    # Tokens adopted from the empirically most-discriminative API set of *You've Changed*
+    # (CCS'20), read from the extensiondeltas corpus (apiCategories/sixtyAPIs.txt via
+    # engine.collector.extensiondeltas.discriminative_apis). These are exactly the signals a
+    # strong prior paper found separate malicious from benign update deltas but that our
+    # first token set missed: ad/affiliate injection, self-preservation, dynamic script
+    # writing, and broad sensitive-data access.
+    "sc_ad_inject":        r"googleTag\.defineSlot|\bdefineSlot\b|Analytics\.trackEvent|\.addService\b|trackStatusEvent",
+    "sc_self_preserve":    r"setUninstallURL|management\.uninstallSelf|webstore\.install",
+    "sc_dom_scriptwrite":  r"document\.write\b|createElement\s*\(\s*[\"']script[\"']|createContextualFragment",
+    "sc_data_broad":       r"\b(chrome|browser)\.(bookmarks|downloads|management|topSites)\b|history\.getVisits",
 }
 _TOKENS_C = {k: re.compile(v, re.IGNORECASE) for k, v in _TOKENS.items()}
 
