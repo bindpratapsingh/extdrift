@@ -153,7 +153,7 @@ engine/
   weaponiser/   real JS payloads (clean + obfuscated) → labelled malicious versions
   baseline/     static code-delta scorer (the prior-work baseline we beat)
   ml/           model bake-off, anomaly layer, live prediction
-  collector/    real version-pair collection (AMO API, disk snapshot, extensiondeltas corpus)
+  collector/    real version collection (AMO API, Chrome Web Store + delisting probe, snapshots)
   report/       explainable text + JSON verdicts
 experiments/    ablations · learning curve · real static + behavioural capture (AMO/weaponised)
 data/
