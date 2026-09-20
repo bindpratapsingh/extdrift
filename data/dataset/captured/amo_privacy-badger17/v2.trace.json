@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:23:53Z",
-    "duration_s": 24.89,
+    "started_at": "2026-09-20T20:47:35Z",
+    "duration_s": 25.64,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -28,7 +28,7 @@
         "js/contentscripts/supercookie.js",
         "js/background.js"
       ],
-      "proxy_port": 48322,
+      "proxy_port": 23843,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -559,7 +559,7 @@
   },
   "network": [
     {
-      "ts": 0.672,
+      "ts": 0.685,
       "url": "https://www.eff.org/files/pbconfig.json",
       "method": "GET",
       "body_len": 0,
@@ -572,103 +572,109 @@
   "storage": [],
   "api": [
     {
-      "ts": 0.02,
+      "ts": 0.012,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.022,
+      "ts": 0.028,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
       "api": "chrome.runtime.getPlatformInfo",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.026,
+      "ts": 0.039,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.036,
+      "ts": 0.04,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.037,
+      "ts": 0.096,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.083,
+      "ts": 0.097,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.084,
+      "ts": 0.106,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.116,
       "api": "chrome.tabs.query",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.084,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.089,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.099,
+      "ts": 0.134,
       "api": "browser.scripting.updateContentScripts",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.102,
+      "ts": 0.138,
       "api": "browser.scripting.registerContentScripts",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.107,
+      "ts": 0.144,
       "api": "chrome.tabs.create",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.865,
+      "ts": 0.688,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.114,
+      "ts": 0.843,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.314,
+      "ts": 1.141,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 2.496,
+      "ts": 1.261,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 6.523,
+      "ts": 2.497,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.545,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"

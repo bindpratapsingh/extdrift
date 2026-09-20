@@ -1,0 +1,137 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "easyscreenshot@mozillaonline.com",
+    "name": "__MSG_extensionName__",
+    "version": "3.109"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T21:23:41Z",
+    "duration_s": 21.71,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "common/script.js",
+        "content/script.js",
+        "background/script.js"
+      ],
+      "proxy_port": 58649,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "applications": {
+      "gecko": {
+        "id": "easyscreenshot@mozillaonline.com",
+        "strict_min_version": "82.0"
+      }
+    },
+    "background": {
+      "page": "background/page.html"
+    },
+    "browser_action": {
+      "browser_style": true,
+      "default_area": "navbar",
+      "default_icon": {
+        "16": "icons/browser_action-dark.svg",
+        "32": "icons/browser_action-dark.svg",
+        "64": "icons/browser_action-dark.svg"
+      },
+      "default_popup": "popup/page.html",
+      "default_title": "__MSG_browserActionTitle__",
+      "theme_icons": [
+        {
+          "light": "icons/browser_action-light.svg",
+          "dark": "icons/browser_action-dark.svg",
+          "size": 16
+        },
+        {
+          "light": "icons/browser_action-light.svg",
+          "dark": "icons/browser_action-dark.svg",
+          "size": 32
+        }
+      ]
+    },
+    "commands": {
+      "ess-select": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+S"
+        },
+        "description": "__MSG_action_select__"
+      },
+      "ess-entire": {
+        "description": "__MSG_action_entire__"
+      },
+      "ess-visible": {
+        "description": "__MSG_action_visible__"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*/*",
+          "file:///*"
+        ],
+        "css": [
+          "common/style.css"
+        ],
+        "js": [
+          "common/script.js",
+          "content/script.js"
+        ],
+        "run_at": "document_end"
+      }
+    ],
+    "default_locale": "en_US",
+    "description": "__MSG_extensionDescription__",
+    "homepage_url": "http://www.firefox.com.cn/",
+    "icons": {
+      "48": "icons/icon-48.png",
+      "64": "icons/icon-64.png"
+    },
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "permissions": [
+      "<all_urls>",
+      "clipboardWrite",
+      "downloads",
+      "notifications",
+      "storage",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "version": "3.109"
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": []
+}

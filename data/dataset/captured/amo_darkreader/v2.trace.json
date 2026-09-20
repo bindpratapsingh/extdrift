@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:20:53Z",
-    "duration_s": 22.86,
+    "started_at": "2026-09-20T20:44:31Z",
+    "duration_s": 31.08,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -21,7 +21,7 @@
         "inject/index.js",
         "background/index.js"
       ],
-      "proxy_port": 51483,
+      "proxy_port": 13316,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -142,7 +142,7 @@
   },
   "network": [
     {
-      "ts": 0.463,
+      "ts": 0.316,
       "url": "https://darkreader.org/blog/posts.json",
       "method": "GET",
       "body_len": 0,
@@ -153,7 +153,7 @@
   ],
   "dom": [
     {
-      "ts": 0.053,
+      "ts": 0.044,
       "event": "inject",
       "target": "meta[name=darkreader]",
       "origin": "http://honeypage.test",
@@ -162,7 +162,7 @@
   ],
   "storage": [
     {
-      "ts": 0.002,
+      "ts": 0.005,
       "api": "localStorage.getItem",
       "key": "__darkreader__wasEnabledForHost",
       "frame": "content_script"
@@ -170,9 +170,9 @@
   ],
   "api": [
     {
-      "ts": 0.02,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
+      "ts": 0.024,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
       "frame": "content_script"
     },
     {
@@ -182,43 +182,43 @@
       "frame": "content_script"
     },
     {
-      "ts": 0.084,
-      "api": "chrome.runtime.setUninstallURL",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.086,
-      "api": "chrome.tabs.query",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.114,
-      "api": "chrome.tabs.create",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.463,
-      "api": "chrome.tabs.query",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.468,
-      "api": "chrome.tabs.sendMessage",
-      "arg_count": 3,
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.164,
+      "ts": 0.027,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.244,
+      "ts": 0.032,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.315,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.318,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.104,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.229,
       "api": "chrome.tabs.sendMessage",
       "arg_count": 3,
       "frame": "content_script"

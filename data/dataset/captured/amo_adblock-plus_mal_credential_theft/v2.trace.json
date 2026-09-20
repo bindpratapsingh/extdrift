@@ -1,0 +1,805 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}",
+    "name": "__MSG_name_releasebuild__",
+    "version": "4.43.5"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T22:13:36Z",
+    "duration_s": 29.13,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "polyfill.js",
+        "background.js",
+        "vendor/@eyeo/webext-ad-filtering-solution/content.js",
+        "composer.preload.js",
+        "bypass.preload.js",
+        "vendor/@eyeo/webext-ad-filtering-solution/content-main.js",
+        "onpage-dialog.preload.js",
+        "onpage-dialog-ui.preload.js",
+        "yt-auto-allowlist.preload.js",
+        "reverse-trial.preload.js",
+        "premium-onboarding.preload.js",
+        "info-injector.preload.js",
+        "close-tab.preload.js",
+        "options.preload.js",
+        "public-api.preload.js",
+        "conflict-detection.preload.js",
+        "cookie-banner-detection.preload.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 7987,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "easylist-downloads.adblockplus.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "welcome.adblockplus.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "easylist-downloads.adblockplus.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "easylist-downloads.adblockplus.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "easylist-downloads.adblockplus.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "author": "eyeo GmbH",
+    "applications": {
+      "gecko": {
+        "strict_min_version": "128.0",
+        "id": "{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}"
+      }
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "js": [
+          "vendor/@eyeo/webext-ad-filtering-solution/content.js",
+          "polyfill.js",
+          "composer.preload.js",
+          "bypass.preload.js"
+        ],
+        "match_about_blank": true,
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "vendor/@eyeo/webext-ad-filtering-solution/content-main.js"
+        ],
+        "match_about_blank": true,
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "world": "MAIN",
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "onpage-dialog.preload.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "polyfill.js",
+          "onpage-dialog-ui.preload.js"
+        ],
+        "match_about_blank": true,
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "yt-auto-allowlist.preload.js"
+        ],
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "reverse-trial.preload.js"
+        ],
+        "matches": [
+          "https://youtube.com/*",
+          "https://www.youtube.com/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "premium-onboarding.preload.js"
+        ],
+        "matches": [
+          "https://accounts.adblockplus.org/*",
+          "https://*.myaccount.adblockplus.org/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "info-injector.preload.js"
+        ],
+        "matches": [
+          "https://adblockplus.org/*",
+          "https://new.adblockplus.org/*",
+          "https://welcome.adblockplus.org/*",
+          "https://accounts.adblockplus.org/*",
+          "https://*.myaccount.adblockplus.org/*",
+          "https://getadblock.com/*",
+          "https://vpn.getadblock.com/*",
+          "https://*.myaccount.getadblock.com/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "close-tab.preload.js"
+        ],
+        "matches": [
+          "https://adblockplus.org/*",
+          "https://new.adblockplus.org/*",
+          "https://welcome.adblockplus.org/*",
+          "https://accounts.adblockplus.org/*",
+          "https://*.myaccount.adblockplus.org/*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "options.preload.js"
+        ],
+        "matches": [
+          "https://adblockplus.org/*",
+          "https://welcome.adblockplus.org/*",
+          "https://*.myaccount.adblockplus.org/*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "polyfill.js",
+          "public-api.preload.js"
+        ],
+        "matches": [
+          "https://btloader.com/trustedIframe.html?o=*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "polyfill.js",
+          "conflict-detection.preload.js"
+        ],
+        "matches": [
+          "*://*.youtube.com/*",
+          "*://*.facebook.com/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "polyfill.js",
+          "cookie-banner-detection.preload.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "name": "__MSG_name_releasebuild__",
+    "short_name": "__MSG_name__",
+    "description": "__MSG_description__",
+    "default_locale": "en_US",
+    "devtools_page": "devtools.html",
+    "icons": {
+      "16": "icons/abp-16.png",
+      "32": "icons/abp-32.png",
+      "48": "icons/logo/abp-48.png",
+      "64": "icons/logo/abp-64.png",
+      "128": "icons/logo/abp-128.png"
+    },
+    "options_ui": {
+      "open_in_tab": true,
+      "page": "options.html"
+    },
+    "optional_permissions": [
+      "management"
+    ],
+    "manifest_version": 2,
+    "background": {
+      "persistent": true,
+      "scripts": [
+        "polyfill.js",
+        "background.js"
+      ]
+    },
+    "browser_action": {
+      "default_icon": {
+        "16": "icons/abp-16.png",
+        "20": "icons/abp-20.png",
+        "32": "icons/abp-32.png",
+        "40": "icons/abp-40.png"
+      },
+      "default_title": "__MSG_name__"
+    },
+    "permissions": [
+      "<all_urls>",
+      "alarms",
+      "contextMenus",
+      "notifications",
+      "storage",
+      "tabs",
+      "unlimitedStorage",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "version": "4.43.5",
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.297,
+      "url": "https://easylist-downloads.adblockplus.org/ab-testing/experiments.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.353,
+      "url": "https://easylist-downloads.adblockplus.org/easylist.txt?addonName=adblockplusfirefox&addonVersion=4.43.4&application=firefox&applicationVersion=156.0&platform=gecko&platformVersion=156.0&lastVersion=0&downloadCount=0&disabled=false&manifestVersion=2&firstVersion=0",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.355,
+      "url": "https://easylist-downloads.adblockplus.org/exceptionrules.txt?addonName=adblockplusfirefox&addonVersion=4.43.4&application=firefox&applicationVersion=156.0&platform=gecko&platformVersion=156.0&lastVersion=0&downloadCount=0&disabled=false&manifestVersion=2&firstVersion=0",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.357,
+      "url": "https://easylist-downloads.adblockplus.org/abp-filters-anti-cv.txt?addonName=adblockplusfirefox&addonVersion=4.43.4&application=firefox&applicationVersion=156.0&platform=gecko&platformVersion=156.0&lastVersion=0&downloadCount=0&disabled=false&manifestVersion=2&firstVersion=0",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.293,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.12,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.365,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "script[type=application/javascript]",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.291,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.292,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.293,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.118,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.119,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.12,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.364,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.364,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.365,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.024,
+      "api": "localStorage.getItem",
+      "key": "abp-filters-config",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.022,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.027,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.184,
+      "api": "browser.runtime.getBrowserInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.222,
+      "api": "browser.runtime.getBrowserInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.225,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.31,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.322,
+      "api": "browser.tabs.insertCSS",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.325,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.328,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.334,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.342,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.342,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.342,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.343,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.343,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.343,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.344,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.352,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.354,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.355,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.356,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.356,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.358,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.358,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.366,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.371,
+      "api": "browser.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.456,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.503,
+      "api": "browser.webRequest.handlerBehaviorChanged",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.508,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.279,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.333,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.337,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.347,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.422,
+      "api": "browser.tabs.insertCSS",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.43,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.506,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.514,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.525,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.529,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.727,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.779,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.782,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.789,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.771,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.797,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.8,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.809,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.814,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

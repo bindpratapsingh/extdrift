@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:46:54Z",
-    "duration_s": 46.75,
+    "started_at": "2026-09-20T21:39:52Z",
+    "duration_s": 58.81,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -20,7 +20,7 @@
         "code/main.js",
         "extdrift_cs.js"
       ],
-      "proxy_port": 5688,
+      "proxy_port": 58284,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -31,6 +31,10 @@
       },
       {
         "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
         "method": "CONNECT"
       },
       {
@@ -46,16 +50,16 @@
         "method": "GET"
       },
       {
+        "host": "firefox-settings-attachments.cdn.mozilla.net",
+        "method": "CONNECT"
+      },
+      {
         "host": "honeypage.test",
         "method": "POST",
         "body_len": 108
       },
       {
         "host": "extdrift-report.test",
-        "method": "CONNECT"
-      },
-      {
-        "host": "firefox.settings.services.mozilla.com",
         "method": "CONNECT"
       },
       {
@@ -68,10 +72,6 @@
       },
       {
         "host": "collect-metrics.test",
-        "method": "CONNECT"
-      },
-      {
-        "host": "firefox-settings-attachments.cdn.mozilla.net",
         "method": "CONNECT"
       },
       {
@@ -174,7 +174,7 @@
   "network": [],
   "dom": [
     {
-      "ts": 1.529,
+      "ts": 1.683,
       "event": "read",
       "target": "document.cookie",
       "value_len": 33,
@@ -185,7 +185,7 @@
   "storage": [],
   "api": [
     {
-      "ts": 1.53,
+      "ts": 1.683,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 1,
       "frame": "content_script"

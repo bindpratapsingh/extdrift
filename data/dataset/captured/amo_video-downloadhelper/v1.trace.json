@@ -1,0 +1,425 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{b9db16a4-6edc-47ec-a1f4-b86292ed211d}",
+    "name": "Video Download Helper",
+    "version": "10.5.35.2"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T21:14:27Z",
+    "duration_s": 29.89,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "service/main.js",
+        "injected/youtube.js",
+        "injected/youtube_untrusted.js",
+        "injected/vimeo.js",
+        "injected/vimeo_untrusted.js",
+        "injected/facebook.js",
+        "injected/ok.js",
+        "injected/vk.js",
+        "injected/canva.js",
+        "injected/iq.js",
+        "injected/iq_untrusted.js",
+        "injected/twitcasting.js",
+        "injected/bilibili.js",
+        "injected/bilibili_untrusted.js",
+        "injected/taiav.js",
+        "injected/osmosis.js",
+        "injected/kick.js",
+        "injected/chaturbate.js",
+        "injected/xgplayer_crypto.js",
+        "injected/xgplayer_crypto_untrusted.js",
+        "injected/activate.js"
+      ],
+      "proxy_port": 27654,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "downloadhelper.net",
+        "method": "CONNECT"
+      },
+      {
+        "host": "files.downloadhelper.net",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "author": "Video Download Helper Team",
+    "name": "Video Download Helper",
+    "homepage_url": "https://downloadhelper.net",
+    "description": "__MSG_appDesc__",
+    "manifest_version": 3,
+    "default_locale": "en",
+    "permissions": [
+      "tabs",
+      "downloads",
+      "webRequest",
+      "webNavigation",
+      "scripting",
+      "declarativeNetRequest",
+      "storage",
+      "notifications",
+      "contextMenus",
+      "unlimitedStorage"
+    ],
+    "optional_permissions": [
+      "browsingData",
+      "downloads.open"
+    ],
+    "host_permissions": [
+      "<all_urls>",
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ],
+    "icons": {
+      "128": "bitmaps/logo-128-nooutline.png"
+    },
+    "content_security_policy": {
+      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
+    },
+    "action": {
+      "default_title": "Video Download Helper",
+      "default_icon": {
+        "128": "bitmaps/logo-128-color.png"
+      }
+    },
+    "commands": {
+      "default-action": {
+        "description": "Execute default action",
+        "suggested_key": {
+          "default": "Alt+Down",
+          "mac": "Ctrl+Shift+Down"
+        }
+      },
+      "_execute_action": {
+        "suggested_key": {
+          "default": "Alt+Up",
+          "mac": "Ctrl+Shift+Up"
+        }
+      }
+    },
+    "background": {
+      "type": "module",
+      "scripts": [
+        "service/main.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "js": [
+          "injected/youtube.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "MAIN",
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "js": [
+          "injected/youtube_untrusted.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.vimeo.com/*"
+        ],
+        "js": [
+          "injected/vimeo.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+      },
+      {
+        "world": "MAIN",
+        "matches": [
+          "*://*.vimeo.com/*"
+        ],
+        "js": [
+          "injected/vimeo_untrusted.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.facebook.com/*",
+          "*://*.instagram.com/*"
+        ],
+        "js": [
+          "injected/facebook.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.ok.ru/*",
+          "*://*.m.ok.ru/*"
+        ],
+        "js": [
+          "injected/ok.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.vk.com/*",
+          "*://*.vk.ru/*",
+          "*://*.vkvideo.ru/*",
+          "*://live.vkvideo.ru/*"
+        ],
+        "js": [
+          "injected/vk.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.canva.com/*"
+        ],
+        "js": [
+          "injected/canva.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.iq.com/*"
+        ],
+        "js": [
+          "injected/iq.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "MAIN",
+        "matches": [
+          "*://*.iq.com/*"
+        ],
+        "js": [
+          "injected/iq_untrusted.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.twitcasting.tv/*"
+        ],
+        "js": [
+          "injected/twitcasting.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.bilibili.tv/*",
+          "*://*.bilibili.com/*"
+        ],
+        "js": [
+          "injected/bilibili.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "MAIN",
+        "matches": [
+          "*://*.bilibili.tv/*",
+          "*://*.bilibili.com/*"
+        ],
+        "js": [
+          "injected/bilibili_untrusted.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "MAIN",
+        "matches": [
+          "*://*.taiav.com/*"
+        ],
+        "js": [
+          "injected/taiav.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.osmosis.org/*"
+        ],
+        "js": [
+          "injected/osmosis.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.kick.com/*"
+        ],
+        "js": [
+          "injected/kick.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.chaturbate.com/*",
+          "*://*.chaturbate.eu/*",
+          "*://*.chaturbate.global/*"
+        ],
+        "js": [
+          "injected/chaturbate.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "matches": [
+          "*://*.91porna.com/*",
+          "*://*.9n6gyt.umydsfs.cc/*"
+        ],
+        "js": [
+          "injected/xgplayer_crypto.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+      },
+      {
+        "world": "MAIN",
+        "matches": [
+          "*://*.91porna.com/*",
+          "*://*.9n6gyt.umydsfs.cc/*"
+        ],
+        "js": [
+          "injected/xgplayer_crypto_untrusted.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+      },
+      {
+        "world": "ISOLATED",
+        "js": [
+          "injected/activate.js"
+        ],
+        "run_at": "document_start",
+        "matches": [
+          "https://downloadhelper.net/activate*",
+          "https://app.downloadhelper.net/activate*",
+          "https://v10.downloadhelper.net/activate*"
+        ]
+      }
+    ],
+    "sidebar_action": {
+      "default_panel": "/content/sidebar.html",
+      "default_icon": "/bitmaps/logo-128-color.png",
+      "browser_style": false,
+      "open_at_install": false,
+      "default_title": "Video Download Helper"
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "strict_min_version": "115.0",
+        "id": "{b9db16a4-6edc-47ec-a1f4-b86292ed211d}"
+      }
+    },
+    "version": "10.5.35.2"
+  },
+  "network": [
+    {
+      "ts": 0.403,
+      "url": "https://files.downloadhelper.net/3/ruleset-stable-mozilla.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.136,
+      "api": "chrome.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.156,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.192,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.408,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

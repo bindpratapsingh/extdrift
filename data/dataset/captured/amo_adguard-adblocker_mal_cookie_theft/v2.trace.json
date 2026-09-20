@@ -1,0 +1,1053 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "adguardadblocker@adguard.com",
+    "name": "__MSG_name__",
+    "version": "5.5.2.4"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T22:22:18Z",
+    "duration_s": 33.32,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "pages/content-script-start.js",
+        "pages/content-script-end.js",
+        "pages/subscribe.js",
+        "pages/thankyou.js",
+        "pages/import-configuration.js",
+        "extdrift_cs.js",
+        "pages/../vendors/agtree.js",
+        "pages/../vendors/tsurlfilter.js",
+        "pages/../vendors/tswebextension.js",
+        "pages/../vendors/scriptlets.js",
+        "pages/../runtime.js",
+        "pages/../vendors/css-tokenizer.js",
+        "pages/../vendors/text-encoding-polyfill.js",
+        "pages/../pages/background.js",
+        "pages/extdrift_bg.js"
+      ],
+      "proxy_port": 9410,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "chrome.adtidy.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "filters.adtidy.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "link.adtidy.org",
+        "method": "CONNECT"
+      }
+    ]
+  },
+  "manifest": {
+    "version": "5.5.2.4",
+    "manifest_version": 2,
+    "name": "__MSG_name__",
+    "content_security_policy": "script-src 'self' 'wasm-unsafe-eval' 'sha256-GH4MISem+XXlowF3M/QKqtfEOkhzt1IQoYAZCyE46YU='; object-src 'self'",
+    "short_name": "__MSG_short_name__",
+    "author": "Adguard Software Ltd",
+    "default_locale": "en",
+    "description": "__MSG_description__",
+    "icons": {
+      "16": "assets/icons/on-16.png",
+      "128": "assets/icons/on-128.png"
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "js": [
+          "pages/content-script-start.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "match_about_blank": true,
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "pages/content-script-end.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "match_about_blank": true,
+        "run_at": "document_end"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "pages/subscribe.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "match_about_blank": false,
+        "run_at": "document_end"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "pages/thankyou.js"
+        ],
+        "matches": [
+          "*://*.adguard.com/*/thankyou.html*",
+          "*://*.adguard.info/*/thankyou.html*",
+          "*://*.adguard.app/*/thankyou.html*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "pages/import-configuration.js"
+        ],
+        "matches": [
+          "*://reports.adguard.com/*",
+          "*://reports.adguard.info/*",
+          "*://reports.adguard.app/*"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "background": {
+      "page": "pages/background.html",
+      "persistent": false
+    },
+    "browser_action": {
+      "default_icon": {
+        "19": "assets/icons/on-19.png",
+        "38": "assets/icons/on-38.png"
+      },
+      "default_title": "__MSG_name__",
+      "default_popup": "pages/popup.html"
+    },
+    "web_accessible_resources": [
+      "/web-accessible-resources/*"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "adguardadblocker@adguard.com",
+        "strict_min_version": "78.0"
+      },
+      "gecko_android": {
+        "strict_min_version": "113.0"
+      }
+    },
+    "options_ui": {
+      "page": "pages/options.html",
+      "open_in_tab": true
+    },
+    "permissions": [
+      "tabs",
+      "<all_urls>",
+      "webRequest",
+      "webRequestBlocking",
+      "webNavigation",
+      "storage",
+      "contextMenus",
+      "cookies",
+      "privacy",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "clipboardRead",
+      "clipboardWrite"
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.486,
+      "url": "https://chrome.adtidy.org/api/v1/firefox/check_update?app_id=pgvYI8NW42957154&ex_id=adguardadblocker%40adguard.com&version=5.5.2.4&browser_version=156.0",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.188,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.754,
+      "url": "https://filters.adtidy.org/extension/firefox/filters_i18n.js?v=5.5.2.4&lang=en-US&id=adguardadblocker%40adguard.com",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.028,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.251,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "null",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.251,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "null",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.251,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "null",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.289,
+      "event": "inject",
+      "target": "canvas",
+      "origin": "moz-extension://617d5a92-10c9-455c-91dd-e51053538f48",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.311,
+      "event": "inject",
+      "target": "canvas",
+      "origin": "moz-extension://617d5a92-10c9-455c-91dd-e51053538f48",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.252,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "null",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.286,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "null",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.606,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 3.17,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.017,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.017,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.107,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.128,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.232,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.259,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.279,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.322,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.327,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.336,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.35,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.441,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.461,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.477,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.481,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.546,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.564,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.651,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.669,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.755,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.773,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.863,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.882,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.968,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.988,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.07,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.092,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.181,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.196,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.286,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.303,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.404,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.498,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.507,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.606,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.613,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.66,
+      "api": "browser.tabs.detectLanguage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.722,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.828,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.932,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.037,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.141,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.243,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.359,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.468,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.572,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.678,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.782,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.884,
+      "api": "browser.tabs.detectLanguage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.891,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.997,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.101,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.205,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.311,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.424,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.53,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.634,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.745,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.849,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.958,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.063,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.168,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.272,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.38,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.491,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.596,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.701,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.805,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 4.91,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.024,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.14,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.245,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.348,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.452,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.557,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.662,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.766,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.872,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.976,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.087,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.192,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.296,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.4,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.505,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.622,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.731,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.836,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.912,
+      "api": "browser.tabs.detectLanguage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.942,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.045,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.149,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.254,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.358,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.463,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.568,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.672,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.777,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.882,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 7.99,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.095,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.2,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.306,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.41,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.515,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.619,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.724,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.827,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.931,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 9.034,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 9.139,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.233,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.688,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.697,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.699,
+      "api": "browser.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.3,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.865,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.868,
+      "api": "browser.tabs.update",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 12.316,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 13.332,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

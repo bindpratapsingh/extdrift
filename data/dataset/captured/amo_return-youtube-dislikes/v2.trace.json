@@ -1,0 +1,144 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{762f9885-5a13-4abd-9c77-433dcd38b8fd}",
+    "name": "__MSG_extensionName__",
+    "version": "4.0.6"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T21:03:37Z",
+    "duration_s": 25.97,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "ryd.background.js",
+        "ryd.content-script.js"
+      ],
+      "proxy_port": 45579,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "returnyoutubedislikeapi.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "__MSG_extensionName__",
+    "description": "__MSG_extensionDesc__",
+    "default_locale": "en",
+    "version": "4.0.6",
+    "manifest_version": 2,
+    "incognito": "not_allowed",
+    "background": {
+      "scripts": [
+        "ryd.background.js"
+      ]
+    },
+    "icons": {
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "permissions": [
+      "activeTab",
+      "*://*.youtube.com/*",
+      "storage",
+      "*://returnyoutubedislikeapi.com/*",
+      "identity",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{762f9885-5a13-4abd-9c77-433dcd38b8fd}",
+        "strict_min_version": "140.0",
+        "data_collection_permissions": {
+          "required": [
+            "personallyIdentifyingInfo",
+            "browsingActivity",
+            "websiteContent",
+            "websiteActivity"
+          ],
+          "optional": [
+            "authenticationInfo"
+          ]
+        }
+      }
+    },
+    "browser_action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "exclude_matches": [
+          "*://*.music.youtube.com/*"
+        ],
+        "run_at": "document_idle",
+        "css": [
+          "content-style.css"
+        ],
+        "js": [
+          "ryd.content-script.js"
+        ]
+      }
+    ],
+    "options_ui": {
+      "page": "popup.html",
+      "open_in_tab": false
+    },
+    "web_accessible_resources": [
+      "menu-fixer.js"
+    ]
+  },
+  "network": [
+    {
+      "ts": 0.046,
+      "url": "https://returnyoutubedislikeapi.com/puzzle/registration?userId=rRqmcPxf3HgfX2oDPaRGW5moOt1ftOV7DMXy",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.082,
+      "api": "chrome.tabs.create",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

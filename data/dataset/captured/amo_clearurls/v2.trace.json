@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:30:20Z",
-    "duration_s": 28.35,
+    "started_at": "2026-09-20T20:53:58Z",
+    "duration_s": 25.8,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -34,7 +34,7 @@
         "core_js/google_link_fix.js",
         "core_js/yandex_link_fix.js"
       ],
-      "proxy_port": 13781,
+      "proxy_port": 1402,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -374,7 +374,7 @@
   },
   "network": [
     {
-      "ts": 0.081,
+      "ts": 0.096,
       "url": "https://rules2.clearurls.xyz/rules.minify.hash",
       "method": "GET",
       "body_len": 0,
@@ -387,13 +387,13 @@
   "storage": [],
   "api": [
     {
-      "ts": 0.085,
+      "ts": 0.108,
       "api": "chrome.runtime.getPlatformInfo",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.087,
+      "ts": 0.111,
       "api": "chrome.runtime.getPlatformInfo",
       "arg_count": 1,
       "frame": "content_script"

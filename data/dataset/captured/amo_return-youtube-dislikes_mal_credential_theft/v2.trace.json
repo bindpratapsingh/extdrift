@@ -1,0 +1,280 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{762f9885-5a13-4abd-9c77-433dcd38b8fd}",
+    "name": "__MSG_extensionName__",
+    "version": "4.0.7"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T22:00:06Z",
+    "duration_s": 24.85,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "ryd.background.js",
+        "ryd.content-script.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 46525,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "returnyoutubedislikeapi.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "__MSG_extensionName__",
+    "description": "__MSG_extensionDesc__",
+    "default_locale": "en",
+    "version": "4.0.7",
+    "manifest_version": 2,
+    "incognito": "not_allowed",
+    "background": {
+      "scripts": [
+        "ryd.background.js"
+      ]
+    },
+    "icons": {
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "permissions": [
+      "activeTab",
+      "*://*.youtube.com/*",
+      "storage",
+      "*://returnyoutubedislikeapi.com/*",
+      "identity",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{762f9885-5a13-4abd-9c77-433dcd38b8fd}",
+        "strict_min_version": "140.0",
+        "data_collection_permissions": {
+          "required": [
+            "personallyIdentifyingInfo",
+            "browsingActivity",
+            "websiteContent",
+            "websiteActivity"
+          ],
+          "optional": [
+            "authenticationInfo"
+          ]
+        }
+      }
+    },
+    "browser_action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "exclude_matches": [
+          "*://*.music.youtube.com/*"
+        ],
+        "run_at": "document_idle",
+        "css": [
+          "content-style.css"
+        ],
+        "js": [
+          "ryd.content-script.js"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "options_ui": {
+      "page": "popup.html",
+      "open_in_tab": false
+    },
+    "web_accessible_resources": [
+      "menu-fixer.js"
+    ],
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.045,
+      "url": "https://returnyoutubedislikeapi.com/puzzle/registration?userId=tmWAvSVuilNnuZtjOoKlpNvS9OW8MSB4xxjg",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.164,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.529,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.229,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.162,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.163,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.163,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.527,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.528,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.528,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.227,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.228,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.228,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.104,
+      "api": "chrome.tabs.create",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

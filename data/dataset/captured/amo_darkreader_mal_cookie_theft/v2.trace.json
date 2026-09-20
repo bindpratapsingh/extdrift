@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:37:32Z",
-    "duration_s": 23.92,
+    "started_at": "2026-09-20T21:30:40Z",
+    "duration_s": 22.38,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -23,7 +23,7 @@
         "background/index.js",
         "background/extdrift_bg.js"
       ],
-      "proxy_port": 23903,
+      "proxy_port": 6208,
       "manifest_patched_for_capture": true
     },
     "collector_received": [
@@ -166,7 +166,7 @@
   },
   "network": [
     {
-      "ts": 0.283,
+      "ts": 0.33,
       "url": "https://darkreader.org/blog/posts.json",
       "method": "GET",
       "body_len": 0,
@@ -175,7 +175,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 3.419,
+      "ts": 3.368,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 63,
@@ -186,14 +186,14 @@
   ],
   "dom": [
     {
-      "ts": 0.04,
+      "ts": 0.033,
       "event": "inject",
       "target": "meta[name=darkreader]",
       "origin": "http://honeypage.test",
       "frame": "content_script"
     },
     {
-      "ts": 2.171,
+      "ts": 2.117,
       "event": "read",
       "target": "document.cookie",
       "value_len": 33,
@@ -203,13 +203,13 @@
   ],
   "storage": [
     {
-      "ts": 0.004,
+      "ts": 0.001,
       "api": "localStorage.getItem",
       "key": "__darkreader__wasEnabledForHost",
       "frame": "content_script"
     },
     {
-      "ts": 3.41,
+      "ts": 3.359,
       "api": "chrome.cookies.getAll",
       "arg_count": 2,
       "frame": "content_script"
@@ -217,61 +217,61 @@
   ],
   "api": [
     {
-      "ts": 0.026,
+      "ts": 0.012,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.03,
+      "ts": 0.023,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
       "api": "chrome.runtime.setUninstallURL",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.035,
+      "ts": 0.044,
       "api": "chrome.tabs.query",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.038,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.05,
+      "ts": 0.066,
       "api": "chrome.tabs.create",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.282,
+      "ts": 0.329,
       "api": "chrome.tabs.query",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.285,
+      "ts": 0.331,
       "api": "chrome.tabs.sendMessage",
       "arg_count": 3,
       "frame": "content_script"
     },
     {
-      "ts": 1.08,
+      "ts": 1.179,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.264,
+      "ts": 1.253,
       "api": "chrome.tabs.sendMessage",
       "arg_count": 3,
       "frame": "content_script"
     },
     {
-      "ts": 2.172,
+      "ts": 2.117,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 1,
       "frame": "content_script"

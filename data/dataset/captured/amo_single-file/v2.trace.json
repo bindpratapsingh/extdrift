@@ -1,0 +1,299 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{531906d3-e22f-4a6c-a102-8057b88a1a63}",
+    "name": "SingleFile",
+    "version": "1.26.0"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T21:09:39Z",
+    "duration_s": 27.75,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "lib/chrome-browser-polyfill.js",
+        "lib/single-file-frames.js",
+        "lib/single-file-extension-frames.js",
+        "lib/single-file-hooks-frames.js",
+        "lib/web-stream.js",
+        "lib/single-file-bootstrap.js",
+        "lib/single-file-extension-bootstrap.js",
+        "lib/single-file-infobar.js",
+        "lib/single-file-extension-background.js",
+        "lib/single-file.js"
+      ],
+      "proxy_port": 39969,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "SingleFile",
+    "author": "Gildas Lormeau",
+    "homepage_url": "https://www.getsinglefile.com",
+    "icons": {
+      "16": "src/ui/resources/icon_16.png",
+      "32": "src/ui/resources/icon_32.png",
+      "48": "src/ui/resources/icon_48.png",
+      "64": "src/ui/resources/icon_64.png",
+      "128": "src/ui/resources/icon_128.png"
+    },
+    "version": "1.26.0",
+    "description": "__MSG_extensionDescription__",
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "run_at": "document_start",
+        "js": [
+          "lib/chrome-browser-polyfill.js",
+          "lib/single-file-frames.js",
+          "lib/single-file-extension-frames.js"
+        ],
+        "all_frames": true,
+        "match_about_blank": true,
+        "match_origin_as_fallback": true
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "run_at": "document_start",
+        "js": [
+          "lib/single-file-hooks-frames.js"
+        ],
+        "all_frames": true,
+        "match_about_blank": true,
+        "match_origin_as_fallback": true,
+        "world": "MAIN"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "run_at": "document_start",
+        "js": [
+          "lib/web-stream.js",
+          "lib/chrome-browser-polyfill.js",
+          "lib/single-file-bootstrap.js",
+          "lib/single-file-extension-bootstrap.js",
+          "lib/single-file-infobar.js"
+        ]
+      }
+    ],
+    "background": {
+      "page": "src/core/bg/background.html"
+    },
+    "sidebar_action": {
+      "browser_style": true,
+      "default_title": "SingleFile",
+      "default_panel": "src/ui/pages/panel.html",
+      "default_icon": "src/ui/resources/icon_128.png",
+      "open_at_install": false
+    },
+    "options_ui": {
+      "browser_style": true,
+      "page": "src/ui/pages/options.html",
+      "open_in_tab": false
+    },
+    "browser_action": {
+      "default_icon": {
+        "16": "src/ui/resources/icon_16.png",
+        "32": "src/ui/resources/icon_32.png",
+        "48": "src/ui/resources/icon_48.png",
+        "64": "src/ui/resources/icon_64.png",
+        "128": "src/ui/resources/icon_128.png"
+      },
+      "default_title": "__MSG_buttonDefaultTooltip__"
+    },
+    "commands": {
+      "save-selected-tabs": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+Y",
+          "linux": "Ctrl+Alt+S"
+        },
+        "description": "__MSG_commandSaveSelectedTabs__"
+      },
+      "save-all-tabs": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+U"
+        },
+        "description": "__MSG_commandSaveAllTabs__"
+      },
+      "custom-command-0": {
+        "description": "__MSG_commandCustomShortcut0__"
+      },
+      "custom-command-1": {
+        "description": "__MSG_commandCustomShortcut1__"
+      },
+      "custom-command-2": {
+        "description": "__MSG_commandCustomShortcut2__"
+      },
+      "custom-command-3": {
+        "description": "__MSG_commandCustomShortcut3__"
+      },
+      "custom-command-4": {
+        "description": "__MSG_commandCustomShortcut4__"
+      },
+      "custom-command-5": {
+        "description": "__MSG_commandCustomShortcut5__"
+      },
+      "custom-command-6": {
+        "description": "__MSG_commandCustomShortcut6__"
+      },
+      "custom-command-7": {
+        "description": "__MSG_commandCustomShortcut7__"
+      },
+      "custom-command-8": {
+        "description": "__MSG_commandCustomShortcut8__"
+      },
+      "custom-command-9": {
+        "description": "__MSG_commandCustomShortcut9__"
+      }
+    },
+    "web_accessible_resources": [
+      "lib/single-file-infobar.js",
+      "lib/single-file-extension-editor.js",
+      "lib/single-file-extension-editor-helper.js",
+      "lib/single-file-zip.min.js",
+      "lib/single-file-z-worker.js",
+      "lib/web-stream.js",
+      "src/lib/readability/Readability.js",
+      "src/lib/readability/Readability-readerable.js",
+      "src/ui/pages/editor-note-web.css",
+      "src/ui/pages/editor-mask-web.css",
+      "src/ui/pages/editor-frame-web.css"
+    ],
+    "permissions": [
+      "identity",
+      "menus",
+      "downloads",
+      "storage",
+      "tabs",
+      "<all_urls>",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "clipboardWrite",
+      "nativeMessaging",
+      "bookmarks",
+      "webRequest",
+      "webRequestBlocking"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{531906d3-e22f-4a6c-a102-8057b88a1a63}"
+      },
+      "gecko_android": {}
+    },
+    "incognito": "spanning",
+    "manifest_version": 2,
+    "default_locale": "en"
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.02,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.07,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.071,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.108,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.138,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.336,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.486,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.837,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.988,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.513,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 8.127,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

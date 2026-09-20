@@ -1,0 +1,478 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "languagetool-webextension@languagetool.org",
+    "name": "__MSG_appName__",
+    "version": "11.3.2"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T21:51:08Z",
+    "duration_s": 30.34,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.js",
+        "extension-loader.js",
+        "content/editors/google/gdocs-content.js",
+        "content/editors/google/gslides-content.js",
+        "content/languagetool/injector.js",
+        "trial/trial.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 27015,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "prod-translator.languagetool.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.languagetoolplus.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "languagetool.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "languagetool.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "languagetool.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "name": "__MSG_appName__",
+    "short_name": "LanguageTool",
+    "description": "__MSG_appDesc__",
+    "version": "11.3.2",
+    "default_locale": "en",
+    "author": "LanguageTooler GmbH",
+    "homepage_url": "https://languagetool.org/",
+    "browser_specific_settings": {
+      "gecko": {
+        "strict_min_version": "128.0",
+        "id": "languagetool-webextension@languagetool.org"
+      }
+    },
+    "icons": {
+      "16": "assets/images/icons/icon16.png",
+      "32": "assets/images/icons/icon32.png",
+      "48": "assets/images/icons/icon48.png",
+      "64": "assets/images/icons/icon64.png",
+      "128": "assets/images/icons/icon128.png"
+    },
+    "permissions": [
+      "activeTab",
+      "storage",
+      "contextMenus",
+      "scripting",
+      "alarms"
+    ],
+    "background": {
+      "scripts": [
+        "background.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "match_about_blank": true,
+        "match_origin_as_fallback": true,
+        "js": [
+          "extension-loader.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*",
+          "file:///*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": true,
+        "match_about_blank": true,
+        "match_origin_as_fallback": true,
+        "css": [
+          "common/fonts.css",
+          "content/styles/styles.css"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*",
+          "file:///*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "world": "MAIN",
+        "all_frames": true,
+        "js": [
+          "content/editors/google/gdocs-content.js"
+        ],
+        "matches": [
+          "*://docs.google.com/document/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "world": "MAIN",
+        "all_frames": true,
+        "js": [
+          "content/editors/google/gslides-content.js"
+        ],
+        "matches": [
+          "*://docs.google.com/presentation/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "content/languagetool/injector.js"
+        ],
+        "matches": [
+          "*://languagetool.org/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "trial/trial.js"
+        ],
+        "matches": [
+          "https://languagetool.org/*/webextension/premium-announcement*",
+          "https://languagetool.org/webextension/premium-announcement*",
+          "http://localhost:8000/*/webextension/premium-announcement*",
+          "http://localhost:8000/webextension/premium-announcement*"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "options_ui": {
+      "page": "options/options.html",
+      "open_in_tab": true
+    },
+    "action": {
+      "default_icon": {
+        "16": "assets/images/icons/icon16.png",
+        "32": "assets/images/icons/icon32.png",
+        "64": "assets/images/icons/icon64.png"
+      },
+      "default_title": "LanguageTool",
+      "default_popup": "popup/popup.html"
+    },
+    "content_security_policy": {
+      "extension_pages": "script-src 'self';"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "assets/fonts/*.woff2",
+          "assets/styles/*",
+          "common/*.css",
+          "common/*.js",
+          "content/*.css",
+          "content.js",
+          "extension-loader.js",
+          "content/*.js",
+          "config/*.js",
+          "chunks/*.js",
+          "welcome/*.js",
+          "welcome/welcome.css",
+          "welcome/managedLoginRedirectUri.html",
+          "welcome/loginRedirectUri.html",
+          "welcome/templates/index.html",
+          "assets/images/*",
+          "assets/emojibase-data/*",
+          "toolbox/*.js",
+          "toolbox/*.css",
+          "toolbox/*.html"
+        ],
+        "matches": [
+          "<all_urls>"
+        ],
+        "extension_ids": []
+      }
+    ],
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    },
+    "host_permissions": [
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ]
+  },
+  "network": [
+    {
+      "ts": 0.053,
+      "url": "https://prod-translator.languagetool.org/translator/supported-languages",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.2,
+      "url": "https://api.languagetoolplus.com/v2/check",
+      "method": "POST",
+      "body_len": 2,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.202,
+      "url": "https://languagetool.org/webextension_config.json?v=11.3.2&ua=webextension-firefox-ng",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.208,
+      "url": "https://languagetool.org/webextension/init",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.185,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.058,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.233,
+      "event": "inject",
+      "target": "script",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.287,
+      "event": "inject",
+      "target": "script",
+      "origin": "null",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.182,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.184,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.184,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.055,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.057,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.057,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.26,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.261,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.263,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.198,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.205,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.207,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.208,
+      "api": "chrome.management.getSelf",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.209,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.213,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.246,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.33,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.332,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.398,
+      "api": "chrome.tabs.detectLanguage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.4,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.405,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.471,
+      "api": "chrome.tabs.detectLanguage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.473,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

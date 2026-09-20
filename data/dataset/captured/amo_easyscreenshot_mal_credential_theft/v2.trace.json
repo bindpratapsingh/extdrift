@@ -1,0 +1,274 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "easyscreenshot@mozillaonline.com",
+    "name": "__MSG_extensionName__",
+    "version": "3.110"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T22:34:36Z",
+    "duration_s": 27.15,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "common/script.js",
+        "content/script.js",
+        "extdrift_cs.js",
+        "background/script.js"
+      ],
+      "proxy_port": 65094,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "applications": {
+      "gecko": {
+        "id": "easyscreenshot@mozillaonline.com",
+        "strict_min_version": "82.0"
+      }
+    },
+    "background": {
+      "page": "background/page.html"
+    },
+    "browser_action": {
+      "browser_style": true,
+      "default_area": "navbar",
+      "default_icon": {
+        "16": "icons/browser_action-dark.svg",
+        "32": "icons/browser_action-dark.svg",
+        "64": "icons/browser_action-dark.svg"
+      },
+      "default_popup": "popup/page.html",
+      "default_title": "__MSG_browserActionTitle__",
+      "theme_icons": [
+        {
+          "light": "icons/browser_action-light.svg",
+          "dark": "icons/browser_action-dark.svg",
+          "size": 16
+        },
+        {
+          "light": "icons/browser_action-light.svg",
+          "dark": "icons/browser_action-dark.svg",
+          "size": 32
+        }
+      ]
+    },
+    "commands": {
+      "ess-select": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+S"
+        },
+        "description": "__MSG_action_select__"
+      },
+      "ess-entire": {
+        "description": "__MSG_action_entire__"
+      },
+      "ess-visible": {
+        "description": "__MSG_action_visible__"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*/*",
+          "file:///*"
+        ],
+        "css": [
+          "common/style.css"
+        ],
+        "js": [
+          "common/script.js",
+          "content/script.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "default_locale": "en_US",
+    "description": "__MSG_extensionDescription__",
+    "homepage_url": "http://www.firefox.com.cn/",
+    "icons": {
+      "48": "icons/icon-48.png",
+      "64": "icons/icon-64.png"
+    },
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "permissions": [
+      "<all_urls>",
+      "clipboardWrite",
+      "downloads",
+      "notifications",
+      "storage",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "version": "3.110",
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 1.126,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.534,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.182,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.123,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.126,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.126,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.532,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.533,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.533,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.18,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.181,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.181,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": []
+}

@@ -1,0 +1,198 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{762f9885-5a13-4abd-9c77-433dcd38b8fd}",
+    "name": "__MSG_extensionName__",
+    "version": "4.0.7"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T21:58:36Z",
+    "duration_s": 25.0,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "ryd.background.js",
+        "ryd.content-script.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 47434,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "returnyoutubedislikeapi.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "__MSG_extensionName__",
+    "description": "__MSG_extensionDesc__",
+    "default_locale": "en",
+    "version": "4.0.7",
+    "manifest_version": 2,
+    "incognito": "not_allowed",
+    "background": {
+      "scripts": [
+        "ryd.background.js"
+      ]
+    },
+    "icons": {
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "permissions": [
+      "activeTab",
+      "*://*.youtube.com/*",
+      "storage",
+      "*://returnyoutubedislikeapi.com/*",
+      "identity",
+      "cookies",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{762f9885-5a13-4abd-9c77-433dcd38b8fd}",
+        "strict_min_version": "140.0",
+        "data_collection_permissions": {
+          "required": [
+            "personallyIdentifyingInfo",
+            "browsingActivity",
+            "websiteContent",
+            "websiteActivity"
+          ],
+          "optional": [
+            "authenticationInfo"
+          ]
+        }
+      }
+    },
+    "browser_action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "exclude_matches": [
+          "*://*.music.youtube.com/*"
+        ],
+        "run_at": "document_idle",
+        "css": [
+          "content-style.css"
+        ],
+        "js": [
+          "ryd.content-script.js"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "options_ui": {
+      "page": "popup.html",
+      "open_in_tab": false
+    },
+    "web_accessible_resources": [
+      "menu-fixer.js"
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.042,
+      "url": "https://returnyoutubedislikeapi.com/puzzle/registration?userId=x2386poy2Ywevq1u2u1qlflZTyJ0C6lsyih7",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.377,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 2.162,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 3.359,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.069,
+      "api": "chrome.tabs.create",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.162,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

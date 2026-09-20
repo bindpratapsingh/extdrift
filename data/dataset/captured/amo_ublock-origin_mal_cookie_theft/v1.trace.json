@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:31:54Z",
-    "duration_s": 37.53,
+    "started_at": "2026-09-20T21:25:07Z",
+    "duration_s": 34.48,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -21,7 +21,7 @@
         "js/vapi.js",
         "js/start.js"
       ],
-      "proxy_port": 2943,
+      "proxy_port": 29513,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -47,10 +47,6 @@
         "host": "honeypage.test",
         "method": "POST",
         "body_len": 108
-      },
-      {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
       }
     ]
   },
@@ -192,7 +188,7 @@
   },
   "network": [
     {
-      "ts": 4.746,
+      "ts": 4.522,
       "url": "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext",
       "method": "GET",
       "body_len": 0,
@@ -203,14 +199,14 @@
   ],
   "dom": [
     {
-      "ts": 0.041,
+      "ts": 0.031,
       "event": "inject",
       "target": "unknown",
       "origin": "http://honeypage.test",
       "frame": "content_script"
     },
     {
-      "ts": 0.042,
+      "ts": 0.034,
       "event": "inject",
       "target": "script",
       "origin": "http://honeypage.test",
@@ -220,85 +216,85 @@
   "storage": [],
   "api": [
     {
+      "ts": 0.023,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
       "ts": 0.027,
       "api": "chrome.runtime.connect",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.033,
-      "api": "chrome.runtime.connect",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 2.663,
+      "ts": 2.44,
       "api": "browser.tabs.query",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 2.74,
+      "ts": 2.516,
       "api": "browser.tabs.query",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 2.812,
+      "ts": 2.586,
       "api": "browser.tabs.executeScript",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 2.821,
+      "ts": 2.592,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 2.957,
+      "ts": 2.68,
       "api": "browser.tabs.insertCSS",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 2.976,
+      "ts": 2.682,
+      "api": "browser.tabs.executeScript",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.831,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 3.153,
-      "api": "browser.tabs.get",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 3.393,
+      "ts": 3.183,
       "api": "browser.webRequest.handlerBehaviorChanged",
       "arg_count": 0,
       "frame": "content_script"
     },
     {
-      "ts": 4.2,
+      "ts": 3.968,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 4.255,
+      "ts": 4.026,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 8.233,
+      "ts": 7.998,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 8.295,
+      "ts": 8.069,
       "api": "browser.tabs.get",
       "arg_count": 1,
       "frame": "content_script"

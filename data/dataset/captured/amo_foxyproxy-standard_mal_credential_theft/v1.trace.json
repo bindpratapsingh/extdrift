@@ -1,0 +1,150 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "foxyproxy@eric.h.jung",
+    "name": "__MSG_extensionName__",
+    "version": "9.8"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-09-20T22:01:34Z",
+    "duration_s": 21.72,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "content/background.js"
+      ],
+      "proxy_port": 43718,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "name": "__MSG_extensionName__",
+    "description": "__MSG_extensionDescription__",
+    "version": "9.8",
+    "default_locale": "en",
+    "homepage_url": "https://getfoxyproxy.org/",
+    "author": "Eric Jung",
+    "icons": {
+      "16": "image/icon.png",
+      "32": "image/icon32.png",
+      "48": "image/icon48.png",
+      "64": "image/icon64.png",
+      "128": "image/icon128.png"
+    },
+    "action": {
+      "default_icon": {
+        "16": "image/icon.png",
+        "32": "image/icon32.png"
+      },
+      "default_popup": "content/popup.html",
+      "default_title": "__MSG_extensionName__"
+    },
+    "options_ui": {
+      "open_in_tab": true,
+      "page": "content/options.html"
+    },
+    "background": {
+      "scripts": [
+        "content/background.js"
+      ],
+      "service_worker": "content/background.js",
+      "type": "module"
+    },
+    "permissions": [
+      "contextMenus",
+      "downloads",
+      "notifications",
+      "proxy",
+      "storage",
+      "tabs",
+      "webRequest",
+      "webRequestAuthProvider"
+    ],
+    "host_permissions": [
+      "<all_urls>",
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "browsingData",
+      "privacy"
+    ],
+    "commands": {
+      "proxyByPatterns": {
+        "description": "__MSG_proxyByPatterns__"
+      },
+      "disable": {
+        "description": "__MSG_disable__"
+      },
+      "setProxy": {
+        "description": "__MSG_setProxy__"
+      },
+      "includeHost": {
+        "description": "__MSG_includeHost__"
+      },
+      "excludeHost": {
+        "description": "__MSG_excludeHost__"
+      },
+      "setTabProxy": {
+        "description": "__MSG_setTabProxy__"
+      },
+      "unsetTabProxy": {
+        "description": "__MSG_unsetTabProxy__"
+      }
+    },
+    "storage": {
+      "managed_schema": "content/schema.json"
+    },
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self';"
+    },
+    "minimum_chrome_version": "126",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "foxyproxy@eric.h.jung",
+        "strict_min_version": "128.0",
+        "data_collection_permissions": {
+          "required": [
+            "none"
+          ]
+        }
+      },
+      "gecko_android": {
+        "strict_min_version": "128.0"
+      }
+    }
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": []
+}

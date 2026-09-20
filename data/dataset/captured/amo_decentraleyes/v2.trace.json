@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:27:00Z",
-    "duration_s": 46.85,
+    "started_at": "2026-09-20T20:50:44Z",
+    "duration_s": 50.12,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -19,7 +19,7 @@
       "instrumented_scripts": [
         "code/main.js"
       ],
-      "proxy_port": 13698,
+      "proxy_port": 34718,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -34,6 +34,10 @@
       },
       {
         "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox-settings-attachments.cdn.mozilla.net",
         "method": "CONNECT"
       },
       {
@@ -55,18 +59,6 @@
       },
       {
         "host": "extdrift-report.test",
-        "method": "CONNECT"
-      },
-      {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
-      },
-      {
-        "host": "firefox-settings-attachments.cdn.mozilla.net",
-        "method": "CONNECT"
-      },
-      {
-        "host": "firefox.settings.services.mozilla.com",
         "method": "CONNECT"
       },
       {

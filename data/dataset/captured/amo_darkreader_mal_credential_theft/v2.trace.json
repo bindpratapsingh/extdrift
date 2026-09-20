@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:39:00Z",
-    "duration_s": 24.59,
+    "started_at": "2026-09-20T21:32:06Z",
+    "duration_s": 22.42,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -22,7 +22,7 @@
         "extdrift_cs.js",
         "background/index.js"
       ],
-      "proxy_port": 37967,
+      "proxy_port": 50527,
       "manifest_patched_for_capture": true
     },
     "collector_received": [
@@ -178,7 +178,7 @@
   },
   "network": [
     {
-      "ts": 0.464,
+      "ts": 0.213,
       "url": "https://darkreader.org/blog/posts.json",
       "method": "GET",
       "body_len": 0,
@@ -187,7 +187,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 1.285,
+      "ts": 1.263,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 82,
@@ -196,7 +196,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.632,
+      "ts": 2.593,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 82,
@@ -205,7 +205,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.336,
+      "ts": 5.319,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 82,
@@ -216,14 +216,14 @@
   ],
   "dom": [
     {
-      "ts": 0.033,
+      "ts": 0.024,
       "event": "inject",
       "target": "meta[name=darkreader]",
       "origin": "http://honeypage.test",
       "frame": "content_script"
     },
     {
-      "ts": 1.283,
+      "ts": 1.262,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -231,7 +231,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 1.284,
+      "ts": 1.263,
       "event": "read",
       "target": "input[name=username]",
       "value_len": 22,
@@ -239,7 +239,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 1.285,
+      "ts": 1.263,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -247,7 +247,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.626,
+      "ts": 2.591,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -255,7 +255,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.629,
+      "ts": 2.592,
       "event": "read",
       "target": "input[name=username]",
       "value_len": 22,
@@ -263,7 +263,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.63,
+      "ts": 2.593,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -271,7 +271,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.334,
+      "ts": 5.317,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -279,7 +279,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.335,
+      "ts": 5.318,
       "event": "read",
       "target": "input[name=username]",
       "value_len": 22,
@@ -287,7 +287,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.336,
+      "ts": 5.319,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -297,7 +297,7 @@
   ],
   "storage": [
     {
-      "ts": 0.001,
+      "ts": 0.002,
       "api": "localStorage.getItem",
       "key": "__darkreader__wasEnabledForHost",
       "frame": "content_script"
@@ -305,55 +305,55 @@
   ],
   "api": [
     {
-      "ts": 0.02,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.025,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.025,
+      "ts": 0.014,
       "api": "chrome.runtime.setUninstallURL",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.027,
-      "api": "chrome.tabs.query",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.039,
-      "api": "chrome.tabs.create",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.463,
-      "api": "chrome.tabs.query",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.466,
-      "api": "chrome.tabs.sendMessage",
-      "arg_count": 3,
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.079,
+      "ts": 0.015,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.196,
+      "ts": 0.016,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.031,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.212,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.216,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.163,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.272,
       "api": "chrome.tabs.sendMessage",
       "arg_count": 3,
       "frame": "content_script"

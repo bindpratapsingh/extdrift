@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:48:41Z",
-    "duration_s": 47.13,
+    "started_at": "2026-09-20T21:41:42Z",
+    "duration_s": 47.43,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -20,7 +20,7 @@
         "code/main.js",
         "extdrift_cs.js"
       ],
-      "proxy_port": 9440,
+      "proxy_port": 42918,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -164,7 +164,7 @@
   },
   "network": [
     {
-      "ts": 1.138,
+      "ts": 1.152,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 82,
@@ -173,7 +173,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.53,
+      "ts": 2.533,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 82,
@@ -184,7 +184,7 @@
   ],
   "dom": [
     {
-      "ts": 1.136,
+      "ts": 1.149,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -192,15 +192,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 1.138,
-      "event": "read",
-      "target": "input#password",
-      "value_len": 17,
-      "origin": "http://honeypage.test",
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.138,
+      "ts": 1.151,
       "event": "read",
       "target": "input[name=username]",
       "value_len": 22,
@@ -208,7 +200,15 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.53,
+      "ts": 1.152,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.529,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -224,7 +224,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.53,
+      "ts": 2.532,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -232,7 +232,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.198,
+      "ts": 5.202,
       "event": "read",
       "target": "input#password",
       "value_len": 17,
@@ -240,7 +240,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.199,
+      "ts": 5.203,
       "event": "read",
       "target": "input[name=username]",
       "value_len": 22,
@@ -248,7 +248,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 5.2,
+      "ts": 5.204,
       "event": "read",
       "target": "input#password",
       "value_len": 17,

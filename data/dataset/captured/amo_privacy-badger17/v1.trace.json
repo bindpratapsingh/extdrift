@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:22:20Z",
-    "duration_s": 28.92,
+    "started_at": "2026-09-20T20:46:06Z",
+    "duration_s": 25.35,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -30,7 +30,7 @@
         "js/contentscripts/supercookie.js",
         "js/background.js"
       ],
-      "proxy_port": 10649,
+      "proxy_port": 22978,
       "manifest_patched_for_capture": true
     },
     "collector_received": [],
@@ -562,7 +562,7 @@
   },
   "network": [
     {
-      "ts": 1.188,
+      "ts": 0.649,
       "url": "https://www.eff.org/files/pbconfig.json",
       "method": "GET",
       "body_len": 0,
@@ -575,115 +575,109 @@
   "storage": [],
   "api": [
     {
+      "ts": 0.021,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "api": "chrome.runtime.getPlatformInfo",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
       "ts": 0.04,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.042,
+      "ts": 0.041,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.05,
-      "api": "chrome.runtime.getPlatformInfo",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.083,
+      "ts": 0.084,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.093,
+      "ts": 0.085,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.099,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.106,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.125,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.126,
-      "api": "chrome.runtime.sendMessage",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 0.236,
+      "ts": 0.11,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.353,
+      "ts": 0.114,
       "api": "chrome.tabs.query",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 0.515,
+      "ts": 0.133,
       "api": "chrome.tabs.create",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.201,
+      "ts": 0.656,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.213,
+      "ts": 0.826,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.466,
+      "ts": 1.09,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.609,
+      "ts": 1.169,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 1.764,
+      "ts": 2.501,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"
     },
     {
-      "ts": 3.042,
-      "api": "chrome.tabs.get",
-      "arg_count": 2,
-      "frame": "content_script"
-    },
-    {
-      "ts": 7.069,
+      "ts": 6.547,
       "api": "chrome.tabs.get",
       "arg_count": 2,
       "frame": "content_script"

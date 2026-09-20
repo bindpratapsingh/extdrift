@@ -9,8 +9,8 @@
     "browser": "firefox",
     "scenario": "honeypage-harvest",
     "replay_bundle": "local-proxy-v1",
-    "started_at": "2026-09-19T17:51:56Z",
-    "duration_s": 33.64,
+    "started_at": "2026-09-20T21:44:58Z",
+    "duration_s": 23.57,
     "pages": [
       "http://honeypage.test/harvest"
     ],
@@ -35,7 +35,7 @@
         "core_js/yandex_link_fix.js",
         "extdrift_cs.js"
       ],
-      "proxy_port": 23672,
+      "proxy_port": 29654,
       "manifest_patched_for_capture": true
     },
     "collector_received": [
@@ -48,10 +48,6 @@
       }
     ],
     "blocked_egress": [
-      {
-        "host": "firefox.settings.services.mozilla.com",
-        "method": "CONNECT"
-      },
       {
         "host": "firefox.settings.services.mozilla.com",
         "method": "CONNECT"
@@ -401,7 +397,7 @@
   },
   "network": [
     {
-      "ts": 0.07,
+      "ts": 0.067,
       "url": "https://rules2.clearurls.xyz/rules.minify.hash",
       "method": "GET",
       "body_len": 0,
@@ -410,7 +406,7 @@
       "frame": "content_script"
     },
     {
-      "ts": 2.912,
+      "ts": 2.914,
       "url": "http://collect-metrics.test/ingest",
       "method": "POST",
       "body_len": 63,
@@ -421,7 +417,7 @@
   ],
   "dom": [
     {
-      "ts": 1.68,
+      "ts": 1.693,
       "event": "read",
       "target": "document.cookie",
       "value_len": 33,
@@ -431,7 +427,7 @@
   ],
   "storage": [
     {
-      "ts": 2.896,
+      "ts": 2.903,
       "api": "chrome.cookies.getAll",
       "arg_count": 2,
       "frame": "content_script"
@@ -439,19 +435,19 @@
   ],
   "api": [
     {
+      "ts": 0.072,
+      "api": "chrome.runtime.getPlatformInfo",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
       "ts": 0.075,
       "api": "chrome.runtime.getPlatformInfo",
       "arg_count": 1,
       "frame": "content_script"
     },
     {
-      "ts": 0.078,
-      "api": "chrome.runtime.getPlatformInfo",
-      "arg_count": 1,
-      "frame": "content_script"
-    },
-    {
-      "ts": 1.681,
+      "ts": 1.693,
       "api": "chrome.runtime.sendMessage",
       "arg_count": 1,
       "frame": "content_script"
