@@ -148,6 +148,39 @@ class TestCollectorCorpus(unittest.TestCase):
                             v1_dir="a", v2_dir="b", label="evil")
 
 
+class TestChromeCollector(unittest.TestCase):
+    def test_parse_update_xml_listed(self):
+        from engine.collector.chrome import _parse_update_xml
+        xml = ('<gupdate><app appid="gighmmpiobklfepjocnamgkkbiglidom" status="ok">'
+               '<updatecheck status="ok" codebase="https://x.test/a.crx" version="6.46.0"/>'
+               '</app></gupdate>')
+        r = _parse_update_xml(xml, "gighmmpiobklfepjocnamgkkbiglidom")
+        self.assertEqual(r["codebase"], "https://x.test/a.crx")
+        self.assertEqual(r["version"], "6.46.0")
+
+    def test_parse_update_xml_delisted(self):
+        from engine.collector.chrome import _parse_update_xml
+        xml = ('<gupdate><app appid="cjpalhdlnbpafiamejdnhcphjbkeiagm" status="ok">'
+               '<updatecheck status="noupdate"/></app></gupdate>')
+        r = _parse_update_xml(xml, "cjpalhdlnbpafiamejdnhcphjbkeiagm")
+        self.assertIsNone(r["codebase"])          # delisted -> no download
+        self.assertEqual(r["status"], "noupdate")
+
+    def test_invalid_ext_id_rejected(self):
+        from engine.collector.chrome import ChromeError, chrome_update_info
+        with self.assertRaises(ChromeError):
+            chrome_update_info("not-a-real-id")
+
+    def test_parse_crx4chrome_versions(self):
+        from engine.collector.chrome import _parse_crx4chrome
+        html = ('<a href="/crx/111/">AdBlock 6.46.0 download</a>'
+                '<a href="/crx/222/">AdBlock 7.3.0 download</a>'
+                '<a href="/crx/111/">AdBlock 6.46.0 dup</a>')
+        vs = _parse_crx4chrome(html)
+        self.assertEqual([v["version"] for v in vs], ["6.46.0", "7.3.0"])   # de-duped
+        self.assertTrue(vs[0]["detail_url"].endswith("/crx/111/"))
+
+
 @unittest.skipUnless(_ml_available(), "sklearn/joblib not installed")
 class TestPredictBridge(unittest.TestCase):
     def test_predict_returns_none_without_a_model(self):
