@@ -78,19 +78,20 @@ overlap), under cross-validation that splits by extension:
 training** at **43–100%** (100% on credential/cookie theft, lower on stealthy families).
 
 **Real-world validation — the synthetic distribution transfers to real extensions.** Real
-Firefox update pairs are captured through the Firefox engine into the *same* feature schema:
-real benign updates and the same real extensions (uBlock, Dark Reader, Privacy Badger,
-Decentraleyes, ClearURLs) weaponised with a real payload and elicited by a Hulk-style
-HoneyPage. The decisive test trains on **synthetic data only** and evaluates on the real rows
-it never saw:
+Firefox update pairs from **15 extensions** (uBlock, AdBlock Plus, AdGuard, Dark Reader,
+Privacy Badger, LanguageTool, SingleFile, FoxyProxy, …) are captured through the Firefox
+engine into the *same* feature schema: real benign updates, and the same real extensions
+weaponised with a real payload elicited by a Hulk-style HoneyPage. The decisive test trains
+on **synthetic data only** and evaluates on the 45 real pairs it never saw:
 
-| Held-out test on real extensions | Result |
+| Held-out test on real extensions (45 pairs) | Result |
 |---|---|
-| Rules, malicious recall on real weaponised extensions | **10/10 (100%)** |
-| **Model trained on synthetic only → tested on real** | **PR-AUC 1.0 · recall 0.90 · precision 1.0 · 0% FPR** |
+| Rules, malicious recall on real weaponised extensions | **30/30 (100%)** |
+| **Model trained on synthetic only → tested on real** | **PR-AUC 0.998 · recall 0.93 · precision 1.0 · 0% FPR** |
 
-A benign Privacy Badger update trips a *rule* (a real false positive) but the *learned model*
-correctly calls it benign (0.04) — the concrete case for ML over rules, on real data.
+Three benign updates (LanguageTool, Privacy Badger, Return-YouTube-Dislikes) trip a *rule* —
+real false positives — but the *learned model* correctly calls all three benign (≤0.03): the
+concrete case for ML over rules, on real data.
 
 ---
 
