@@ -21,7 +21,7 @@ import re
 import time
 from pathlib import Path
 
-from engine.collector.chrome import chrome_probe
+from engine.collector.chrome import chrome_probe, crx4chrome_page
 
 _ID_RE = re.compile(r"^[a-p]{32}$")
 
@@ -47,7 +47,24 @@ def _ids() -> list[str]:
     return out
 
 
-def run(sample: int = 150, delay: float = 0.4, seed: int = 0) -> dict:
+def _pair_feasibility(live_ids: list[str], n: int, delay: float) -> dict:
+    """For the still-live malicious IDs, can we get an OLDER version to form a real pair?
+
+    The current (malicious) version comes from the endpoint; a pair also needs a predecessor,
+    which only third-party archives (crx4chrome) might hold. This reports how many have any
+    archived history — the empirical ceiling on assembling real malicious Chrome pairs.
+    """
+    checked = live_ids[:n]
+    have = 0
+    for eid in checked:
+        p = crx4chrome_page(eid)
+        if p.get("versions") and not p.get("error"):
+            have += 1
+        time.sleep(delay)
+    return {"checked": len(checked), "with_history": have}
+
+
+def run(sample: int = 150, delay: float = 0.4, seed: int = 0, history: int = 0) -> dict:
     ids = _ids()
     if not ids:
         print("No IOC list at", IOC)
@@ -80,6 +97,15 @@ def run(sample: int = 150, delay: float = 0.4, seed: int = 0) -> dict:
     print(f"Delisted (no current CRX in the store):          {len(chosen)-live}/{len(chosen)} "
           f"= {1-rate:.1%}")
     print(f"Control (should be live): {ctrl}")
+
+    if history:
+        live_ids = [r["ext_id"] for r in results if r["live"]]
+        feas = _pair_feasibility(live_ids, history, delay)
+        print(f"\nReal-pair feasibility: of {feas['checked']} still-live malicious IDs, "
+              f"{feas['with_history']} have any archived predecessor on crx4chrome.")
+        print("   -> a current malicious CRX is available, but its predecessor is not, so a real "
+              "malicious UPDATE PAIR usually cannot be assembled; the weaponise-a-real-extension "
+              "substitute is the necessary method, not a shortcut.")
     print("\nReading: the malicious class is overwhelmingly delisted, so the current-version "
           "endpoint cannot supply it. Real malicious Chrome pairs therefore need a historical "
           "archive (crx4chrome) or the weaponise-a-real-extension substitute we already use; "
@@ -92,8 +118,10 @@ def main(argv=None) -> int:
     ap.add_argument("--sample", type=int, default=150)
     ap.add_argument("--delay", type=float, default=0.4)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--history", type=int, default=0,
+                    help="also check crx4chrome archived-history coverage for N live IDs")
     args = ap.parse_args(argv)
-    run(sample=args.sample, delay=args.delay, seed=args.seed)
+    run(sample=args.sample, delay=args.delay, seed=args.seed, history=args.history)
     return 0
 
 
