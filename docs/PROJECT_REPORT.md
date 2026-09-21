@@ -612,6 +612,25 @@ Badger, Return-YouTube-Dislikes) legitimately changed their network behaviour an
 
 **Static track:** leave-one-extension-out RF on real static-code deltas reaches **PR-AUC 1.0**.
 
+**Statistical significance (`experiments/statistical_rigor.py`).** Bootstrapping (2,000 resamples of
+the leakage-free out-of-fold predictions) puts the winner at **PR-AUC 0.983 [0.976, 0.989]** vs rules
+**0.868 [0.844, 0.891]**; the **+0.115 gain has 95% CI [0.093, 0.137]** — the CI excludes zero, so the
+ML tier's edge over the rules baseline is statistically significant, not noise.
+
+**Locked held-out test (`experiments/operating_point.py`).** On a fixed by-extension split (67
+held-out extensions never used for tuning), reported once: **PR-AUC 0.976, FPR@90%-recall 0.020**; at
+the deployed threshold (max-F1, calibrated on train only) recall 0.90 / precision 0.96 / FPR 0.027.
+Scores are strongly separated on the held-out set (malicious median prob 0.997 vs benign 0.037).
+
+**Anomaly layer on real data (`engine/ml/anomaly.py --real`).** Fit on synthetic-benign deltas only
+(never saw a real extension or any malicious example), it flags **28/30 = 93%** of real weaponised
+extensions at 13% FPR, **ROC-AUC 0.989** — the novelty detector transfers to the unseen.
+
+**Head-to-head vs *You've Changed* on real code (`experiments/youve_changed_headtohead.py`).** On all
+**21 real extensions**, the static (You've Changed style) detector catches the clean payload **21/21**
+but the obfuscated one **0/21** — completely blinded — while our dynamic diff catches both (identical
+runtime behaviour). This is the empirical case for dynamic over static.
+
 ---
 
 ## 17. Limitations and honesty
@@ -663,6 +682,12 @@ never saw at PR-AUC 0.998, precision 1.0 (`experiments/real_behavioural_eval.py`
 **Q: How do you avoid the classic ML evaluation mistakes?**
 Extension-level grouping (StratifiedGroupKFold), a strict temporal split, PR-AUC + FPR@recall not
 accuracy, and ablations — the six pitfalls of §3.
+
+**Q: Are the results statistically significant, or could they be luck?**
+Bootstrap 95% confidence intervals (`experiments/statistical_rigor.py`) show the ML-over-rules gain
+is +0.115 PR-AUC with CI [0.093, 0.137] — excludes zero, so significant. And a locked by-extension
+held-out test (`experiments/operating_point.py`), reported once, gives PR-AUC 0.976 with the decision
+threshold chosen on train only — so the number is not tuned on the test data.
 
 **Q: How do you know your sandbox actually captures malicious behaviour and not noise?**
 The fake collector logs exfiltration as ground truth (a leak that actually reached the collector),
