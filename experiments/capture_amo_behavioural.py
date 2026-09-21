@@ -46,7 +46,12 @@ def _pairs() -> list[dict]:
     return out
 
 
-def run(limit: int | None = None, scenario: str = SCENARIO, headless: bool = True) -> dict:
+def _complete(dest: Path) -> bool:
+    return all((dest / f).exists() for f in ("v1.trace.json", "v2.trace.json", "label.json"))
+
+
+def run(limit: int | None = None, scenario: str = SCENARIO, headless: bool = True,
+        skip_existing: bool = True) -> dict:
     from engine.sandbox.firefox_capture import capture_firefox
 
     pairs = _pairs()
@@ -56,10 +61,15 @@ def run(limit: int | None = None, scenario: str = SCENARIO, headless: bool = Tru
     if limit:
         pairs = pairs[:limit]
 
-    done, failed = [], []
+    done, failed, skipped = [], [], []
     for i, p in enumerate(pairs, 1):
         slug = p["slug"]
         dest = CAPTURED / f"amo_{slug}"
+        # Resumable: a large Mac run can be stopped and restarted; already-captured pairs
+        # are left alone so no work is repeated.
+        if skip_existing and _complete(dest):
+            print(f"[{i}/{len(pairs)}] {slug}: already captured, skipping", flush=True)
+            skipped.append(slug); continue
         dest.mkdir(parents=True, exist_ok=True)
         print(f"[{i}/{len(pairs)}] {slug}  {p.get('v1')} -> {p.get('v2')} ...", flush=True)
         work = WORK / slug
@@ -83,11 +93,12 @@ def run(limit: int | None = None, scenario: str = SCENARIO, headless: bool = Tru
         print(f"        captured  (v1+v2 events: {ev})")
         done.append(slug)
 
-    print(f"\n[amo-behavioural] captured {len(done)} real pairs; {len(failed)} failed.")
+    print(f"\n[amo-behavioural] captured {len(done)} new pairs; {len(skipped)} already done; "
+          f"{len(failed)} failed.")
     if done:
         print(f"[amo-behavioural] -> {CAPTURED} ; fold in with:")
         print("    python -m engine.batch --captured data/dataset/captured --out data/dataset/deltas.csv")
-    return {"captured": len(done), "failed": failed, "pairs": done}
+    return {"captured": len(done), "skipped": skipped, "failed": failed, "pairs": done}
 
 
 def main(argv=None) -> int:
@@ -95,8 +106,10 @@ def main(argv=None) -> int:
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--scenario", default=SCENARIO)
     ap.add_argument("--show", action="store_true", help="run with a visible browser window")
+    ap.add_argument("--force", action="store_true", help="re-capture even if already present")
     args = ap.parse_args(argv)
-    run(limit=args.limit, scenario=args.scenario, headless=not args.show)
+    run(limit=args.limit, scenario=args.scenario, headless=not args.show,
+        skip_existing=not args.force)
     return 0
 
 

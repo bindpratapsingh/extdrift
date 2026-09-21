@@ -43,7 +43,13 @@ def _pairs():
     return out
 
 
-def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | None = None) -> dict:
+def _fam_complete(slug: str, fam: str) -> bool:
+    d = CAPTURED / f"amo_{slug}_mal_{fam}"
+    return all((d / f).exists() for f in ("v1.trace.json", "v2.trace.json", "label.json"))
+
+
+def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | None = None,
+        skip_existing: bool = True) -> dict:
     from engine.sandbox.firefox_capture import capture_firefox
     from engine.weaponiser import weaponise
 
@@ -55,11 +61,17 @@ def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | N
         print("No AMO pairs on disk. Run the AMO collector first (see data/real/amo).")
         return {"captured": 0}
 
-    made, failed = [], []
+    made, failed, skipped = [], [], []
     for i, p in enumerate(pairs, 1):
         slug = p["slug"]
         v2 = Path(p["v2_dir"])
         work = WORK / slug
+        todo = [f for f in families if not (skip_existing and _fam_complete(slug, f))]
+        if not todo:
+            # Resumable: every family for this extension is already captured; skip the
+            # expensive baseline capture entirely.
+            print(f"[{i}/{len(pairs)}] {slug}: all families already captured, skipping", flush=True)
+            skipped.append(slug); continue
         try:
             # Baseline: the real v2, captured once and reused as v1 for every family.
             base_trace = capture_firefox(v2, SCENARIO, out_path=work / "base.trace.json",
@@ -70,7 +82,7 @@ def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | N
             shutil.rmtree(work, ignore_errors=True)
             continue
 
-        for fam in families:
+        for fam in todo:
             dest = CAPTURED / f"amo_{slug}_mal_{fam}"
             dest.mkdir(parents=True, exist_ok=True)
             mal_src = work / f"mal_{fam}"
@@ -97,11 +109,12 @@ def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | N
 
         shutil.rmtree(work, ignore_errors=True)   # never keep third-party / weaponised source
 
-    print(f"\n[weaponised-behavioural] made {len(made)} real malicious rows; {len(failed)} failed.")
+    print(f"\n[weaponised-behavioural] made {len(made)} new malicious rows; "
+          f"{len(skipped)} extensions already done; {len(failed)} failed.")
     if made:
         print("[weaponised-behavioural] fold in with:")
         print("    python -m engine.batch --captured data/dataset/captured --out data/dataset/deltas.csv")
-    return {"made": made, "failed": failed}
+    return {"made": made, "skipped": skipped, "failed": failed}
 
 
 def main(argv=None) -> int:
@@ -109,8 +122,9 @@ def main(argv=None) -> int:
     ap.add_argument("--exts", type=int, default=3, help="how many real extensions to weaponise")
     ap.add_argument("--only", default=None, help="capture only this slug (e.g. darkreader)")
     ap.add_argument("--show", action="store_true", help="run with a visible browser window")
+    ap.add_argument("--force", action="store_true", help="re-capture even if already present")
     args = ap.parse_args(argv)
-    run(n_exts=args.exts, headless=not args.show, only=args.only)
+    run(n_exts=args.exts, headless=not args.show, only=args.only, skip_existing=not args.force)
     return 0
 
 
