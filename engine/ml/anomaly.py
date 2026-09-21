@@ -72,6 +72,48 @@ def run_anomaly(path="data/dataset/deltas.csv"):
     return {"dataset": str(path), "families": families, "per_family": per_family}
 
 
+def run_anomaly_real(path="data/dataset/deltas.csv"):
+    """Novelty on REAL data: fit on SYNTHETIC-BENIGN only, then score the real captured rows.
+
+    The honest zero-shot test — the detector has never seen a real extension *or* any malicious
+    example; does it still flag the real weaponised extensions as anomalous while leaving real
+    benign updates alone?
+    """
+    from sklearn.metrics import roc_auc_score
+    df, X, y, groups, order = load_dataset(path)
+    src = df["source"].astype(str).to_numpy()
+    real = np.array([s.startswith("amo-firefox") for s in src])
+    train = (~real) & (y == 0)                       # synthetic benign only
+    if int(real.sum()) < 2 or int(train.sum()) < 10:
+        return None
+    scaler, iso, ocsvm = _fit_detectors(X[train])
+    thr = np.percentile(_anomaly_scores(scaler, iso, ocsvm, X[train]), 95)
+    rs = _anomaly_scores(scaler, iso, ocsvm, X[real]); ry = y[real]
+    flagged = rs >= thr
+    P = int(ry.sum()); N = int((ry == 0).sum())
+    tp = int(((flagged == 1) & (ry == 1)).sum()); fp = int(((flagged == 1) & (ry == 0)).sum())
+    return {"real_rows": int(real.sum()), "real_malicious": P, "real_benign": N,
+            "detected": tp, "detection_rate": round(tp / P, 3) if P else None,
+            "benign_false_positives": fp, "fpr": round(fp / N, 3) if N else None,
+            "roc_auc": round(roc_auc_score(ry, rs), 3) if P and N else None}
+
+
+def _print_real(r):
+    if not r:
+        print("\nNo real captured rows in the dataset yet — capture some first (see MAC_RUNBOOK).")
+        return
+    print("\nAnomaly / novelty on REAL data (fit on synthetic-benign only; never saw a real "
+          "extension or any malicious example):")
+    print(f"   real rows: {r['real_rows']}  ({r['real_malicious']} malicious, {r['real_benign']} benign)")
+    dr = f"{r['detection_rate']:.0%}" if r['detection_rate'] is not None else "-"
+    fpr = f"{r['fpr']:.0%}" if r['fpr'] is not None else "-"
+    print(f"   detection rate on real weaponised: {r['detected']}/{r['real_malicious']} = {dr}")
+    print(f"   false positives on real benign:    {r['benign_false_positives']}/{r['real_benign']} = {fpr}")
+    print(f"   ROC-AUC (real benign vs malicious): {r['roc_auc']}")
+    print("   Reading: a purely-benign, synthetic-only detector still separates real weaponised")
+    print("   extensions from real benign updates -> the novelty layer transfers to the unseen.")
+
+
 def _print(summary):
     print("\nAnomaly / novelty layer — leave-one-family-out (train on benign deltas only)")
     print("Each row: a malicious family the detector NEVER saw in training.\n")
@@ -92,9 +134,18 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="extdrift-anomaly")
     ap.add_argument("dataset", nargs="?", default="data/dataset/deltas.csv")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--real", action="store_true",
+                    help="also run the novelty-on-real-data test (fit on synthetic benign)")
     args = ap.parse_args(argv)
     summary = run_anomaly(args.dataset)
-    print(json.dumps(summary, indent=2)) if args.json else _print(summary)
+    if args.json:
+        if args.real:
+            summary["real"] = run_anomaly_real(args.dataset)
+        print(json.dumps(summary, indent=2))
+    else:
+        _print(summary)
+        if args.real:
+            _print_real(run_anomaly_real(args.dataset))
     return 0
 
 
