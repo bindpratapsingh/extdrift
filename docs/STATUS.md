@@ -5,11 +5,12 @@
 > sync with the code; it is the single place to see "what exists and what's left" at a glance.
 > The full narrative is in [PROJECT_REPORT.md](PROJECT_REPORT.md).
 
-**Last updated:** 2026-09-21 · **at commit:** `6d9212a` · **tests:** 111 passing · **dataset:**
+**Last updated:** 2026-09-21 · **at commit:** `3a91346` · **tests:** 111 passing · **dataset:**
 1,047 pairs (1,000 synthetic + 45 real + 2 fixtures), 266 extensions.
 
-**Active priority:** P1 — evaluation rigor: **essentials done** (CIs, anomaly-on-real, held-out +
-operating point, You've Changed head-to-head). Next: P3 (Chromium-on-real, MV3) + P7 (reproducibility/CI). See §6.
+**Done this session:** P1 evaluation rigor (all essentials), P5 adware sub-study, P7 CI +
+reproducibility, report updated with rigor results. **Remaining for laptop:** P3 (Chromium-on-real,
+MV3). **Remaining for Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GNN. See §6.
 
 **Legend:** ✅ done & tested · 🟡 partial / needs validation · ⬜ not started · ❌ blocked (with reason)
 
@@ -75,6 +76,7 @@ operating point, You've Changed head-to-head). Next: P3 (Chromium-on-real, MV3) 
 | Statistical rigor (bootstrap CIs + ML-vs-rules significance) | ✅ | `experiments/statistical_rigor.py` |
 | Locked held-out test + calibrated operating point | ✅ | `experiments/operating_point.py` |
 | You've Changed head-to-head (static vs dynamic, real code) | ✅ | `experiments/youve_changed_headtohead.py` |
+| Adware sub-study (zero-shot detection of unseen ad-injection) | ✅ | `experiments/adware_study.py` |
 
 ## 5. Current dataset & headline results
 
@@ -92,9 +94,9 @@ operating point, You've Changed head-to-head). Next: P3 (Chromium-on-real, MV3) 
 **[E]** = essential to call it complete · **[S]** = stretch · **[❌]** = blocked (reason given).
 
 ### Data
-- ⬜ **[E]** Scale real benign corpus to hundreds of pairs (infra ready; compute time — Mac helps).
-- ⬜ **[E]** Capture genuinely-malicious *live* Chrome extensions in the sealed sandbox as real samples.
-- ⬜ **[E]** Adware-specific sub-study (known adware IDs + `sc_ad_inject` features), reported separately.
+- ⬜ **[E, Mac/P2]** Scale real benign corpus to hundreds of pairs (infra + `scripts/scale_capture.sh` ready).
+- ⬜ **[E, Mac/P4]** Capture genuinely-malicious *live* Chrome extensions in the sealed sandbox.
+- ✅ **[E]** Adware sub-study — `experiments/adware_study.py` (zero-shot: supervised 0%, anomaly 49%).
 - ❌ Real malicious *update pairs* — **blocked:** no public source (60% delisted; 0/15 archived). Documented; weaponise substitute stands.
 
 ### Method completeness
@@ -114,9 +116,9 @@ operating point, You've Changed head-to-head). Next: P3 (Chromium-on-real, MV3) 
 
 ### System & usability
 - ⬜ **[E]** Throughput / performance characterization (extensions per hour, bottlenecks).
-- ⬜ **[E]** One-command reproducibility package (reproduce every figure/number).
+- ✅ **[E]** One-command reproducibility package — `scripts/reproduce.sh`.
+- ✅ **[S]** CI (tests on push) — `.github/workflows/tests.yml`.
 - ⬜ **[S]** Analyst-facing report dashboard beyond CLI text/JSON.
-- ⬜ **[S]** CI (tests on push).
 
 ### Academic deliverables
 - ⬜ **[E]** Final report / thesis (much raw material exists in `docs/`).
@@ -131,6 +133,8 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-09-21** — P5 adware sub-study (`3a91346`); report updated with rigor results (`41ad263`);
+  P7 CI + `scripts/reproduce.sh` (`fe3ada0`).
 - **2026-09-21** — P1 essentials done: You've Changed head-to-head on real code (static clean
   21/21, obfuscated 0/21) (`6d9212a`); held-out test + operating point (PR-AUC 0.976) (`fd6ae30`);
   anomaly-on-real (93% detect / ROC-AUC 0.989) (`fcb56bd`).
