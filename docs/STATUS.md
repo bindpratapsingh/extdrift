@@ -5,10 +5,11 @@
 > sync with the code; it is the single place to see "what exists and what's left" at a glance.
 > The full narrative is in [PROJECT_REPORT.md](PROJECT_REPORT.md).
 
-**Last updated:** 2026-09-21 · **at commit:** `23e7df9` · **tests:** 111 passing · **dataset:**
+**Last updated:** 2026-09-21 · **at commit:** `6d9212a` · **tests:** 111 passing · **dataset:**
 1,047 pairs (1,000 synthetic + 45 real + 2 fixtures), 266 extensions.
 
-**Active priority:** P1 — evaluation rigor (started; confidence-intervals piece done). See §6.
+**Active priority:** P1 — evaluation rigor: **essentials done** (CIs, anomaly-on-real, held-out +
+operating point, You've Changed head-to-head). Next: P3 (Chromium-on-real, MV3) + P7 (reproducibility/CI). See §6.
 
 **Legend:** ✅ done & tested · 🟡 partial / needs validation · ⬜ not started · ❌ blocked (with reason)
 
@@ -33,7 +34,7 @@
 | AST/token-diff baseline | ✅ | `engine/features/ast_diff.py` |
 | Rules scorer (12 rules, thresholds) | ✅ | `engine/scoring/rules.py` |
 | ML bake-off (6 models, leakage-free CV + temporal + SMOTE opt) | ✅ | `engine/ml/bakeoff.py` |
-| Anomaly layer (leave-one-family-out) | 🟡 | `engine/ml/anomaly.py` — evaluated on synthetic; **not yet on real data** |
+| Anomaly layer (leave-one-family-out + **on real data**) | ✅ | `engine/ml/anomaly.py` — `--real`: 93% detect / 13% FPR / ROC-AUC 0.989 on real, fit on synthetic-benign only |
 | Predict bridge (trained model on one pair) | ✅ | `engine/ml/predict.py` |
 | Report rendering (text + JSON verdict) | ✅ | `engine/report/render.py` |
 | End-to-end runner + CLI | ✅ | `engine/runner.py`, `engine/cli.py` |
@@ -72,6 +73,8 @@
 | Real-data eval + synthetic→real transfer | ✅ | `experiments/real_behavioural_eval.py` |
 | Chrome delisting / pair-feasibility probe | ✅ | `experiments/chrome_delisting_probe.py` |
 | Statistical rigor (bootstrap CIs + ML-vs-rules significance) | ✅ | `experiments/statistical_rigor.py` |
+| Locked held-out test + calibrated operating point | ✅ | `experiments/operating_point.py` |
+| You've Changed head-to-head (static vs dynamic, real code) | ✅ | `experiments/youve_changed_headtohead.py` |
 
 ## 5. Current dataset & headline results
 
@@ -99,13 +102,14 @@
 - ⬜ **[E]** Verify MV3 service-worker capture on real MV3 extensions end-to-end.
 - ⬜ **[S]** Broader trigger elicitation (dynamic querySelector synthesis, time-bomb handling).
 
-### Model & evaluation rigor  — **[P1, in progress]**
+### Model & evaluation rigor  — **[P1, essentials DONE]**
 - ✅ **[E]** Confidence intervals + significance testing — `experiments/statistical_rigor.py`
   (HistGB vs rules +0.115 PR-AUC, 95% CI [0.093, 0.137], significant).
-- ⬜ **[E]** Threshold / operating-point calibration from the real FPR–recall curve. *(next in P1)*
-- ⬜ **[E]** A locked held-out test set, reported once. *(next in P1)*
-- ⬜ **[E]** Anomaly layer evaluated on **real** deltas (currently synthetic only). *(next in P1)*
-- ⬜ **[E]** Full head-to-head reproduction of prior work (You've Changed) on our data.
+- ✅ **[E]** Threshold / operating-point calibration + locked held-out test —
+  `experiments/operating_point.py` (held-out PR-AUC 0.976, FPR@90%rec 0.020).
+- ✅ **[E]** Anomaly layer evaluated on **real** deltas — `engine/ml/anomaly.py --real`.
+- ✅ **[E]** Head-to-head reproduction of prior work (You've Changed) on real code —
+  `experiments/youve_changed_headtohead.py` (static clean 21/21, obfuscated 0/21).
 - ⬜ **[S]** Tier-2 dependency-graph (GNN) model — the advisor's "go beyond RF."
 
 ### System & usability
@@ -127,6 +131,11 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-09-21** — P1 essentials done: You've Changed head-to-head on real code (static clean
+  21/21, obfuscated 0/21) (`6d9212a`); held-out test + operating point (PR-AUC 0.976) (`fd6ae30`);
+  anomaly-on-real (93% detect / ROC-AUC 0.989) (`fcb56bd`).
+- **2026-09-21** — Mac hand-off: resumable captures, `scripts/scale_capture.sh`, `docs/MAC_RUNBOOK.md`,
+  `.gitattributes` (LF for scripts) (`3b3f54d`).
 - **2026-09-21** — P1 started: `experiments/statistical_rigor.py` — bootstrap 95% CIs + ML-vs-rules
   significance (HistGB 0.983 [0.976, 0.989] vs rules 0.868; gain CI [0.093, 0.137], significant). (`23e7df9`)
 - **2026-09-21** — Pushed `PROJECT_REPORT.md` to GitHub (`19a77b6`). STATUS.md kept local.
