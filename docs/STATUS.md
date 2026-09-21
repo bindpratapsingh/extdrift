@@ -8,9 +8,10 @@
 **Last updated:** 2026-09-21 · **at commit:** `3a91346` · **tests:** 111 passing · **dataset:**
 1,047 pairs (1,000 synthetic + 45 real + 2 fixtures), 266 extensions.
 
-**Done this session:** P1 evaluation rigor (all essentials), P5 adware sub-study, P7 CI +
-reproducibility, report updated with rigor results. **Remaining for laptop:** P3 (Chromium-on-real,
-MV3). **Remaining for Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GNN. See §6.
+**Done this session:** P1 evaluation rigor (all essentials), P3 Chromium-on-real + MV3, P5 adware
+sub-study, P7 CI + reproducibility + performance, report updated. **All laptop-only essentials are
+now complete.** **Remaining = Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GNN (+ the
+final presentation & thesis write-up). See §6.
 
 **Legend:** ✅ done & tested · 🟡 partial / needs validation · ⬜ not started · ❌ blocked (with reason)
 
@@ -26,7 +27,7 @@ MV3). **Remaining for Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GN
 | Firefox capture proxy (serve + absorb + sealed egress) | ✅ | `engine/sandbox/proxy.py` |
 | Instrumentation (prelude injection; content/MV2 bg-page/MV3 SW) | ✅ | `engine/sandbox/rewrite.py`, `prelude.js` |
 | Scenarios + HoneyPage + event-handler fuzzing (Hulk) | ✅ | `engine/sandbox/scenarios.py` |
-| Chromium capture engine (Playwright) | 🟡 | `engine/sandbox/capture.py` — validated on synthetic + fixture; **not yet on real extensions** |
+| Chromium capture engine (Playwright) | ✅ | `engine/sandbox/capture.py` — validated on a real MV3 extension (SW reached; weaponised diff MALICIOUS) via `experiments/chrome_spike.py` |
 | Firefox capture engine (Selenium, temp add-on) | ✅ | `engine/sandbox/firefox_capture.py` — validated on 15 real extensions |
 | Trace schema + validation | ✅ | `engine/features/schema.py` |
 | Behavioural feature extractor (26 features) | ✅ | `engine/features/extract.py` |
@@ -77,6 +78,8 @@ MV3). **Remaining for Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GN
 | Locked held-out test + calibrated operating point | ✅ | `experiments/operating_point.py` |
 | You've Changed head-to-head (static vs dynamic, real code) | ✅ | `experiments/youve_changed_headtohead.py` |
 | Adware sub-study (zero-shot detection of unseen ad-injection) | ✅ | `experiments/adware_study.py` |
+| Chromium-on-real + MV3 validation | ✅ | `experiments/chrome_spike.py` |
+| Performance characterization | ✅ | `experiments/performance.py` |
 
 ## 5. Current dataset & headline results
 
@@ -100,8 +103,8 @@ MV3). **Remaining for Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GN
 - ❌ Real malicious *update pairs* — **blocked:** no public source (60% delisted; 0/15 archived). Documented; weaponise substitute stands.
 
 ### Method completeness
-- ⬜ **[E]** Validate the Chromium engine on real extensions (currently synthetic + fixture only).
-- ⬜ **[E]** Verify MV3 service-worker capture on real MV3 extensions end-to-end.
+- ✅ **[E]** Validate the Chromium engine on real extensions — `experiments/chrome_spike.py`.
+- ✅ **[E]** MV3 service-worker capture on a real MV3 extension — verified in the same spike.
 - ⬜ **[S]** Broader trigger elicitation (dynamic querySelector synthesis, time-bomb handling).
 
 ### Model & evaluation rigor  — **[P1, essentials DONE]**
@@ -115,7 +118,7 @@ MV3). **Remaining for Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GN
 - ⬜ **[S]** Tier-2 dependency-graph (GNN) model — the advisor's "go beyond RF."
 
 ### System & usability
-- ⬜ **[E]** Throughput / performance characterization (extensions per hour, bottlenecks).
+- ✅ **[E]** Throughput / performance characterization — `experiments/performance.py`.
 - ✅ **[E]** One-command reproducibility package — `scripts/reproduce.sh`.
 - ✅ **[S]** CI (tests on push) — `.github/workflows/tests.yml`.
 - ⬜ **[S]** Analyst-facing report dashboard beyond CLI text/JSON.
@@ -133,6 +136,8 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-09-21** — P3 done: Chromium engine validated on a real MV3 extension (`9509109`) + P7
+  performance characterization (`c3fb8ba`). All laptop-only essentials complete.
 - **2026-09-21** — P5 adware sub-study (`3a91346`); report updated with rigor results (`41ad263`);
   P7 CI + `scripts/reproduce.sh` (`fe3ada0`).
 - **2026-09-21** — P1 essentials done: You've Changed head-to-head on real code (static clean
