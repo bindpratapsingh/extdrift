@@ -1,0 +1,27 @@
+name: tests
+
+# Runs the automated test suite on every push and pull request. The capture tests that need
+# a real browser skip automatically in CI (there is no browser), so this exercises the whole
+# analysis + ML pipeline without needing Playwright/Firefox binaries.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: python -m pytest tests/ -q
