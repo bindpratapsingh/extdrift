@@ -1,0 +1,3597 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{73a6fe31-595d-460b-a920-fcc0f8843232}",
+    "name": "NoScript",
+    "version": "13.6.35"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:31:26Z",
+    "duration_s": 15.95,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "ui/Prompts.js",
+        "xss/XSS.js",
+        "bg/ReportingCSP.js",
+        "bg/Defaults.js",
+        "bg/TabGuard.js",
+        "bg/RequestGuard.js",
+        "bg/Settings.js",
+        "bg/popupHandler.js",
+        "bg/main.js",
+        "common/themes.js",
+        "content/onScriptDisabled.js",
+        "content/syncFetchPolicy.js",
+        "content/staticNS.js",
+        "content/embeddingDocument.js",
+        "content/content.js",
+        "content/dirindex.js",
+        "content/eventsHook.js",
+        "content/eventsHook.main.js",
+        "content/gesture.js"
+      ],
+      "proxy_port": 64610,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "default_locale": "en",
+    "name": "NoScript",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{73a6fe31-595d-460b-a920-fcc0f8843232}",
+        "strict_min_version": "115.0"
+      },
+      "gecko_android": {}
+    },
+    "version": "13.6.35",
+    "description": "__MSG_Description__",
+    "incognito": "spanning",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'none'",
+    "icons": {
+      "16": "img/logo.svg",
+      "32": "img/logo.svg",
+      "48": "img/logo.svg",
+      "64": "img/logo.svg",
+      "128": "img/logo.svg",
+      "256": "img/logo.svg"
+    },
+    "permissions": [
+      "contextMenus",
+      "storage",
+      "tabs",
+      "unlimitedStorage",
+      "scripting",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "webRequestFilterResponse",
+      "webRequestFilterResponse.serviceWorkerScript",
+      "dns",
+      "<all_urls>",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "background": {
+      "scripts": [
+        "/nscl/lib/punycode.js",
+        "/nscl/service/Wakening.js",
+        "/nscl/common/sha256.js",
+        "/nscl/common/UA.js",
+        "/nscl/common/uuid.js",
+        "/nscl/common/SyncMessage.js",
+        "/nscl/common/log.js",
+        "/nscl/common/tld.js",
+        "/nscl/common/Messages.js",
+        "/nscl/common/CSP.js",
+        "/nscl/common/NetCSP.js",
+        "/nscl/common/CapsCSP.js",
+        "/nscl/common/RequestKey.js",
+        "/nscl/common/Sites.js",
+        "/nscl/common/Permissions.js",
+        "/nscl/common/Policy.js",
+        "/nscl/common/ContextStore.js",
+        "/nscl/common/locale.js",
+        "/nscl/common/Storage.js",
+        "/nscl/common/include.js",
+        "/nscl/common/DNS.js",
+        "/nscl/common/AddressMatcherWithDNS.js",
+        "/nscl/common/iputil.js",
+        "/nscl/common/SessionCache.js",
+        "/nscl/service/NavCache.js",
+        "/nscl/service/Scripting.js",
+        "/nscl/service/DocStartInjection.js",
+        "/nscl/service/LastListener.js",
+        "/nscl/service/patchWorkers.js",
+        "/nscl/service/TabCache.js",
+        "/nscl/service/TabTies.js",
+        "ui/Prompts.js",
+        "xss/XSS.js",
+        "bg/ReportingCSP.js",
+        "bg/Defaults.js",
+        "bg/TabGuard.js",
+        "bg/RequestGuard.js",
+        "bg/Settings.js",
+        "bg/popupHandler.js",
+        "bg/main.js",
+        "common/themes.js"
+      ],
+      "persistent": true
+    },
+    "content_scripts": [
+      {
+        "run_at": "document_start",
+        "matches": [
+          "<all_urls>"
+        ],
+        "match_about_blank": true,
+        "match_origin_as_fallback": true,
+        "all_frames": true,
+        "js": [
+          "/nscl/common/UA.js",
+          "/nscl/common/uuid.js",
+          "/nscl/common/log.js",
+          "/nscl/common/SyncMessage.js",
+          "/nscl/common/Messages.js",
+          "/nscl/common/CSP.js",
+          "/nscl/common/CapsCSP.js",
+          "/nscl/common/RequestKey.js",
+          "/nscl/content/DocRewriter.js",
+          "/nscl/content/Worlds.js",
+          "/nscl/main/Worlds.main.js",
+          "/nscl/content/patchWorkers.js",
+          "/nscl/main/patchWorkers.main.js",
+          "/nscl/content/DocumentCSP.js",
+          "/nscl/content/NoscriptElements.js",
+          "/nscl/content/prefetchCSSResources.js",
+          "/nscl/main/prefetchCSSResources.main.js",
+          "/nscl/content/PlaceHolder.js",
+          "/nscl/content/sanitizePaste.js",
+          "content/onScriptDisabled.js",
+          "/nscl/content/DocumentFreezer.js",
+          "content/syncFetchPolicy.js",
+          "content/staticNS.js",
+          "/nscl/content/media.js",
+          "/nscl/content/WasmHook.js",
+          "/nscl/main/WasmHook.main.js",
+          "/nscl/content/WebGLHook.js",
+          "/nscl/main/WebGLHook.main.js",
+          "content/embeddingDocument.js",
+          "content/content.js",
+          "content/dirindex.js",
+          "content/eventsHook.js",
+          "content/eventsHook.main.js",
+          "content/gesture.js"
+        ]
+      }
+    ],
+    "options_ui": {
+      "page": "ui/options.html",
+      "open_in_tab": true
+    },
+    "browser_action": {
+      "default_area": "navbar",
+      "default_title": "NoScript",
+      "default_icon": {
+        "64": "img/ui-maybe64.webp"
+      }
+    },
+    "commands": {
+      "toggleEnforcementForTab": {
+        "description": "__MSG_toggleEnforcementForTab__",
+        "suggested_key": {
+          "default": "Alt+Shift+Space",
+          "windows": "Alt+Shift+Comma"
+        }
+      },
+      "openPageUI": {
+        "description": "__MSG_pagePermissionsUI__",
+        "suggested_key": {
+          "default": "Alt+Shift+N"
+        }
+      },
+      "tempTrustPage": {
+        "description": "__MSG_TempTrustPage__"
+      },
+      "revokeTemp": {
+        "description": "__MSG_RevokeTemp__"
+      },
+      "_execute_action": {},
+      "_execute_browser_action": {}
+    }
+  },
+  "network": [],
+  "dom": [
+    {
+      "ts": 0.001,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.003,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.005,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.009,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.009,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.009,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.009,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.015,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.016,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.017,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "event": "read",
+      "target": "input#tgm-global",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "event": "read",
+      "target": "input#tgm-incognito",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "event": "read",
+      "target": "input#tgm-off",
+      "value_len": 3,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "event": "read",
+      "target": "input#tgm-never",
+      "value_len": 5,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "event": "read",
+      "target": "input#tgm-post",
+      "value_len": 4,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "event": "read",
+      "target": "input#tgm-always",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "event": "inject",
+      "target": "div#presets-sizer",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "event": "inject",
+      "target": "div.presets",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.031,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.031,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "div.presets",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "div#presets-sizer",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "read",
+      "target": "select#select-container",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.035,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.041,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "read",
+      "target": "input#preset",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.preset",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "event": "inject",
+      "target": "span.cap",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "read",
+      "target": "input#newsite",
+      "value_len": 0,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "event": "inject",
+      "target": "li.site",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "event": "read",
+      "target": "input#theme-light",
+      "value_len": 5,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "event": "read",
+      "target": "input#theme-dark",
+      "value_len": 4,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "event": "read",
+      "target": "input#theme-auto",
+      "value_len": 4,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#DEFAULT-1-0",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#capability-object-1",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#capability-script-1",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#DEFAULT-1-0",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "inject",
+      "target": "a.donate",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#DEFAULT-1-0",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#DEFAULT-1-0",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#capability-x-load-1",
+      "value_len": 6,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#capability-media-1",
+      "value_len": 5,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "event": "read",
+      "target": "input#DEFAULT-1-0",
+      "value_len": 7,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "inject",
+      "target": "div.customizer",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-frame-1",
+      "value_len": 5,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-unchecked_css-1",
+      "value_len": 13,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-noscript-1",
+      "value_len": 8,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-font-1",
+      "value_len": 4,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-wasm-1",
+      "value_len": 4,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-webgl-1",
+      "value_len": 5,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-ping-1",
+      "value_len": 4,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-lan-1",
+      "value_len": 3,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-lazy_load-1",
+      "value_len": 9,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-other-1",
+      "value_len": 5,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "event": "read",
+      "target": "input#capability-fetch-1",
+      "value_len": 5,
+      "origin": "moz-extension://c81ccb07-3373-4e95-90aa-4a81ac9ed228",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.007,
+      "api": "localStorage.getItem",
+      "key": "persistentTab-main-tabs",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.013,
+      "api": "localStorage.getItem",
+      "key": "theme",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "localStorage.getItem",
+      "key": "vintageTheme",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "api": "localStorage.getItem",
+      "key": "theme",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.028,
+      "api": "localStorage.getItem",
+      "key": "vintageTheme",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.004,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.004,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

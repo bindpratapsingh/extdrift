@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-xUfzOsOFlzSOXg@jetpack",
+    "name": "Reddit Enhancement Suite",
+    "version": "5.24.10"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:28:42Z",
+    "duration_s": 16.32,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.entry.js",
+        "foreground.entry.js"
+      ],
+      "proxy_port": 64429,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "Reddit Enhancement Suite",
+    "version": "5.24.10",
+    "description": "A suite of modules that enhance your Reddit browsing experience",
+    "author": "Reddit Enhancement Suite contributors",
+    "homepage_url": "https://redditenhancementsuite.com",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "jid1-xUfzOsOFlzSOXg@jetpack",
+        "data_collection_permissions": {
+          "required": [
+            "none"
+          ]
+        },
+        "strict_min_version": "115.0"
+      },
+      "gecko_android": {
+        "strict_min_version": "120.0"
+      }
+    },
+    "icons": {
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+    "page_action": {
+      "default_icon": {
+        "19": "css-on-small.png",
+        "38": "css-on.png"
+      }
+    },
+    "options_ui": {
+      "page": "options.html",
+      "open_in_tab": true
+    },
+    "background": {
+      "scripts": [
+        "background.entry.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "https://*.reddit.com/*"
+        ],
+        "all_frames": true,
+        "exclude_matches": [
+          "https://mod.reddit.com/*",
+          "https://ads.reddit.com/*",
+          "https://i.reddit.com/*",
+          "https://m.reddit.com/*",
+          "https://static.reddit.com/*",
+          "https://thumbs.reddit.com/*",
+          "https://blog.reddit.com/*",
+          "https://code.reddit.com/*",
+          "https://about.reddit.com/*",
+          "https://sh.reddit.com/*",
+          "https://*.reddit.com/talk/*",
+          "https://*.reddit.com/chat/*",
+          "https://*.reddit.com/*.compact",
+          "https://*.reddit.com/*.compact?*",
+          "https://*.reddit.com/*.mobile",
+          "https://*.reddit.com/*.mobile?*",
+          "https://*.reddit.com/*.json",
+          "https://*.reddit.com/*.json?*",
+          "https://*.reddit.com/*.json-html",
+          "https://*.reddit.com/*.json-html?*"
+        ],
+        "js": [
+          "foreground.entry.js"
+        ],
+        "css": [
+          "res.css"
+        ],
+        "run_at": "document_start"
+      }
+    ],
+    "content_security_policy": "default-src 'self'; img-src 'self' data:; connect-src http://extdrift-report.test http://*.test https://*.test https:; font-src 'self' data:; frame-ancestors https://*.reddit.com",
+    "permissions": [
+      "https://*.reddit.com/*",
+      "cookies",
+      "identity",
+      "tabs",
+      "history",
+      "storage",
+      "scripting",
+      "unlimitedStorage",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "downloads",
+      "geolocation",
+      "https://publish.twitter.com/oembed",
+      "https://backend.deviantart.com/oembed",
+      "https://api.gyazo.com/api/oembed",
+      "https://api.tumblr.com/v2/blog/*/posts",
+      "https://xkcd.com/*/info.0.json",
+      "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/*",
+      "https://www.googleapis.com/drive/v3/*",
+      "https://*.redd.it/*",
+      "https://www.flickr.com/services/oembed",
+      "https://embed.bsky.app/oembed"
+    ],
+    "web_accessible_resources": [
+      "prompt.html",
+      "prompt.entry.js",
+      "options.css",
+      "options.html"
+    ]
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": []
+}

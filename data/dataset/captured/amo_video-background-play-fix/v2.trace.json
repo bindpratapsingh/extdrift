@@ -1,0 +1,86 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "video-bg-play@timdream.org",
+    "name": "__MSG_extensionName__",
+    "version": "1.8.1"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:33:53Z",
+    "duration_s": 15.77,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "video-bg-play-content.js"
+      ],
+      "proxy_port": 64740,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "default_locale": "en",
+    "version": "1.8.1",
+    "description": "__MSG_extensionDescription__",
+    "icons": {
+      "48": "icon.svg",
+      "96": "icon.svg"
+    },
+    "applications": {
+      "gecko": {
+        "id": "video-bg-play@timdream.org",
+        "strict_min_version": "58.0"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*.youtube.com/*",
+          "*://*.youtube-nocookie.com/*",
+          "*://*.vimeo.com/*"
+        ],
+        "js": [
+          "video-bg-play-content.js"
+        ],
+        "all_frames": true
+      }
+    ],
+    "permissions": [
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ]
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": []
+}

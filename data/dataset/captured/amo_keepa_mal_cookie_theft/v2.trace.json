@@ -1,0 +1,224 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "amptra@keepa.com",
+    "name": "Keepa - Amazon Price Tracker",
+    "version": "5.67"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:48:30Z",
+    "duration_s": 15.77,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "keepa.js",
+        "content.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 65448,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "keepa.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "Keepa - Amazon Price Tracker",
+    "short_name": "Keepa",
+    "version": "5.67",
+    "permissions": [
+      "storage",
+      "cookies",
+      "contextMenus"
+    ],
+    "author": "Keepa GmbH",
+    "background": {
+      "scripts": [
+        "keepa.js"
+      ]
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "amptra@keepa.com",
+        "strict_min_version": "140.0",
+        "data_collection_permissions": {
+          "required": [
+            "browsingActivity"
+          ],
+          "optional": [
+            "technicalAndInteraction"
+          ]
+        }
+      },
+      "gecko_android": {
+        "strict_min_version": "142.0"
+      }
+    },
+    "host_permissions": [
+      "*://*.amazon.ca/*",
+      "*://*.amazon.co.jp/*",
+      "*://*.amazon.co.uk/*",
+      "*://*.amazon.com.au/*",
+      "*://*.amazon.com.br/*",
+      "*://*.amazon.com.mx/*",
+      "*://*.amazon.com/*",
+      "*://*.amazon.de/*",
+      "*://*.amazon.es/*",
+      "*://*.amazon.fr/*",
+      "*://*.amazon.in/*",
+      "*://*.amazon.it/*",
+      "*://*.amazon.nl/*",
+      "*://*.amzn.com/*",
+      "*://*.keepa.com/*",
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "selectionHook.js"
+        ],
+        "matches": [
+          "*://*.amzn.com/*",
+          "*://*.amazon.com/*",
+          "*://*.amazon.ca/*",
+          "*://*.amazon.com.mx/*",
+          "*://*.amazon.co.uk/*",
+          "*://*.amazon.de/*",
+          "*://*.amazon.fr/*",
+          "*://*.amazon.it/*",
+          "*://*.amazon.es/*",
+          "*://*.amazon.co.jp/*",
+          "*://*.amazon.in/*",
+          "*://*.amazon.com.br/*",
+          "*://*.amazon.nl/*",
+          "*://*.amazon.com.au/*"
+        ]
+      }
+    ],
+    "manifest_version": 3,
+    "homepage_url": "https://keepa.com",
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "js": [
+          "content.js"
+        ],
+        "matches": [
+          "*://*.keepa.com/*",
+          "*://*.amzn.com/*",
+          "*://*.amazon.com/*",
+          "*://*.amazon.ca/*",
+          "*://*.amazon.com.mx/*",
+          "*://*.amazon.co.uk/*",
+          "*://*.amazon.de/*",
+          "*://*.amazon.fr/*",
+          "*://*.amazon.it/*",
+          "*://*.amazon.es/*",
+          "*://*.amazon.co.jp/*",
+          "*://*.amazon.in/*",
+          "*://*.amazon.com.br/*",
+          "*://*.amazon.nl/*",
+          "*://*.amazon.com.au/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "options_ui": {
+      "page": "options.html",
+      "open_in_tab": false
+    },
+    "action": {
+      "default_icon": {
+        "32": "icons/i32.png",
+        "48": "icons/i48.png"
+      },
+      "default_title": "Keepa automatically loads on Amazon product pages."
+    },
+    "description": "Adds price history charts and the option to be alerted on price drops to all Amazon sites.",
+    "icons": {
+      "128": "icons/i128.png",
+      "16": "icons/i16.png",
+      "32": "icons/i32.png",
+      "48": "icons/i48.png"
+    },
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [],
+  "dom": [
+    {
+      "ts": 2.044,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 2.045,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

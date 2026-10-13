@@ -1,0 +1,191 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-KKzOGWgsW3Ao4Q@jetpack",
+    "name": "__MSG_extensionName__",
+    "version": "3.5.1"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:51:31Z",
+    "duration_s": 15.84,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "data/rules.js",
+        "data/context-menu.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 49271,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "short_name": "__MSG_extensionDescription__",
+    "default_locale": "en",
+    "version": "3.5.1",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "jid1-KKzOGWgsW3Ao4Q@jetpack",
+        "strict_min_version": "56.0"
+      },
+      "gecko_android": {
+        "id": "jid1-KKzOGWgsW3Ao4Q@jetpack",
+        "strict_min_version": "78.0"
+      }
+    },
+    "icons": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    },
+    "author": "Daniel Kladnik @ kiboke studio",
+    "permissions": [
+      "tabs",
+      "storage",
+      "http://*/*",
+      "https://*/*",
+      "notifications",
+      "webRequest",
+      "webRequestBlocking",
+      "webNavigation",
+      "cookies",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "background": {
+      "scripts": [
+        "data/rules.js",
+        "data/context-menu.js"
+      ]
+    },
+    "options_ui": {
+      "page": "data/options.html",
+      "browser_style": true
+    },
+    "browser_action": {
+      "default_popup": "data/menu/index.html",
+      "default_icon": {
+        "16": "icons/16.png",
+        "32": "icons/32.png"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 2.593,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.51,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 2.589,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.008,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.046,
+      "api": "chrome.tabs.insertCSS",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.088,
+      "api": "chrome.tabs.executeScript",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.088,
+      "api": "chrome.tabs.executeScript",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.511,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

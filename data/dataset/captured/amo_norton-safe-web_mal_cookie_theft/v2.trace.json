@@ -1,0 +1,703 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "nortonsafeweb@symantec.com",
+    "name": "__MSG_swName__",
+    "version": "3.23.0.30"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:43:24Z",
+    "duration_s": 15.98,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "content/libs/uri.min.js",
+        "content/scripts/SymBfwCS.js",
+        "content/scripts/NSSS_CS.js",
+        "content/scripts/ClientEvents.js",
+        "content/scripts/beforeLoad.js",
+        "content/scripts/initCreditCardJS.js",
+        "content/libs/creditcard.min.js",
+        "content/scripts/NSSSCCTelemetryCS.js",
+        "content/scripts/multiVariateTestingCS.js",
+        "content/libs/react-latest.min.js",
+        "content/libs/react-dom-latest.min.js",
+        "content/scripts/annotationCS.js",
+        "content/scripts/BfwNotificationCenterProxy.js",
+        "content/scripts/enableAllComm.js",
+        "content/scripts/webCommunication.js",
+        "extdrift_cs.js",
+        "content/libs/forge.min.js",
+        "content/libs/jquery.min.js",
+        "content/libs/long.min.js",
+        "content/libs/bytebuffer.min.js",
+        "content/libs/protobuf.min.js",
+        "content/libs/jsrsasign-all-min.js",
+        "ContextInit.js",
+        "SymBfw.js",
+        "SafeWeb.js",
+        "annotationBG.js",
+        "trackingServerSdk.js",
+        "linkGuardBG.js",
+        "HeartBeatSDK.js",
+        "content/scripts/NSSS.js",
+        "global.js",
+        "multiVariateTestingBG.js",
+        "nsssExtensionURLValidatorHelper.js",
+        "nsssExtensionURLValidator.js",
+        "extdrift_bg.js"
+      ],
+      "proxy_port": 65052,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "static.nortoncdn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "static.nortoncdn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "urlite.ff.avast.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "applications": {
+      "gecko": {
+        "id": "nortonsafeweb@symantec.com",
+        "strict_min_version": "58.0"
+      }
+    },
+    "author": "NortonLifeLock Inc",
+    "background": {
+      "page": "global.html"
+    },
+    "browser_action": {
+      "default_icon": "content/images/safe-web-icon-norton-untested@2x.png",
+      "default_popup": "content/ui/popup.html",
+      "default_title": "__MSG_swName__"
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "js": [
+          "content/libs/uri.min.js",
+          "content/scripts/SymBfwCS.js",
+          "content/scripts/NSSS_CS.js",
+          "content/scripts/ClientEvents.js",
+          "content/scripts/beforeLoad.js"
+        ],
+        "match_about_blank": false,
+        "matches": [
+          "<all_urls>"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "content/scripts/initCreditCardJS.js",
+          "content/libs/creditcard.min.js",
+          "content/scripts/SymBfwCS.js",
+          "content/scripts/NSSSCCTelemetryCS.js"
+        ],
+        "match_about_blank": false,
+        "matches": [
+          "<all_urls>"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "content/scripts/multiVariateTestingCS.js"
+        ],
+        "matches": [
+          "<all_urls>"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": true,
+        "css": [
+          "content/ui/annotationStyles.css"
+        ],
+        "include_globs": [
+          "https://*.google.*/*",
+          "https://nortonsafe.search.ask.com/*",
+          "https://*.adsensecustomsearchads.com/*",
+          "https://*.syndicatedsearch.goog/*"
+        ],
+        "js": [
+          "content/scripts/SymBfwCS.js",
+          "content/scripts/NSSS_CS.js",
+          "content/libs/react-latest.min.js",
+          "content/libs/react-dom-latest.min.js",
+          "content/scripts/annotationCS.js"
+        ],
+        "matches": [
+          "https://*/*"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "all_frames": true,
+        "css": [
+          "content/ui/annotationStyles.css"
+        ],
+        "js": [
+          "content/scripts/SymBfwCS.js",
+          "content/scripts/NSSS_CS.js",
+          "content/libs/react-latest.min.js",
+          "content/libs/react-dom-latest.min.js",
+          "content/scripts/annotationCS.js"
+        ],
+        "matches": [
+          "https://*.syndicatedsearch.goog/*"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "content/scripts/SymBfwCS.js",
+          "content/scripts/BfwNotificationCenterProxy.js"
+        ],
+        "matches": [
+          "<all_urls>"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "all_frames": true,
+        "js": [
+          "content/scripts/SymBfwCS.js",
+          "content/scripts/NSSS_CS.js",
+          "content/scripts/enableAllComm.js",
+          "content/scripts/webCommunication.js"
+        ],
+        "matches": [
+          "https://*.norton.com/*",
+          "https://secure.norton.myway.com/*"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "default_locale": "en",
+    "description": "__MSG_swDesc__",
+    "icons": {
+      "128": "Icon-128.png",
+      "16": "Icon-16.png",
+      "32": "Icon-32.png",
+      "48": "Icon-48.png",
+      "64": "Icon-64.png"
+    },
+    "manifest_version": 2,
+    "name": "__MSG_swName__",
+    "permissions": [
+      "tabs",
+      "webNavigation",
+      "activeTab",
+      "storage",
+      "<all_urls>",
+      "alarms",
+      "webRequest",
+      "webRequestBlocking",
+      "downloads",
+      "notifications",
+      "cookies",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "version": "3.23.0.30",
+    "web_accessible_resources": [
+      "content/images/*.png",
+      "content/images/*.svg",
+      "content/fonts/*",
+      "content/scripts/*.js",
+      "content/libs/*.js",
+      "_locales/*",
+      "content/ui/SiteRatingPane.html",
+      "content/ui/content-page.css",
+      "content/ui/notification.html",
+      "content/defObject.json",
+      "content/ui/formjackBlockPageNotification.css",
+      "content/ui/formjackBlockPageNotification.js"
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.027,
+      "url": "https://static.nortoncdn.com/nortonextensionhomepage/URLParsingRules.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.049,
+      "url": "https://static.nortoncdn.com/nortonextensionhomepage/multi-variate-testing-rules.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.087,
+      "url": "https://urlite.ff.avast.com/v1/urlinfo",
+      "method": "POST",
+      "body_len": 41,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.732,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.006,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "event": "inject",
+      "target": "div",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "event": "inject",
+      "target": "input[type=hidden]",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "event": "inject",
+      "target": "input[type=text]",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "event": "inject",
+      "target": "input[name=t]",
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "event": "read",
+      "target": "input[type=checkbox]",
+      "value_len": 2,
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "event": "read",
+      "target": "input[type=radio]",
+      "value_len": 1,
+      "origin": "moz-extension://d596e1a4-656c-4636-b3c6-2c5fd19e8f41",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.066,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.076,
+      "event": "read",
+      "target": "input[name=cardnumber]",
+      "value_len": 19,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.08,
+      "event": "read",
+      "target": "input[name=cardnumber]",
+      "value_len": 19,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.08,
+      "event": "read",
+      "target": "input[name=cvv]",
+      "value_len": 3,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.65,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.117,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.117,
+      "event": "read",
+      "target": "input[name=cardnumber]",
+      "value_len": 19,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.118,
+      "event": "read",
+      "target": "input[name=cvv]",
+      "value_len": 3,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 2.729,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.006,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.018,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.018,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.045,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.046,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.046,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.047,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.047,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.048,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.076,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.08,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.103,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.104,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 4,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.65,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.154,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.158,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.117,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.198,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

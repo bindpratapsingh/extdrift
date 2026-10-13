@@ -1,0 +1,596 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-93CWPmRbVPjRQA@jetpack",
+    "name": "Honey",
+    "version": "12.8.5"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:47:41Z",
+    "duration_s": 16.12,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "h0-main.js",
+        "h0-vendors-main.js",
+        "h1-check.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 65376,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "cdn.honey.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "d.joinhoney.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "d.joinhoney.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "d.joinhoney.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "d.joinhoney.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "cdn.honey.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "cdn.honey.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "d.joinhoney.com",
+        "method": "CONNECT"
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "author": "Honey Science Corporation",
+    "version": "12.8.5",
+    "name": "Honey",
+    "description": "__MSG_Automatically_find_and_apply_coupon_codes_when_you_shop_online__",
+    "default_locale": "en",
+    "content_security_policy": "script-src 'self'; object-src 'self'",
+    "background": {
+      "scripts": [
+        "h0-main.js",
+        "h0-vendors-main.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "js": [
+          "h1-check.js"
+        ],
+        "run_at": "document_end",
+        "match_about_blank": false,
+        "all_frames": false,
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "web_accessible_resources": [
+      "images/*",
+      "honey_pay/*"
+    ],
+    "permissions": [
+      "storage",
+      "webRequest",
+      "webRequestBlocking",
+      "http://*/*",
+      "https://*/*",
+      "cookies",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "icons": {
+      "16": "icons/honey-logo-16.png",
+      "48": "icons/honey-logo-48.png",
+      "128": "icons/honey-logo-128.png"
+    },
+    "browser_action": {
+      "default_title": "Honey",
+      "default_icon": {
+        "19": "icons/default-19.png",
+        "38": "icons/default-38.png"
+      },
+      "default_popup": "popover/popover.html"
+    },
+    "options_ui": {
+      "open_in_tab": true,
+      "page": "ff_preferences.html"
+    },
+    "applications": {
+      "gecko": {
+        "id": "jid1-93CWPmRbVPjRQA@jetpack",
+        "strict_min_version": "52.0"
+      }
+    },
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.057,
+      "url": "https://cdn.honey.io/standdown-rules.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.07,
+      "url": "https://d.joinhoney.com/features/pay_now_enabled?serviceName=honey-extension&serviceVersion=12.8.4",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.07,
+      "url": "https://d.joinhoney.com/v3?operationName=ext_getUserInfo&variables=%7B%7D",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.071,
+      "url": "https://d.joinhoney.com/adb/filter",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.071,
+      "url": "https://d.joinhoney.com/features/ext_paypal_heartbeat?serviceName=honey-extension&serviceVersion=12.8.4",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.168,
+      "url": "https://cdn.honey.io/ab/ssd.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.782,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.087,
+      "url": "https://cdn.honey.io/experiments.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.103,
+      "url": "https://d.joinhoney.com/extdata/ckdata",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.05,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.051,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.051,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.051,
+      "event": "inject",
+      "target": "input[type=hidden]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.051,
+      "event": "inject",
+      "target": "input[name=t]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.051,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.051,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.052,
+      "event": "read",
+      "target": "input[type=checkbox]",
+      "value_len": 2,
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.052,
+      "event": "read",
+      "target": "input[type=radio]",
+      "value_len": 1,
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.063,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.063,
+      "event": "inject",
+      "target": "div",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.063,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.063,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.063,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
+      "event": "inject",
+      "target": "input[type=text]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
+      "event": "inject",
+      "target": "input[type=hidden]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
+      "event": "read",
+      "target": "input[type=radio]",
+      "value_len": 1,
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
+      "event": "read",
+      "target": "input[type=checkbox]",
+      "value_len": 2,
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
+      "event": "inject",
+      "target": "input[name=t]",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.064,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://127b0484-3f32-4fee-a933-c96b1ad01b60",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.636,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.052,
+      "api": "localStorage.getItem",
+      "key": "honey-refresh-audiences",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.053,
+      "api": "localStorage.getItem",
+      "key": "honey-access-audiences",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.053,
+      "api": "localStorage.getItem",
+      "key": "user:auth_tokens",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.053,
+      "api": "localStorage.getItem",
+      "key": "user:auth_tokens",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.056,
+      "api": "localStorage.getItem",
+      "key": "device:lastHeartbeat",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "localStorage.getItem",
+      "key": "device:firstTime",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "localStorage.getItem",
+      "key": "device:firstTimeFS",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "localStorage.getItem",
+      "key": "device:firstTimeHG",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "localStorage.getItem",
+      "key": "device:firstTimeFSHG",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "localStorage.getItem",
+      "key": "device:firstTimeLaunchpad",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "localStorage.getItem",
+      "key": "device:pendingInstallReport",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "localStorage.getItem",
+      "key": "device:pendingUpdateReport",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.06,
+      "api": "localStorage.getItem",
+      "key": "debug",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.06,
+      "api": "localStorage.getItem",
+      "key": "device:settings",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.069,
+      "api": "localStorage.getItem",
+      "key": "honey-access-audiences",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.07,
+      "api": "localStorage.getItem",
+      "key": "honey-refresh-audiences",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.073,
+      "api": "localStorage.getItem",
+      "key": "device:deviceId",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.777,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.1,
+      "api": "localStorage.getItem",
+      "key": "user:userId",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.005,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.058,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.068,
+      "api": "browser.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.07,
+      "api": "browser.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.072,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.073,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.095,
+      "api": "browser.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.636,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.206,
+      "api": "browser.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.246,
+      "api": "browser.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

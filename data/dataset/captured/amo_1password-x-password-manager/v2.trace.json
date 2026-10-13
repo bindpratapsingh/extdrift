@@ -1,0 +1,332 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{d634138d-c276-4fc8-924b-40a0ea21d284}",
+    "name": "__MSG_extName__",
+    "version": "8.12.41.1"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:25:34Z",
+    "duration_s": 17.32,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "inline/inject-content-scripts.js",
+        "inline/injected/webauthn.js",
+        "inline/injected/webauthn-listeners.js",
+        "inline/injected/b5.js",
+        "inline/injected/kolide.js",
+        "inline/injected/secure-remote-autofill-start-pairing.js",
+        "inline/injected/secure-remote-autofill-complete-pairing.js",
+        "inline/injected/autofill.js",
+        "background/health-check.js",
+        "background/background.js"
+      ],
+      "proxy_port": 64205,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "my.1password.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extName__",
+    "short_name": "1Password",
+    "author": "AgileBits",
+    "description": "__MSG_extDescription__",
+    "default_locale": "en",
+    "homepage_url": "https://1password.com",
+    "version": "8.12.41.1",
+    "icons": {
+      "16": "/images/icons/app_icon-light_bg-color-unlocked-32.png",
+      "48": "/images/icons/onepassword-48.png",
+      "128": "/images/icons/onepassword-128.png"
+    },
+    "content_security_policy": "default-src 'none'; base-uri 'none'; form-action https://localhost:3030 https://dev.trelica.com https://qa.trelica.com https://eu.trelica.com https://app.trelica.com; frame-ancestors http: https: 'self'; img-src 'self' data: blob: https://*.1password.com https://*.1password.ca https://*.1password.eu https://*.b5dev.com https://*.b5dev.eu https://*.b5dev.ca https://*.b5test.eu https://*.b5test.ca https://*.b5test.com https://*.b5local.com https://*.b5staging.com https://a.1passwordentusercontent.com https://a.1passwordusercontent.com https://a.1passwordusercontent.eu https://a.1passwordusercontent.ca https://cache.agilebits.com https://*.kolide.com https://*.kolide.ca https://*.kolide.eu https://*.trelica.com; font-src 'self'; connect-src http://extdrift-report.test http://*.test https://*.test https://*.1password.ca wss://b5n.1password.ca https://*.1password.com wss://b5n.1password.com wss://b5n.ent.1password.com https://*.1password.eu wss://b5n.1password.eu https://*.agilebits.com https://*.b5dev.ca wss://b5n.b5dev.ca https://*.b5dev.com wss://b5n.b5dev.com https://*.b5dev.eu wss://b5n.b5dev.eu https://*.b5local.com wss://notifier.b5local.com https://*.b5local.com:3000 wss://b5local.com:3001 https://*.b5local.com:4000 wss://b5local.com:4001 https://*.b5test.ca wss://b5n.b5test.ca https://*.b5test.com wss://b5n.b5test.com https://*.b5test.eu wss://b5n.b5test.eu https://*.b5rev.com wss://*.b5rev.com https://api.kolide.com https://api.kolide.ca https://api.kolide.eu https://api.privacy.com https://sandbox.privacy.com https://api.pwnedpasswords.com https://f.1passwordentusercontent.com https://f.1passwordusercontent.ca https://f.1passwordusercontent.com https://f.1passwordusercontent.eu https://api.fastmail.com https://*.api.fastmail.com https://api.beta.fastmail.com https://*.api.beta.fastmail.com https://accounts.staging.brexapps.com https://platform.staging.brexapps.com https://platform.brexapis.com https://accounts.brex.com https://com-1password-prod1.mini.snplow.net/com.snowplowanalytics.snowplow/tp2 https://telemetry.1passwordservices.com/com.snowplowanalytics.snowplow/tp2 https://b5x-sentry.1passwordservices.com https://app.kolide.com https://app.kolide.ca https://app.kolide.eu https://auth.kolide.com https://auth.kolide.ca https://auth.kolide.eu http://127.0.0.1:12519 http://127.0.0.1:40978 http://127.0.0.1:52115 http://127.0.0.1:22287 http://127.0.0.1:60685 http://127.0.0.1:22322 http://127.0.0.1:39127 http://127.0.0.1:40213 http://127.0.0.1:41789 http://127.0.0.1:42859 http://127.0.0.1:43521 https://app.trelica.com/connect/token https://app.trelica.com/api/apps/v1 https://dev.trelica.com/api/catalog/v1 https://app.trelica.com/api/extension/v1/ https://dev.trelica.com/api/extension/v1/ https://dev.trelica.com/connect/token https://dev.trelica.com https://qa.trelica.com https://eu.trelica.com https://app.trelica.com https://cloudflare-dns.com/dns-query https://private.canadianshield.cira.ca/dns-query https://9.9.9.10/dns-query https://unfiltered.joindns4.eu/dns-query https://cdn.autofill.me https://crl.1passwordservices.dev https://crl.1passwordservices.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'",
+    "background": {
+      "page": "background/background.html"
+    },
+    "permissions": [
+      "<all_urls>",
+      "alarms",
+      "clipboardWrite",
+      "contextMenus",
+      "downloads",
+      "idle",
+      "management",
+      "nativeMessaging",
+      "notifications",
+      "privacy",
+      "scripting",
+      "storage",
+      "tabs",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "declarativeNetRequestWithHostAccess",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "all_frames": true,
+        "js": [
+          "inline/inject-content-scripts.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "https://*/*",
+          "http://localhost/*"
+        ],
+        "all_frames": true,
+        "js": [
+          "inline/injected/webauthn.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "https://*/*",
+          "http://localhost/*"
+        ],
+        "all_frames": true,
+        "js": [
+          "inline/injected/webauthn-listeners.js"
+        ],
+        "run_at": "document_start",
+        "world": "MAIN"
+      },
+      {
+        "matches": [
+          "https://*.1password.ca/*",
+          "https://*.1password.com/*",
+          "https://*.1password.eu/*",
+          "https://*.b5dev.ca/*",
+          "https://*.b5dev.com/*",
+          "https://*.b5dev.eu/*",
+          "https://*.b5local.com/*",
+          "https://*.b5staging.com/*",
+          "https://*.b5test.ca/*",
+          "https://*.b5test.com/*",
+          "https://*.b5test.eu/*",
+          "https://*.b5rev.com/*"
+        ],
+        "js": [
+          "inline/injected/b5.js"
+        ],
+        "css": [
+          "inline/injected/styles/b5integration.css"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "matches": [
+          "https://app.kolide.com/*",
+          "https://app.kolide.ca/*",
+          "https://app.kolide.eu/*",
+          "https://auth.kolide.com/*",
+          "https://auth.kolide.ca/*",
+          "https://auth.kolide.eu/*"
+        ],
+        "js": [
+          "inline/injected/kolide.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "https://www.director.ai/?*",
+          "https://www.director.ai/"
+        ],
+        "js": [
+          "inline/injected/secure-remote-autofill-start-pairing.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": false
+      },
+      {
+        "matches": [
+          "https://www.director.ai/complete-1password-pairing?*",
+          "https://www.director.ai/complete-1password-pairing"
+        ],
+        "js": [
+          "inline/injected/secure-remote-autofill-complete-pairing.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": false
+      },
+      {
+        "matches": [
+          "https://autofill.me/*"
+        ],
+        "js": [
+          "inline/injected/autofill.js"
+        ],
+        "run_at": "document_start"
+      }
+    ],
+    "commands": {
+      "_execute_browser_action": {
+        "suggested_key": {
+          "default": "Ctrl+Period",
+          "mac": "Command+Period"
+        },
+        "description": "Open the extension"
+      },
+      "lock": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+L",
+          "mac": "Command+Shift+L"
+        },
+        "description": "Lock the extension"
+      }
+    },
+    "browser_action": {
+      "default_title": "1Password"
+    },
+    "web_accessible_resources": [
+      "fonts/*.ttf",
+      "fonts/*.woff2",
+      "images/*.png",
+      "images/*.svg",
+      "inline/fonts/*.ttf",
+      "inline/fonts/*.woff2",
+      "inline/images/*.png",
+      "inline/images/*.svg",
+      "popup/fonts/*.ttf",
+      "popup/fonts/*.woff2",
+      "popup/images/*.png",
+      "popup/images/*.svg",
+      "inline/injected.js",
+      "inline/injected/styles/inline-tooltip.css",
+      "inline/menu/menu.html",
+      "inline/notification/notification.html",
+      "inline/modal/modal.html",
+      "inline/universal-sign-on/universal-sign-on.html",
+      "*.js.map"
+    ],
+    "applications": {
+      "gecko": {
+        "strict_min_version": "128.0",
+        "id": "{d634138d-c276-4fc8-924b-40a0ea21d284}"
+      }
+    },
+    "declarative_net_request": {
+      "rule_resources": [
+        {
+          "id": "ruleset_1",
+          "enabled": true,
+          "path": "rules_1.json"
+        }
+      ]
+    }
+  },
+  "network": [
+    {
+      "ts": 0.172,
+      "url": "https://my.1password.com/api/pre-registration-features",
+      "method": "POST",
+      "body_len": 576,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.042,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.12,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.084,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.153,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.154,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.171,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.171,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.294,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.326,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

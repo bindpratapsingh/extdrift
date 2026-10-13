@@ -1,0 +1,177 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}",
+    "name": "__MSG_extension_name__",
+    "version": "1.81.0"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:33:04Z",
+    "duration_s": 15.81,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "js/rxjs.umd.min.js",
+        "js/peerjs-1.4.7.min.js",
+        "js/defaults.js",
+        "js/messaging.js",
+        "js/google-translate.js",
+        "js/tts-engines.js",
+        "js/speech.js",
+        "js/document.js",
+        "js/events.js",
+        "js/piper.js",
+        "js/supertonic.js"
+      ],
+      "proxy_port": 64703,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extension_name__",
+    "short_name": "__MSG_extension_short_name__",
+    "description": "__MSG_extension_description__",
+    "version": "1.81.0",
+    "default_locale": "en",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}"
+      },
+      "gecko_android": {}
+    },
+    "browser_action": {
+      "default_area": "navbar",
+      "default_icon": "img/icon.png",
+      "default_popup": "popup.html?isPopup=1"
+    },
+    "icons": {
+      "16": "img/icon-16.png",
+      "48": "img/icon-48.png",
+      "128": "img/icon.png"
+    },
+    "permissions": [
+      "activeTab",
+      "menus",
+      "identity",
+      "storage",
+      "https://translate.google.com/",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "webRequest",
+      "webRequestBlocking",
+      "webNavigation",
+      "http://*/",
+      "https://*/",
+      "file://*/*"
+    ],
+    "web_accessible_resources": [
+      "js/page/*",
+      "img/*",
+      "css/*"
+    ],
+    "content_security_policy": "script-src 'self'; object-src 'self'",
+    "content_scripts": [
+      {
+        "matches": [
+          "https://piper.ttstool.com/"
+        ],
+        "js": [
+          "js/rxjs.umd.min.js",
+          "js/messaging.js",
+          "js/piper.js"
+        ]
+      },
+      {
+        "matches": [
+          "https://supertonic.ttstool.com/"
+        ],
+        "run_at": "document_start",
+        "js": [
+          "js/rxjs.umd.min.js",
+          "js/messaging.js",
+          "js/supertonic.js"
+        ]
+      }
+    ],
+    "background": {
+      "scripts": [
+        "js/rxjs.umd.min.js",
+        "js/peerjs-1.4.7.min.js",
+        "js/defaults.js",
+        "js/messaging.js",
+        "js/google-translate.js",
+        "js/tts-engines.js",
+        "js/speech.js",
+        "js/document.js",
+        "js/events.js"
+      ],
+      "persistent": true
+    },
+    "options_page": "options.html",
+    "options_ui": {
+      "page": "options.html",
+      "chrome_style": false
+    },
+    "commands": {
+      "play": {
+        "suggested_key": {
+          "default": "Alt+P"
+        },
+        "description": "play/pause"
+      },
+      "stop": {
+        "suggested_key": {
+          "default": "Alt+O"
+        },
+        "description": "stop"
+      },
+      "forward": {
+        "suggested_key": {
+          "default": "Alt+Period"
+        },
+        "description": "forward"
+      },
+      "rewind": {
+        "suggested_key": {
+          "default": "Alt+Comma"
+        },
+        "description": "rewind"
+      }
+    }
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": []
+}
