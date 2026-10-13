@@ -1,0 +1,227 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "video-bg-play@timdream.org",
+    "name": "__MSG_extensionName__",
+    "version": "1.8.2"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:53:59Z",
+    "duration_s": 15.76,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "video-bg-play-content.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 49417,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "default_locale": "en",
+    "version": "1.8.2",
+    "description": "__MSG_extensionDescription__",
+    "icons": {
+      "48": "icon.svg",
+      "96": "icon.svg"
+    },
+    "applications": {
+      "gecko": {
+        "id": "video-bg-play@timdream.org",
+        "strict_min_version": "58.0"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*.youtube.com/*",
+          "*://*.youtube-nocookie.com/*",
+          "*://*.vimeo.com/*"
+        ],
+        "js": [
+          "video-bg-play-content.js"
+        ],
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    },
+    "permissions": [
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ]
+  },
+  "network": [
+    {
+      "ts": 1.058,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.511,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.092,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.058,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.058,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.058,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.51,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.511,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.511,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.091,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.092,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.092,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": []
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{2e5ff8c8-32fe-46d0-9fc8-6b8986621f3c}",
+    "name": "__MSG_extensionName__",
+    "version": "8.5.2"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:05:17Z",
+    "duration_s": 15.87,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "src/base/script.js",
+        "src/background/script.js"
+      ],
+      "proxy_port": 62684,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "description": "__MSG_extensionDescription__",
+    "version": "8.5.2",
+    "author": "Armin Sebastian",
+    "homepage_url": "https://github.com/dessant/search-by-image",
+    "default_locale": "en",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{2e5ff8c8-32fe-46d0-9fc8-6b8986621f3c}",
+        "strict_min_version": "115.0"
+      },
+      "gecko_android": {
+        "strict_min_version": "115.0"
+      }
+    },
+    "permissions": [
+      "alarms",
+      "contextMenus",
+      "storage",
+      "unlimitedStorage",
+      "tabs",
+      "activeTab",
+      "notifications",
+      "webRequest",
+      "webRequestBlocking",
+      "<all_urls>",
+      "scripting",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "clipboardRead"
+    ],
+    "content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src * data: blob:; connect-src http://extdrift-report.test http://*.test https://*.test * blob:; object-src 'none';",
+    "icons": {
+      "16": "src/assets/icons/app/icon-16.png",
+      "19": "src/assets/icons/app/icon-19.png",
+      "24": "src/assets/icons/app/icon-24.png",
+      "32": "src/assets/icons/app/icon-32.png",
+      "38": "src/assets/icons/app/icon-38.png",
+      "48": "src/assets/icons/app/icon-48.png",
+      "64": "src/assets/icons/app/icon-64.png",
+      "96": "src/assets/icons/app/icon-96.png",
+      "128": "src/assets/icons/app/icon-128.png"
+    },
+    "browser_action": {
+      "default_icon": {
+        "16": "src/assets/icons/app/icon-16.png",
+        "19": "src/assets/icons/app/icon-19.png",
+        "24": "src/assets/icons/app/icon-24.png",
+        "32": "src/assets/icons/app/icon-32.png",
+        "38": "src/assets/icons/app/icon-38.png",
+        "48": "src/assets/icons/app/icon-48.png",
+        "64": "src/assets/icons/app/icon-64.png",
+        "96": "src/assets/icons/app/icon-96.png",
+        "128": "src/assets/icons/app/icon-128.png"
+      },
+      "browser_style": false
+    },
+    "options_ui": {
+      "page": "src/options/index.html",
+      "browser_style": false,
+      "open_in_tab": true
+    },
+    "background": {
+      "page": "src/background/index.html",
+      "persistent": false
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "http://*/*",
+          "https://*/*",
+          "file:///*"
+        ],
+        "all_frames": true,
+        "run_at": "document_start",
+        "js": [
+          "src/base/script.js"
+        ]
+      }
+    ],
+    "web_accessible_resources": [
+      "src/content/style.css",
+      "src/select/pointer.css",
+      "src/select/index.html",
+      "src/capture/index.html",
+      "src/confirm/index.html"
+    ]
+  },
+  "network": [],
+  "dom": [],
+  "storage": [
+    {
+      "ts": 0.006,
+      "api": "localStorage.getItem",
+      "key": "debug",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "localStorage.getItem",
+      "key": "DEBUG",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.016,
+      "api": "localStorage.getItem",
+      "key": "platformInfo",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.016,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    }
+  ]
+}

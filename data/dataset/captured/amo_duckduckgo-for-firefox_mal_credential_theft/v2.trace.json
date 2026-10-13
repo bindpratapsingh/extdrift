@@ -1,0 +1,426 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-ZAdIEUB7XOzOJw@jetpack",
+    "name": "DuckDuckGo Search & Tracker Protection",
+    "version": "2026.10.7"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:07:25Z",
+    "duration_s": 16.11,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "public/js/background.js",
+        "public/js/content-scripts/content-scope-messaging.js",
+        "public/js/inject.js",
+        "public/js/content-scripts/autofill.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 62844,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "DuckDuckGo Search & Tracker Protection",
+    "applications": {
+      "gecko": {
+        "id": "jid1-ZAdIEUB7XOzOJw@jetpack",
+        "strict_min_version": "102.0"
+      }
+    },
+    "default_locale": "en",
+    "version": "2026.10.7",
+    "description": "Privacy, simplified. Protect your data as you search and browse: tracker blocking, smarter encryption, private search, and more.",
+    "icons": {
+      "16": "img/icon_16.png",
+      "48": "img/icon_48.png",
+      "128": "img/icon_128.png"
+    },
+    "manifest_version": 2,
+    "browser_action": {
+      "default_icon": "img/icon_browser_action.png",
+      "default_popup": "dashboard/html/browser.html"
+    },
+    "omnibox": {
+      "keyword": "ddg"
+    },
+    "background": {
+      "scripts": [
+        "public/js/background.js"
+      ]
+    },
+    "chrome_settings_overrides": {
+      "search_provider": {
+        "favicon_url": "https://duckduckgo.com/favicon.ico",
+        "is_default": true,
+        "keyword": "duckduckgo.com",
+        "name": "DuckDuckGo",
+        "search_url": "https://duckduckgo.com/?q={searchTerms}&t=newext",
+        "suggest_url": "https://duckduckgo.com/ac/?q={searchTerms}&type=list"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "exclude_matches": [
+          "*://localhost/*",
+          "*://*.localhost/*"
+        ],
+        "match_about_blank": true,
+        "all_frames": true,
+        "world": "ISOLATED",
+        "js": [
+          "public/js/content-scripts/content-scope-messaging.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "exclude_matches": [
+          "*://localhost/*",
+          "*://*.localhost/*"
+        ],
+        "match_about_blank": true,
+        "all_frames": true,
+        "world": "MAIN",
+        "js": [
+          "public/js/inject.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "public/js/content-scripts/autofill.js"
+        ],
+        "css": [
+          "public/css/autofill-host-styles.css"
+        ],
+        "matches": [
+          "<all_urls>"
+        ],
+        "exclude_matches": [
+          "*://localhost/*",
+          "*://*.localhost/*"
+        ],
+        "all_frames": true,
+        "run_at": "document_start",
+        "match_about_blank": true
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "options_ui": {
+      "page": "html/options.html"
+    },
+    "permissions": [
+      "contextMenus",
+      "webRequest",
+      "webRequestBlocking",
+      "*://*/*",
+      "webNavigation",
+      "activeTab",
+      "tabs",
+      "storage",
+      "<all_urls>",
+      "alarms",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      "/web_accessible_resources/*",
+      "/public/css/autofill.css",
+      "/public/font/*"
+    ],
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/negative-https-allowlist.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/https-bloom.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/negative-https-bloom.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/trackerblocking/config/v4/extension-firefox-config.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/https-allowlist.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://duckduckgo.com/atb.js?6575478&browser=Firefox",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.103,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.548,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.102,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.102,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.102,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.546,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.547,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.547,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.021,
+      "api": "localStorage.getItem",
+      "key": "ddg-autofill-debug",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.005,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.016,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

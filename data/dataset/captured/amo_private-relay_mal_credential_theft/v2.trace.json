@@ -1,0 +1,432 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "private-relay@firefox.com",
+    "name": "Firefox Relay",
+    "version": "2.8.2"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:49:36Z",
+    "duration_s": 15.89,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "js/libs/browser-polyfill.min.js",
+        "js/shared/utils.js",
+        "js/background/background.js",
+        "js/background/context-menu.js",
+        "js/relay.firefox.com/track_logout.js",
+        "js/relay.firefox.com/inject_addon_data.js",
+        "js/relay.firefox.com/get_profile_data.js",
+        "js/relay.firefox.com/settings_refresh.js",
+        "js/other-websites/fathom.js",
+        "js/other-websites/email_detector.js",
+        "js/other-websites/icon.js",
+        "js/other-websites/fill_relay_address.js",
+        "js/shared/metrics.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 65522,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "relay.firefox.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "relay.firefox.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "relay.firefox.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "relay.firefox.com",
+        "method": "CONNECT"
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "Firefox Relay",
+    "version": "2.8.2",
+    "description": "__MSG_extensionDescription_mask__",
+    "default_locale": "en",
+    "icons": {
+      "16": "icons/icon_16.png",
+      "48": "icons/icon_48.png",
+      "96": "icons/icon_96.png"
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "private-relay@firefox.com",
+        "strict_min_version": "79.0"
+      },
+      "gecko_android": {
+        "id": "private-relay@firefox.com",
+        "strict_min_version": "113.0"
+      }
+    },
+    "background": {
+      "scripts": [
+        "js/libs/browser-polyfill.min.js",
+        "js/shared/utils.js",
+        "js/background/background.js",
+        "js/background/context-menu.js"
+      ],
+      "persistent": false
+    },
+    "browser_action": {
+      "browser_style": true,
+      "default_icon": {
+        "32": "icons/icon_32.png"
+      },
+      "default_popup": "popup.html",
+      "default_area": "navbar"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "https://relay.firefox.com/"
+        ],
+        "js": [
+          "js/libs/browser-polyfill.min.js",
+          "js/relay.firefox.com/track_logout.js"
+        ]
+      },
+      {
+        "matches": [
+          "https://relay.firefox.com/**"
+        ],
+        "js": [
+          "js/libs/browser-polyfill.min.js",
+          "js/relay.firefox.com/inject_addon_data.js"
+        ]
+      },
+      {
+        "matches": [
+          "https://relay.firefox.com/**"
+        ],
+        "css": [
+          "css/relay-website.css"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "https://relay.firefox.com/accounts/profile/**"
+        ],
+        "js": [
+          "js/libs/browser-polyfill.min.js",
+          "js/relay.firefox.com/get_profile_data.js"
+        ]
+      },
+      {
+        "matches": [
+          "https://relay.firefox.com/accounts/settings/**"
+        ],
+        "js": [
+          "js/libs/browser-polyfill.min.js",
+          "js/relay.firefox.com/settings_refresh.js"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "js/libs/browser-polyfill.min.js",
+          "js/shared/utils.js",
+          "js/other-websites/fathom.js",
+          "js/other-websites/email_detector.js",
+          "js/other-websites/icon.js",
+          "js/other-websites/fill_relay_address.js",
+          "js/shared/metrics.js"
+        ],
+        "css": [
+          "css/relay.css"
+        ],
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "permissions": [
+      "<all_urls>",
+      "storage",
+      "menus",
+      "contextMenus",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      "images/*.svg",
+      "icons/*.svg",
+      "icons/*.png",
+      "fonts/Inter/*.woff2",
+      "fonts/Metropolis/*.woff2",
+      "*.html"
+    ],
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.011,
+      "url": "https://relay.firefox.com/api/v1/runtime_data",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.104,
+      "url": "https://relay.firefox.com/metrics-event",
+      "method": "POST",
+      "body_len": 179,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.15,
+      "url": "https://relay.firefox.com/metrics-event",
+      "method": "POST",
+      "body_len": 178,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.027,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.099,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.195,
+      "url": "https://relay.firefox.com/metrics-event",
+      "method": "POST",
+      "body_len": 178,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.01,
+      "event": "inject",
+      "target": "button[type=button]",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.051,
+      "event": "inject",
+      "target": "style#relay-email-input-focus-styles",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.051,
+      "event": "inject",
+      "target": "iframe",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.051,
+      "event": "inject",
+      "target": "div#relay-popover-underlay",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.026,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.027,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.027,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.098,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.098,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.098,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.01,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.011,
+      "api": "browser.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.011,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.057,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.1,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

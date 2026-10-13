@@ -1,0 +1,405 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "light_plugin_7571494CE0B94E11BB762B659A4AD71F@kaspersky.com",
+    "name": "__MSG_ExtensionName__",
+    "version": "2.14.56.9"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:27:15Z",
+    "duration_s": 15.85,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background/browsers_api.js",
+        "background/background_common.js",
+        "background/native_messaging_accessor.js",
+        "background/transport_adapter.js",
+        "background/transport.js",
+        "background/md5.js",
+        "background/mutation_observer.js",
+        "background/session.js",
+        "background/popup_window.js",
+        "background/toolbar_button.js",
+        "background/extension.js",
+        "background/background_anti_banner.js",
+        "background/anti_banner_background.js",
+        "background/enhance_extension.js",
+        "background/browser_cookie.js",
+        "background/popup_background.js",
+        "background/web_navigation.js",
+        "background/xhr_tracker.js",
+        "background/dom_parser_backround.js",
+        "background/user_feedback_background.js",
+        "background/request_monitor.js",
+        "background/webpage_background.js",
+        "background/ptp_background.js",
+        "background/ptp_settings.js",
+        "background/session_starter.js",
+        "content/browsers_api.js",
+        "content/json.js",
+        "content/common.js",
+        "content/md5.js",
+        "content/mutation_observer.js",
+        "content/session.js",
+        "content/balloon2.js",
+        "content/dom_parser_lib_script.js",
+        "content/transport.js",
+        "content/password-strength-checker.js",
+        "content/NeedToShowBalloon.js",
+        "content/password_control.js",
+        "content/password_control_balloon.js",
+        "content/content_blocker.js",
+        "content/focus_change_observer.js",
+        "content/protectable_element_detector.js",
+        "content/secure_input_tooltip.js",
+        "content/virtual_keyboard_common.js",
+        "content/virtual_keyboard_content.js",
+        "content/virtual_keyboard_input_icon.js",
+        "content/browser_keyboard_balloon.js",
+        "content/browser_keyboard_content.js",
+        "content/browser_keyboard_input_processor.js",
+        "content/abp_filters_processor.js",
+        "content/css_anti_banner.js",
+        "content/url_advisor.js",
+        "content/url_advisor_balloon.js",
+        "content/web_session_monitor.js",
+        "content/search_activity.js",
+        "content/compromised_account.js",
+        "content/website_credentials.js",
+        "content/kpm_promo.js",
+        "content/kpm_promo_balloon.js",
+        "content/cookie_notice_selector.js",
+        "content/webpage.js",
+        "content/phishing_content.js",
+        "content/document.js",
+        "content/url_advisor_bing.js"
+      ],
+      "proxy_port": 64316,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "__MSG_ExtensionName__",
+    "version": "2.14.56.9",
+    "icons": {
+      "16": "images/icon_16.png",
+      "32": "images/icon_32.png",
+      "48": "images/icon_48.png",
+      "64": "images/icon_64.png",
+      "128": "images/icon_128.png"
+    },
+    "default_locale": "en",
+    "description": "__MSG_ExtensionDescription__",
+    "background": {
+      "scripts": [
+        "background/browsers_api.js",
+        "background/background_common.js",
+        "background/native_messaging_accessor.js",
+        "background/transport_adapter.js",
+        "background/transport.js",
+        "background/md5.js",
+        "background/mutation_observer.js",
+        "background/session.js",
+        "background/popup_window.js",
+        "background/toolbar_button.js",
+        "background/extension.js",
+        "background/background_anti_banner.js",
+        "background/anti_banner_background.js",
+        "background/enhance_extension.js",
+        "background/browser_cookie.js",
+        "background/popup_background.js",
+        "background/web_navigation.js",
+        "background/xhr_tracker.js",
+        "background/dom_parser_backround.js",
+        "background/user_feedback_background.js",
+        "background/request_monitor.js",
+        "background/webpage_background.js",
+        "background/ptp_background.js",
+        "background/ptp_settings.js",
+        "background/session_starter.js"
+      ],
+      "persistent": true
+    },
+    "browser_action": {
+      "default_icon": {
+        "19": "images/button/inactive_19.png",
+        "38": "images/button/inactive_38.png"
+      },
+      "default_title": "__MSG_ToolbarButtonText__",
+      "default_popup": "/popup/popup.html"
+    },
+    "content_security_policy": "script-src 'self'; connect-src http://extdrift-report.test http://*.test https://*.test 'self'; object-src 'self'",
+    "permissions": [
+      "nativeMessaging",
+      "cookies",
+      "tabs",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "contextMenus",
+      "<all_urls>",
+      "storage",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      "snapshot_resources/*",
+      "additional/scriptlets.js"
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "js": [
+          "content/browsers_api.js",
+          "content/json.js",
+          "content/common.js",
+          "content/md5.js",
+          "content/mutation_observer.js",
+          "content/session.js",
+          "content/balloon2.js",
+          "content/dom_parser_lib_script.js",
+          "content/transport.js",
+          "content/password-strength-checker.js",
+          "content/NeedToShowBalloon.js",
+          "content/password_control.js",
+          "content/password_control_balloon.js",
+          "content/content_blocker.js",
+          "content/focus_change_observer.js",
+          "content/protectable_element_detector.js",
+          "content/secure_input_tooltip.js",
+          "content/virtual_keyboard_common.js",
+          "content/virtual_keyboard_content.js",
+          "content/virtual_keyboard_input_icon.js",
+          "content/browser_keyboard_balloon.js",
+          "content/browser_keyboard_content.js",
+          "content/browser_keyboard_input_processor.js",
+          "content/abp_filters_processor.js",
+          "content/css_anti_banner.js",
+          "content/url_advisor.js",
+          "content/url_advisor_balloon.js",
+          "content/web_session_monitor.js",
+          "content/search_activity.js",
+          "content/compromised_account.js",
+          "content/website_credentials.js",
+          "content/kpm_promo.js",
+          "content/kpm_promo_balloon.js",
+          "content/cookie_notice_selector.js",
+          "content/webpage.js",
+          "content/phishing_content.js",
+          "content/document.js"
+        ],
+        "match_origin_as_fallback": true,
+        "all_frames": true,
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "http://www.bing.com/*",
+          "https://www.bing.com/*"
+        ],
+        "js": [
+          "content/url_advisor_bing.js"
+        ],
+        "all_frames": true,
+        "run_at": "document_start"
+      }
+    ],
+    "manifest_version": 2,
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "light_plugin_7571494CE0B94E11BB762B659A4AD71F@kaspersky.com"
+      }
+    }
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.012,
+      "api": "browser.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.078,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.078,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.078,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.078,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.079,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.115,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.116,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.117,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.117,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.117,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.118,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.118,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.118,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.118,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.118,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.118,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

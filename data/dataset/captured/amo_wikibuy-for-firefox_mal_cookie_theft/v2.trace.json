@@ -1,0 +1,1037 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{aff8af88-06a9-4eee-b383-3af08c47b8c8}",
+    "name": "Capital One Shopping: Save Now",
+    "version": "0.1.1220"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:24:37Z",
+    "duration_s": 16.3,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "notifications/pageView.js",
+        "notifications/wikibuy.js",
+        "notifications/priceComparison.js",
+        "extdrift_cs.js",
+        "vendor/analytics.js",
+        "bg/index.js",
+        "bg/extdrift_bg.js"
+      ],
+      "proxy_port": 63665,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":3,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "files.ivaws.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "capitaloneshopping.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "capitaloneshopping.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "capitaloneshopping.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "capitaloneshopping.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "capitaloneshopping.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "capitaloneshopping.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "Capital One Shopping: Save Now",
+    "version": "0.1.1220",
+    "manifest_version": 2,
+    "description": "A simple and free way to help you save online",
+    "icons": {
+      "16": "assets/icons/shopping-icon16.png",
+      "48": "assets/icons/shopping-icon48.png",
+      "128": "assets/icons/shopping-icon128.png"
+    },
+    "options_ui": {
+      "page": "firefox_options.html",
+      "browser_style": true
+    },
+    "permissions": [
+      "alarms",
+      "tabs",
+      "contextMenus",
+      "storage",
+      "cookies",
+      "webRequest",
+      "webRequestBlocking",
+      "<all_urls>",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      "assets/*",
+      "chunks/*",
+      "css/*",
+      "global-less/*",
+      "notifications/*",
+      "static/**/*"
+    ],
+    "background": {
+      "page": "bg/bg.html"
+    },
+    "browser_action": {
+      "default_icon": {
+        "19": "assets/icons/browser/browseraction-off-19.png",
+        "38": "assets/icons/browser/browseraction-off-38.png"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "notifications/pageView.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "*://*.capitaloneshopping.com/*",
+          "*://*.ivf-stage.com/*"
+        ],
+        "js": [
+          "notifications/wikibuy.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "*://*.amazon.com/*",
+          "*://*.bestbuy.com/*",
+          "*://*.homedepot.com/*",
+          "*://*.zappos.com/*"
+        ],
+        "js": [
+          "notifications/priceComparison.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "content_security_policy": "script-src 'self'; object-src 'self';",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{aff8af88-06a9-4eee-b383-3af08c47b8c8}"
+      }
+    },
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.13,
+      "url": "https://files.ivaws.com/site/blooms/blooms.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.132,
+      "url": "https://capitaloneshopping.com/api/v1/session?profileId=undefined",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.133,
+      "url": "https://capitaloneshopping.com/api/v1/session?profileId=ffbc1c2d-bbdf-44fa-bec1-d396e2a95b15",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.188,
+      "url": "https://capitaloneshopping.com/api/v1/content/fetch/protection-sites",
+      "method": "POST",
+      "body_len": 19,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.621,
+      "url": "https://capitaloneshopping.com/api/v1/content/fetch/stand-down-url-patterns",
+      "method": "POST",
+      "body_len": 19,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.202,
+      "url": "https://capitaloneshopping.com/api/v1/content/fetch/protection-sites",
+      "method": "POST",
+      "body_len": 19,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.304,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.107,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.107,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.107,
+      "event": "inject",
+      "target": "input[type=hidden]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.107,
+      "event": "inject",
+      "target": "input[type=text]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.107,
+      "event": "inject",
+      "target": "fieldset[type=fieldset]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.108,
+      "event": "inject",
+      "target": "input[name=t]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.108,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.108,
+      "event": "read",
+      "target": "input[type=radio]",
+      "value_len": 1,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.108,
+      "event": "read",
+      "target": "input[type=checkbox]",
+      "value_len": 2,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.117,
+      "event": "inject",
+      "target": "div",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.119,
+      "event": "inject",
+      "target": "style#__wb_font_loader",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.122,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "svg",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.123,
+      "event": "inject",
+      "target": "div.logo",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "div.li-text",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "div.li-text",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "div.li-text",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "svg",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "div.icon",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "div.text",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "read",
+      "target": "input[name=personal-radio]",
+      "value_len": 2,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "input[name=personal-radio]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "label.radio-label",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "read",
+      "target": "input[name=personal-radio]",
+      "value_len": 2,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.124,
+      "event": "inject",
+      "target": "input[name=personal-radio]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.li-text",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.warning",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.options-wrapper",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.summary",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.bullet-list",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.question",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "read",
+      "target": "input[name=anonymous-radio]",
+      "value_len": 2,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "h3",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.text",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "label.radio-label",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.icon",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "svg",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.125,
+      "event": "inject",
+      "target": "div.li-text",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "label.radio-label",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.warning",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.options-wrapper",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.bullet-list",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "input[name=anonymous-radio]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.question",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.anonymous",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.consent-notification",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "h2.midnight",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "a",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "label.radio-label",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "section",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.explanation",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.close-button-wrapper",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.summary",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "header",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "h3",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "button[type=submit]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.consent-notification-content",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.personal",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "div.consent-notification-wrapper",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "read",
+      "target": "input[name=anonymous-radio]",
+      "value_len": 2,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "unknown",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.126,
+      "event": "inject",
+      "target": "input[name=anonymous-radio]",
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.128,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.128,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.128,
+      "event": "write",
+      "target": "document.cookie",
+      "value_len": 117,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.128,
+      "event": "write",
+      "target": "document.cookie",
+      "value_len": 113,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.128,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "moz-extension://392628d5-714b-4468-8117-5f8a021eda70",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.106,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.007,
+      "api": "localStorage.getItem",
+      "key": "ajs_user_id",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "api": "localStorage.getItem",
+      "key": "ajs_anonymous_id",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.106,
+      "api": "chrome.cookies.set",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.13,
+      "api": "chrome.cookies.set",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.132,
+      "api": "chrome.cookies.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.302,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.004,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.094,
+      "api": "browser.runtime.getBrowserInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.104,
+      "api": "chrome.runtime.connect",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.114,
+      "api": "browser.runtime.getBrowserInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.131,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.133,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.133,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.162,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.107,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

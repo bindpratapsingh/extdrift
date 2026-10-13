@@ -1,0 +1,158 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{d04b0b40-3dab-4f0b-97a6-04ec3eddbfb0}",
+    "name": "__MSG_store_title_new__",
+    "version": "6.5.3"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:52:20Z",
+    "duration_s": 15.81,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.js",
+        "funnel.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 49317,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "__MSG_store_title_new__",
+    "description": "__MSG_store_shortdesc_firefox__",
+    "version": "6.5.3",
+    "default_locale": "en",
+    "homepage_url": "https://www.ecosia.org",
+    "icons": {
+      "16": "img/favicon16.png",
+      "48": "img/logo_square_transparent48.png",
+      "128": "img/logo_square_transparent128.png"
+    },
+    "manifest_version": 3,
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "img/favicon16.png",
+          "img/logo_square_transparent48.png"
+        ],
+        "matches": [
+          "*://*.ecosia.org/*"
+        ]
+      }
+    ],
+    "action": {
+      "default_title": "__MSG_browser_action_hover__",
+      "default_icon": "img/icon24.png"
+    },
+    "background": {
+      "scripts": [
+        "background.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*.ecosia.org/*"
+        ],
+        "js": [
+          "funnel.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "chrome_settings_overrides": {
+      "search_provider": {
+        "name": "Ecosia search",
+        "keyword": "@ecosia",
+        "search_url": "https://www.ecosia.org/search?q={searchTerms}&addon=firefox&addonversion=6.5.2&method=topbar",
+        "favicon_url": "img/icon24.png",
+        "suggest_url": "https://ac.ecosia.org/?q={searchTerms}&type=list&mkt=__MSG_@@ui_locale__",
+        "encoding": "UTF-8",
+        "is_default": true
+      }
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{d04b0b40-3dab-4f0b-97a6-04ec3eddbfb0}",
+        "strict_min_version": "109.0"
+      }
+    },
+    "host_permissions": [
+      "*://*.ecosia.org/*",
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ],
+    "permissions": [
+      "storage",
+      "contextMenus",
+      "cookies"
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [],
+  "dom": [
+    {
+      "ts": 1.633,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 1.635,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

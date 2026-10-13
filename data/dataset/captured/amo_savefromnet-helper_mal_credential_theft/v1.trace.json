@@ -1,0 +1,401 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "helper@savefrom.net",
+    "name": "__MSG_extName__",
+    "version": "10.60"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:42:18Z",
+    "duration_s": 15.95,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "js/background.js",
+        "includes/commons.js",
+        "includes/vimeo_com.js",
+        "includes/dailymotion_com.js",
+        "includes/youtube_com.js",
+        "includes/youtube_music.js",
+        "includes/soundcloud_com.js",
+        "includes/vkontakte_ru.js",
+        "includes/odnoklassniki_ru.js",
+        "includes/mail_ru.js",
+        "includes/facebook_com.js",
+        "includes/savefrom_net.js",
+        "includes/instagram_com.js",
+        "includes/rutube_ru.js",
+        "includes/tiktok_com.js",
+        "includes/yandex_music.js",
+        "includes/twitch_tv.js",
+        "includes/match_tv.js",
+        "includes/twitter_com.js",
+        "includes/oauth_helper_net.js",
+        "includes/tab.js",
+        "includes/astrology.js",
+        "includes/astrologyvalley.js",
+        "includes/horoscope.js"
+      ],
+      "proxy_port": 64984,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "sf-helper.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extName__",
+    "description": "__MSG_extDescription__",
+    "author": "Itproductdev Ltd",
+    "version": "10.60",
+    "default_locale": "en",
+    "icons": {
+      "16": "img/icon_16.png",
+      "48": "img/icon_48.png",
+      "128": "img/icon_128.png"
+    },
+    "browser_action": {
+      "default_icon": {
+        "19": "img/icon_19.png",
+        "38": "img/icon_38.png"
+      },
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "scripts": [
+        "js/background.js"
+      ]
+    },
+    "permissions": [
+      "tabs",
+      "downloads",
+      "storage",
+      "<all_urls>",
+      "webRequest",
+      "webRequestBlocking",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      "img/*",
+      "locales/*"
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "*://*.vimeo.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/vimeo_com.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "include_globs": [
+          "http://dailymotion.*/*",
+          "http://*.dailymotion.*/*",
+          "https://dailymotion.*/*",
+          "https://*.dailymotion.*/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/dailymotion_com.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "exclude_matches": [
+          "*://accounts.youtube.com/*",
+          "*://music.youtube.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/youtube_com.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://music.youtube.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/youtube_music.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "*://*.soundcloud.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/soundcloud_com.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "*://*.vk.com/*",
+          "*://*.vkontakte.ru/*",
+          "*://*.vkvideo.ru/*",
+          "*://*.vk.ru/*"
+        ],
+        "exclude_matches": [
+          "*://queuev4.vk.com/*",
+          "*://queuev4.vkontakte.ru/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/vkontakte_ru.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://*.ok.ru/*",
+          "*://*.odnoklassniki.ru/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/odnoklassniki_ru.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "*://my.mail.ru/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/mail_ru.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "*://*.facebook.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/facebook_com.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "*://*.savefrom.net/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/savefrom_net.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "*://*.instagram.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/instagram_com.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://*.rutube.ru/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/rutube_ru.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://*.tiktok.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/tiktok_com.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://music.yandex.ru/*",
+          "*://music.yandex.by/*",
+          "*://music.yandex.com/*",
+          "*://music.yandex.ua/*",
+          "*://music.yandex.kz/*",
+          "*://music.yandex.uz/*",
+          "*://music.yandex.az/*",
+          "*://music.yandex.tr/*",
+          "*://music.yandex.am/*",
+          "*://music.yandex.ge/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/yandex_music.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://*.twitch.tv/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/twitch_tv.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://matchtv.ru/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/match_tv.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://x.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/twitter_com.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://sf-helper.net/*",
+          "*://oauth2.televzr.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/oauth_helper_net.js"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "includes/tab.js"
+        ],
+        "run_at": "document_end"
+      },
+      {
+        "matches": [
+          "*://www.astrology.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/astrology.js"
+        ]
+      },
+      {
+        "matches": [
+          "*://astrologyvalley.com/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/astrologyvalley.js"
+        ]
+      },
+      {
+        "matches": [
+          "*://www.horoscope.com/us/*"
+        ],
+        "js": [
+          "includes/commons.js",
+          "includes/horoscope.js"
+        ]
+      }
+    ],
+    "applications": {
+      "gecko": {
+        "id": "helper@savefrom.net",
+        "strict_min_version": "58.0"
+      }
+    },
+    "options_ui": {
+      "page": "options.html",
+      "open_in_tab": true
+    }
+  },
+  "network": [
+    {
+      "ts": 0.014,
+      "url": "https://sf-helper.com/geoip/country.php",
+      "method": "POST",
+      "body_len": 5,
+      "resource_type": "xhr",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

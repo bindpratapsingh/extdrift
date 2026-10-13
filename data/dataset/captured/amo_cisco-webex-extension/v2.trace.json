@@ -1,0 +1,104 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "ciscowebexstart1@cisco.com",
+    "name": "__MSG_appName__",
+    "version": "1.20.2"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:04:27Z",
+    "duration_s": 15.78,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.js",
+        "CryptoJS.js",
+        "content_script.js"
+      ],
+      "proxy_port": 62624,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "__MSG_appName__",
+    "description": "__MSG_appDesc__",
+    "default_locale": "en",
+    "version": "1.20.2",
+    "manifest_version": 2,
+    "homepage_url": "https://www.webex.com/",
+    "background": {
+      "scripts": [
+        "background.js"
+      ]
+    },
+    "icons": {
+      "32": "icon32.png",
+      "64": "icon64.png",
+      "128": "icon128.png"
+    },
+    "applications": {
+      "gecko": {
+        "id": "ciscowebexstart1@cisco.com",
+        "strict_min_version": "50.0"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "https://*.webex.com/*/cwcsf-nativemsg-iframe-43c85c0d-d633-af5e-c056-32dc7efc570b.html",
+          "https://*.webex.com/cwcsf-nativemsg-iframe-43c85c0d-d633-af5e-c056-32dc7efc570b.html",
+          "https://*.webex.com.cn/*/cwcsf-nativemsg-iframe-43c85c0d-d633-af5e-c056-32dc7efc570b.html",
+          "https://*.webex.com.cn/cwcsf-nativemsg-iframe-43c85c0d-d633-af5e-c056-32dc7efc570b.html"
+        ],
+        "js": [
+          "CryptoJS.js",
+          "content_script.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+      }
+    ],
+    "web_accessible_resources": [
+      "cwcsf-nativemsg-iframe-43c85c0d-d633-af5e-c056-32dc7efc570b.html"
+    ],
+    "permissions": [
+      "https://*.webex.com/*",
+      "https://*.webex.com.cn/*",
+      "nativeMessaging",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ]
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": []
+}

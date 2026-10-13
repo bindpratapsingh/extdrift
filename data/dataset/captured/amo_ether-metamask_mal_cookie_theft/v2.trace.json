@@ -1,0 +1,1353 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "webextension@metamask.io",
+    "name": "__MSG_appName__",
+    "version": "13.49.0.1"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:45:56Z",
+    "duration_s": 18.11,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "scripts/contentscript.js",
+        "scripts/inpage.js",
+        "vendor/trezor/content-script.js",
+        "extdrift_cs.js",
+        "bootstrap.37846fb21c59efb16927.js",
+        "runtime.c569968ab361482b30f8.js",
+        "js-139b763f.2d2b26e43c1c1de05606.js",
+        "js-6c59cb66.1cd4a0bae31450830061.js",
+        "js-2c7117ce.9a04319ab4c14d649ef7.js",
+        "js-c376993a.b4f18ffcc050050b7c32.js",
+        "js-71051298.4377e25393161a4554ca.js",
+        "js-319e4a23.5b9d325ee0c3b037e80b.js",
+        "js-de2d6f9a.eeab2b104be9d99ee4a3.js",
+        "vendor-cdd60c62.796cc828469bec24270c.js",
+        "vendor-49d0a293.21b5fba603d5e4f40c22.js",
+        "vendor-d2eb5610.fc37326a424b5d57b379.js",
+        "vendor-4f7fa968.db69e88d73c247493595.js",
+        "vendor-c87e6db1.e72eb4d5003805fd79fb.js",
+        "vendor-2b4841d6.7782326399e676643958.js",
+        "vendor-9241dc7c.d2a85045c957f8a9380c.js",
+        "vendor-059be3de.b9d0708b51407ca44138.js",
+        "vendor-2dee8ca3.6ea03d299f7e58524892.js",
+        "vendor-9fdd03a1.ccd96eeb42a45746fb64.js",
+        "vendor-d55b92e6.443cbdbb483d4b745e4e.js",
+        "vendor-631f4c9e.aa300877407ef935f47f.js",
+        "vendor-3362f032.a398eb4aa7ce553bda90.js",
+        "vendor-b54e48f8.d8ad07e6bcea949fd87b.js",
+        "vendor-b072491a.3742c6b1b8d9c4dea601.js",
+        "vendor-0c1fb56a.a658e3310097cf3da016.js",
+        "vendor-343d8719.d12ff7a207680eb1598f.js",
+        "vendor-14a3bead.58b8bdb70964b74d4de2.js",
+        "vendor-a58ebfdb.f41dbbe231edc133b1b8.js",
+        "vendor-da2abae2.40bff82e4da7b12295e5.js",
+        "vendor-0bc0478e.06f83fb7a8cea6239062.js",
+        "vendor-5a94f17d.f46b4123933bab0d140d.js",
+        "vendor-d96105ec.dd72a072448b3eb900e8.js",
+        "vendor-27545368.0c7e50fe9b4ec3724332.js",
+        "vendor-229eafb5.e50e152a954e02b84a59.js",
+        "vendor-a5ce148e.e3b4e8e74a61964fa55b.js",
+        "background.1.e62e83a4ac4c90ef3643.js",
+        "extdrift_bg.js"
+      ],
+      "proxy_port": 65252,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "chainid.network",
+        "method": "CONNECT"
+      },
+      {
+        "host": "metamask.github.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "accounts.api.cx.metamask.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "author": "https://metamask.io",
+    "background": {
+      "page": "background.html",
+      "persistent": true
+    },
+    "browser_action": {
+      "default_icon": {
+        "16": "images/icon-16.png",
+        "19": "images/icon-19.png",
+        "32": "images/icon-32.png",
+        "38": "images/icon-38.png",
+        "64": "images/icon-64.png",
+        "128": "images/icon-128.png",
+        "512": "images/icon-512.png"
+      },
+      "default_title": "MetaMask",
+      "default_popup": "popup.html"
+    },
+    "commands": {
+      "_execute_browser_action": {
+        "suggested_key": {
+          "default": "Alt+Shift+M",
+          "windows": "Alt+Shift+M",
+          "mac": "Alt+Shift+M",
+          "chromeos": "Alt+Shift+M",
+          "linux": "Alt+Shift+M"
+        }
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "file://*/*",
+          "http://*/*",
+          "https://*/*"
+        ],
+        "exclude_matches": [
+          "*://connect.trezor.io/*"
+        ],
+        "js": [
+          "scripts/contentscript.js",
+          "scripts/inpage.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "*://connect.trezor.io/*/popup.html*"
+        ],
+        "js": [
+          "vendor/trezor/content-script.js"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "default_locale": "en",
+    "description": "__MSG_appDescription__",
+    "icons": {
+      "16": "images/icon-16.png",
+      "19": "images/icon-19.png",
+      "32": "images/icon-32.png",
+      "38": "images/icon-38.png",
+      "48": "images/icon-48.png",
+      "64": "images/icon-64.png",
+      "128": "images/icon-128.png",
+      "512": "images/icon-512.png"
+    },
+    "manifest_version": 2,
+    "name": "__MSG_appName__",
+    "optional_permissions": [
+      "clipboardRead"
+    ],
+    "permissions": [
+      "storage",
+      "unlimitedStorage",
+      "clipboardWrite",
+      "http://*/*",
+      "https://*/*",
+      "ws://*/*",
+      "wss://*/*",
+      "activeTab",
+      "webRequest",
+      "webRequestBlocking",
+      "*://*.eth/",
+      "notifications",
+      "identity",
+      "cookies",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "short_name": "__MSG_appName__",
+    "version": "13.49.0.1",
+    "applications": {
+      "gecko": {
+        "id": "webextension@metamask.io",
+        "strict_min_version": "128.0"
+      }
+    },
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.58,
+      "url": "https://chainid.network/chains.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.585,
+      "url": "https://chainid.network/chains.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.604,
+      "url": "https://accounts.api.cx.metamask.io/v2/supportedNetworks",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.025,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.256,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.273,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.41,
+      "event": "inject",
+      "target": "style",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.412,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.412,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.412,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.413,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.413,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.413,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.413,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.413,
+      "event": "inject",
+      "target": "style#_goober",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.492,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.492,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 0,
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.603,
+      "event": "inject",
+      "target": "iframe",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.968,
+      "event": "inject",
+      "target": "span.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.97,
+      "event": "inject",
+      "target": "span.text-inherit",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.97,
+      "event": "inject",
+      "target": "p.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.971,
+      "event": "inject",
+      "target": "button[type=submit]",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.971,
+      "event": "inject",
+      "target": "div.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.971,
+      "event": "inject",
+      "target": "div.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.971,
+      "event": "inject",
+      "target": "div.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.971,
+      "event": "inject",
+      "target": "span.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.971,
+      "event": "inject",
+      "target": "div.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.971,
+      "event": "inject",
+      "target": "button[type=submit]",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.972,
+      "event": "inject",
+      "target": "div.app",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.972,
+      "event": "inject",
+      "target": "div.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.972,
+      "event": "inject",
+      "target": "div.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.989,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.989,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.989,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.989,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.99,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.026,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "svg",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "img.onboarding-app-header__metafox-logo--icon",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.027,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.028,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "event": "inject",
+      "target": "option",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.03,
+      "event": "inject",
+      "target": "span.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.03,
+      "event": "inject",
+      "target": "select[type=select-one]",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.031,
+      "event": "inject",
+      "target": "div.dropdown",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.031,
+      "event": "inject",
+      "target": "div.mt-3",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.031,
+      "event": "inject",
+      "target": "div.flex",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.031,
+      "event": "inject",
+      "target": "div.flex",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.031,
+      "event": "inject",
+      "target": "div.p-4",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.031,
+      "event": "inject",
+      "target": "button[type=submit]",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.032,
+      "event": "inject",
+      "target": "div.mm-box",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.051,
+      "event": "inject",
+      "target": "img.mx-auto",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.052,
+      "event": "inject",
+      "target": "p.text-default",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.052,
+      "event": "inject",
+      "target": "div.relative",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.052,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.052,
+      "event": "inject",
+      "target": "span.text-default",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.052,
+      "event": "inject",
+      "target": "input#metametrics-opt-in",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.052,
+      "event": "inject",
+      "target": "svg",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "label.inline-flex",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "span.text-inherit",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "p.text-alternative",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "div.relative",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "svg",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "path",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "label.inline-flex",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "p.text-alternative",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "input#metametrics-datacollection-opt-in",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "p.text-default",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.053,
+      "event": "inject",
+      "target": "span.text-default",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "div.onboarding-metametrics__user-control",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "div.flex",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "div.w-full",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "h2.text-default",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "button[type=submit]",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "div.flex",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "div.flex",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "event": "inject",
+      "target": "p.text-alternative",
+      "origin": "moz-extension://01631d50-c859-4e3f-8ea8-105839f5e4bc",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.004,
+      "api": "localStorage.getItem",
+      "key": "debug",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.004,
+      "api": "localStorage.getItem",
+      "key": "DEBUG",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.009,
+      "api": "localStorage.getItem",
+      "key": "debug",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.01,
+      "api": "localStorage.getItem",
+      "key": "DEBUG",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.217,
+      "api": "localStorage.getItem",
+      "key": "debug",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.217,
+      "api": "localStorage.getItem",
+      "key": "DEBUG",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.237,
+      "api": "localStorage.getItem",
+      "key": "debug",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.238,
+      "api": "localStorage.getItem",
+      "key": "DEBUG",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.528,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.012,
+      "api": "browser.management.getSelf",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.018,
+      "api": "browser.management.getSelf",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.042,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.485,
+      "api": "browser.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.528,
+      "api": "browser.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.532,
+      "api": "browser.management.getSelf",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.601,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.601,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.618,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.606,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.607,
+      "api": "browser.tabs.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.607,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.607,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.607,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.611,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.692,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.713,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.763,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

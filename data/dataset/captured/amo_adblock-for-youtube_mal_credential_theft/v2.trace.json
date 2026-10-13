@@ -1,0 +1,244 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-q4sG8pYhq8KGHs@jetpack",
+    "name": "AdBlocker for YouTube\u2122",
+    "version": "0.5.5"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:17:22Z",
+    "duration_s": 15.82,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "lib/config.js",
+        "lib/chrome.js",
+        "lib/runtime.js",
+        "lib/netrequest.js",
+        "lib/common.js",
+        "data/content_script/page_context/vendor/ublock-filters.js",
+        "data/content_script/page_context/vendor/annoyances-others.js",
+        "data/content_script/page_context/vendor/annoyances-cookies.js",
+        "data/content_script/page_context/vendor/annoyances-overlays.js",
+        "data/content_script/page_context/vendor/ublock-experimental.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 63509,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "extdrift-report.test",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "version": "0.5.5",
+    "manifest_version": 3,
+    "name": "AdBlocker for YouTube\u2122",
+    "description": "Removes all annoying ads and banners from YouTube!",
+    "homepage_url": "https://mybrowseraddon.com/adblocker-for-youtube.html",
+    "permissions": [
+      "storage",
+      "declarativeNetRequest"
+    ],
+    "options_ui": {
+      "open_in_tab": true,
+      "page": "data/options/options.html"
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "strict_min_version": "109.0",
+        "id": "jid1-q4sG8pYhq8KGHs@jetpack"
+      }
+    },
+    "icons": {
+      "16": "data/icons/16.png",
+      "32": "data/icons/32.png",
+      "48": "data/icons/48.png",
+      "64": "data/icons/64.png",
+      "128": "data/icons/128.png"
+    },
+    "background": {
+      "scripts": [
+        "lib/config.js",
+        "lib/chrome.js",
+        "lib/runtime.js",
+        "lib/netrequest.js",
+        "lib/common.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "world": "ISOLATED",
+        "run_at": "document_start",
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "css": [
+          "data/content_script/inject.css"
+        ]
+      },
+      {
+        "world": "MAIN",
+        "all_frames": true,
+        "run_at": "document_start",
+        "matches": [
+          "*://*.youtube.com/*"
+        ],
+        "js": [
+          "data/content_script/page_context/vendor/ublock-filters.js",
+          "data/content_script/page_context/vendor/annoyances-others.js",
+          "data/content_script/page_context/vendor/annoyances-cookies.js",
+          "data/content_script/page_context/vendor/annoyances-overlays.js",
+          "data/content_script/page_context/vendor/ublock-experimental.js"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    },
+    "host_permissions": [
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ]
+  },
+  "network": [
+    {
+      "ts": 1.057,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.517,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.056,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.056,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.057,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.515,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.516,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.516,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.089,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.09,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": []
+}

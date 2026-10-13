@@ -1,0 +1,360 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "nordvpnproxy@nordvpn.com",
+    "name": "NordVPN - a VPN proxy extension for Firefox",
+    "version": "5.6.5"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:44:47Z",
+    "duration_s": 16.09,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.bundle.js",
+        "csProxyDetectionYoutube.bundle.js",
+        "csProxyDetectionTvYoutube.bundle.js"
+      ],
+      "proxy_port": 65148,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.nordvpn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.nordvpn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.nordvpn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.nordvpn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "applytics.nordvpn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "napps-1.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "applytics.napps-1.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.nordvpn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.nordvpn.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "napps-2.com",
+        "method": "CONNECT"
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 3,
+    "short_name": "NordVPN",
+    "version": "5.6.5",
+    "host_permissions": [
+      "<all_urls>",
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ],
+    "incognito": "spanning",
+    "icons": {
+      "16": "icons/nordvpn-16-active.png",
+      "32": "icons/nordvpn-32-active.png",
+      "48": "icons/nordvpn-48-active.png",
+      "128": "icons/nordvpn-128-active.png"
+    },
+    "action": {
+      "default_icon": "icons/nordvpn-48-active.png",
+      "default_popup": "index.html",
+      "default_title": "NordVPN"
+    },
+    "web_accessible_resources": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "resources": [
+          "*.css",
+          "/icons/*",
+          "/fonts/*"
+        ]
+      }
+    ],
+    "content_scripts": [
+      {
+        "run_at": "document_start",
+        "matches": [
+          "<all_urls>"
+        ],
+        "css": [
+          "fonts.bundle.css"
+        ]
+      },
+      {
+        "run_at": "document_start",
+        "matches": [
+          "https://youtube.com/*",
+          "https://www.youtube.com/*"
+        ],
+        "js": [
+          "csProxyDetectionYoutube.bundle.js"
+        ],
+        "all_frames": false,
+        "world": "ISOLATED"
+      },
+      {
+        "run_at": "document_start",
+        "matches": [
+          "https://tv.youtube.com/*"
+        ],
+        "js": [
+          "csProxyDetectionTvYoutube.bundle.js"
+        ],
+        "all_frames": false,
+        "world": "ISOLATED"
+      }
+    ],
+    "name": "NordVPN - a VPN proxy extension for Firefox",
+    "description": "One click, and you're connected to the fastest VPN out there \u2014 NordVPN. Stay safe online with our VPN proxy extension for Firefox.",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "nordvpnproxy@nordvpn.com",
+        "strict_min_version": "140.0",
+        "data_collection_permissions": {
+          "required": [
+            "authenticationInfo",
+            "locationInfo"
+          ],
+          "optional": [
+            "technicalAndInteraction"
+          ]
+        }
+      }
+    },
+    "background": {
+      "scripts": [
+        "background.bundle.js"
+      ]
+    },
+    "permissions": [
+      "alarms",
+      "scripting",
+      "proxy",
+      "webRequest",
+      "webNavigation",
+      "privacy",
+      "storage",
+      "notifications",
+      "tabs",
+      "contextMenus",
+      "activeTab",
+      "unlimitedStorage",
+      "downloads",
+      "declarativeNetRequestWithHostAccess",
+      "webRequestBlocking",
+      "dns"
+    ],
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'"
+    }
+  },
+  "network": [
+    {
+      "ts": 0.05,
+      "url": "https://api.nordvpn.com/v1/servers/countries?filters%5Bservers_technologies%5D%5Bidentifier%5D=proxy_ssl",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.055,
+      "url": "https://api.nordvpn.com/v1/helpers/ips/insights",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.084,
+      "url": "https://api.nordvpn.com/v2/servers?fields%5Bservers.groups%5D=&fields%5Bservers.hostname%5D=&fields%5Bservers.id%5D=&fields%5Bservers.load%5D=&fields%5Bservers.locations%5D=&fields%5Bservers.name%5D=&fields%5Bservers.specifications%5D=&fields%5Bservers.technologies%5D=&fields%5Bservers.type%5D=&filters%5Bservers_groups%5D%5Bidentifier%5D=legacy_standard&filters%5Bservers_technologies%5D%5Bidentifier%5D=proxy_ssl&limit=100000",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.142,
+      "url": "https://api.nordvpn.com/v1/servers/count",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.199,
+      "url": "https://applytics.nordvpn.com/",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.259,
+      "url": "https://napps-1.com/v1/servers/count",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 9.502,
+      "url": "https://applytics.napps-1.com/",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.451,
+      "url": "https://api.nordvpn.com/v1/servers/countries?filters%5Bservers_technologies%5D%5Bidentifier%5D=proxy_ssl",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 11.618,
+      "url": "https://api.nordvpn.com/v1/helpers/ips/insights",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 12.649,
+      "url": "https://napps-2.com/v1/servers/count",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.048,
+      "event": "inject",
+      "target": "iframe",
+      "origin": "moz-extension://80830c3f-ec0c-49df-bfcd-26db69cc0592",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.03,
+      "api": "localStorage.getItem",
+      "key": "debug",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.021,
+      "api": "chrome.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "api": "chrome.declarativeNetRequest.getDynamicRules",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "api": "chrome.declarativeNetRequest.updateDynamicRules",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.044,
+      "api": "chrome.scripting.getRegisteredContentScripts",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.046,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.076,
+      "api": "chrome.scripting.executeScript",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.076,
+      "api": "chrome.scripting.executeScript",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

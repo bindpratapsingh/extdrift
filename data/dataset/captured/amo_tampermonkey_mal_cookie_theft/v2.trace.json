@@ -1,0 +1,331 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "firefox@tampermonkey.net",
+    "name": "__MSG_extName__",
+    "version": "5.5.1"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:11:28Z",
+    "duration_s": 15.95,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "extdrift_cs.js",
+        "test.js",
+        "background.js",
+        "extdrift_bg.js"
+      ],
+      "proxy_port": 63126,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "www.tampermonkey.net",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "content_security_policy": "script-src 'self'; object-src 'self';",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "firefox@tampermonkey.net",
+        "strict_min_version": "78.0"
+      },
+      "gecko_android": {
+        "strict_min_version": "113.0"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "user_scripts": {
+      "api_script": "content.js"
+    },
+    "browser_action": {
+      "default_icon": {
+        "16": "images/icon_grey16.png",
+        "24": "images/icon_grey24.png",
+        "32": "images/icon_grey32.png"
+      },
+      "default_title": "Tampermonkey",
+      "default_popup": "action.html",
+      "browser_style": false
+    },
+    "name": "__MSG_extName__",
+    "description": "__MSG_extDescription__",
+    "version": "5.5.1",
+    "homepage_url": "https://www.tampermonkey.net/",
+    "icons": {
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    },
+    "default_locale": "en",
+    "background": {
+      "page": "background.html",
+      "persistent": false
+    },
+    "options_ui": {
+      "page": "options.html",
+      "browser_style": false,
+      "open_in_tab": true
+    },
+    "commands": {
+      "activate": {
+        "description": "Activate the extension"
+      },
+      "toggle-enable": {
+        "description": "Toggle enable state"
+      },
+      "open-dashboard": {
+        "description": "Open dashboard"
+      },
+      "open-dashboard-with-running-scripts": {
+        "description": "Open dashboard with the current tab's URL used as filter"
+      },
+      "open-new-script": {
+        "description": "Open new script tab"
+      }
+    },
+    "permissions": [
+      "alarms",
+      "notifications",
+      "tabs",
+      "idle",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "unlimitedStorage",
+      "storage",
+      "contextMenus",
+      "clipboardWrite",
+      "cookies",
+      "contextualIdentities",
+      "downloads",
+      "<all_urls>",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "proxy"
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 2.646,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.512,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.027,
+      "api": "localStorage.getItem",
+      "key": "#brokenprofile",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "api": "chrome.cookies.remove",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "api": "localStorage.getItem",
+      "key": "inactive_tab_done_timeout",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "api": "localStorage.getItem",
+      "key": "wsr_6_50",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "api": "localStorage.getItem",
+      "key": "wsr_6_10",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "api": "localStorage.getItem",
+      "key": "wsr_6_0.01",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "api": "localStorage.getItem",
+      "key": "TM_version",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "api": "localStorage.getItem",
+      "key": "!extdb.TM_version",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.266,
+      "api": "localStorage.getItem",
+      "key": "#session",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.644,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.031,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.268,
+      "api": "chrome.runtime.getPlatformInfo",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.269,
+      "api": "chrome.runtime.getBrowserInfo",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.083,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.129,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.129,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.28,
+      "api": "chrome.tabs.create",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.293,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.293,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.513,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.175,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.175,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.216,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.216,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

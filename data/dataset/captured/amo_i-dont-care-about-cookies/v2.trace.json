@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-KKzOGWgsW3Ao4Q@jetpack",
+    "name": "__MSG_extensionName__",
+    "version": "3.5.0"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:32:15Z",
+    "duration_s": 15.82,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "data/rules.js",
+        "data/context-menu.js"
+      ],
+      "proxy_port": 64663,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "short_name": "__MSG_extensionDescription__",
+    "default_locale": "en",
+    "version": "3.5.0",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "jid1-KKzOGWgsW3Ao4Q@jetpack",
+        "strict_min_version": "56.0"
+      },
+      "gecko_android": {
+        "id": "jid1-KKzOGWgsW3Ao4Q@jetpack",
+        "strict_min_version": "78.0"
+      }
+    },
+    "icons": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    },
+    "author": "Daniel Kladnik @ kiboke studio",
+    "permissions": [
+      "tabs",
+      "storage",
+      "http://*/*",
+      "https://*/*",
+      "notifications",
+      "webRequest",
+      "webRequestBlocking",
+      "webNavigation",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "background": {
+      "scripts": [
+        "data/rules.js",
+        "data/context-menu.js"
+      ]
+    },
+    "options_ui": {
+      "page": "data/options.html",
+      "browser_style": true
+    },
+    "browser_action": {
+      "default_popup": "data/menu/index.html",
+      "default_icon": {
+        "16": "icons/16.png",
+        "32": "icons/32.png"
+      }
+    }
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.007,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.041,
+      "api": "chrome.tabs.insertCSS",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.072,
+      "api": "chrome.tabs.executeScript",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.072,
+      "api": "chrome.tabs.executeScript",
+      "arg_count": 3,
+      "frame": "content_script"
+    }
+  ]
+}

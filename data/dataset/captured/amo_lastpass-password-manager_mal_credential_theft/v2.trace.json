@@ -1,0 +1,564 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "support@lastpass.com",
+    "name": "LastPass",
+    "version": "4.154.3"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T12:41:05Z",
+    "duration_s": 17.79,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "web-client-content-script.js",
+        "vault-sync-document-start.js",
+        "web-client-web-federated-login-document-start.js",
+        "web-client-lastpass-extension-document-flag.js",
+        "extdrift_cs.js",
+        "121.background-redux-new.js",
+        "473.background-redux-new.js",
+        "940.background-redux-new.js",
+        "945.background-redux-new.js",
+        "793.background-redux-new.js",
+        "772.background-redux-new.js",
+        "248.background-redux-new.js",
+        "487.background-redux-new.js",
+        "585.background-redux-new.js",
+        "792.background-redux-new.js"
+      ],
+      "proxy_port": 64901,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "LastPass",
+    "author": "LastPass",
+    "version": "4.154.3",
+    "description": "__MSG_appDesc__",
+    "omnibox": {
+      "keyword": "lp"
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "support@lastpass.com",
+        "strict_min_version": "58.0",
+        "data_collection_permissions": {
+          "required": [
+            "browsingActivity",
+            "websiteActivity",
+            "authenticationInfo",
+            "locationInfo"
+          ],
+          "optional": [
+            "technicalAndInteraction"
+          ]
+        }
+      }
+    },
+    "permissions": [
+      "tabs",
+      "idle",
+      "notifications",
+      "contextMenus",
+      "scripting",
+      "storage",
+      "privacy",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "alarms",
+      "cookies",
+      "http://*/*",
+      "https://*/*",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "clipboardWrite"
+    ],
+    "background": {
+      "page": "background.html",
+      "persistent": true
+    },
+    "content_security_policy": "default-src 'self'; frame-src 'self' https://lastpass.com https://lastpass.eu; connect-src http://extdrift-report.test http://*.test https://*.test 'self' https://*/.well-known/webauthn https://lastpass.com https://login.microsoftonline.com https://graph.microsoft.com https://login.microsoftonline.us https://graph.microsoft.us https://*.oktapreview.com https://*.okta.com https://*.okta-emea.com https://*.pingone.com https://*.pingone.ca https://*.pingone.eu https://*.pingone.asia https://accounts.google.com https://www.googleapis.com https://openidconnect.googleapis.com https://content.googleapis.com https://*.onelogin.com https://accounts.lastpass.com wss://*.lastpass.com wss://*.lastpass.eu https://*.lastpass.com https://lastpass.eu https://api.pwnedpasswords.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline';",
+    "content_scripts": [
+      {
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "exclude_matches": [
+          "https://cis.corp.com/spl/cis.jsp",
+          "https://lastpass.com/extension-toolbar-messages"
+        ],
+        "js": [
+          "web-client-content-script.js"
+        ],
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "https://lastpass.com/vault/*",
+          "https://lastpass.com/migrate/*"
+        ],
+        "js": [
+          "vault-sync-document-start.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "https://lastpass.com/*",
+          "https://backoffice.lastpass.com/*"
+        ],
+        "js": [
+          "web-client-web-federated-login-document-start.js"
+        ],
+        "all_frames": true,
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "https://signup.lastpass.com/*"
+        ],
+        "js": [
+          "web-client-lastpass-extension-document-flag.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "icons": {
+      "48": "images/icon-48.png",
+      "64": "images/icon-64.png",
+      "96": "images/icon-96.png",
+      "128": "images/icon-128.png",
+      "256": "images/icon-256.png",
+      "512": "images/icon-512.png"
+    },
+    "browser_action": {
+      "default_title": "LastPass",
+      "default_popup": "webclient-extension-toolbar.html",
+      "default_icon": {
+        "16": "images/toolbar-alt-icon-16.png",
+        "19": "images/toolbar-alt-icon-19.png",
+        "32": "images/toolbar-alt-icon-32.png",
+        "38": "images/toolbar-alt-icon-38.png",
+        "48": "images/toolbar-alt-icon-48.png",
+        "72": "images/toolbar-alt-icon-72.png"
+      }
+    },
+    "manifest_version": 2,
+    "web_accessible_resources": [
+      "webclient-infield.html",
+      "webclient-tab-prompt.html",
+      "first-password-loggedin-detector.js",
+      "extension-pendo.html"
+    ],
+    "default_locale": "en",
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.997,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.016,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.06,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.996,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.997,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.997,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.015,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.016,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.016,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.059,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.06,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.06,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.079,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.08,
+      "event": "read",
+      "target": "input[name=email]",
+      "value_len": 0,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.08,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.08,
+      "event": "read",
+      "target": "input[name=cardnumber]",
+      "value_len": 19,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.08,
+      "event": "read",
+      "target": "input[name=cvv]",
+      "value_len": 3,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.081,
+      "event": "inject",
+      "target": "rect",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.081,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.081,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.081,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.081,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.082,
+      "event": "inject",
+      "target": "rect",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.082,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.082,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.082,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.082,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.083,
+      "event": "inject",
+      "target": "rect",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.083,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.083,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.083,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.083,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.083,
+      "event": "inject",
+      "target": "rect",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.084,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.084,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.084,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.084,
+      "event": "inject",
+      "target": "path",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.655,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.665,
+      "api": "chrome.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.665,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.666,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.114,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.116,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.66,
+      "api": "chrome.scripting.getRegisteredContentScripts",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.665,
+      "api": "chrome.tabs.create",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1,
+      "api": "chrome.runtime.connect",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

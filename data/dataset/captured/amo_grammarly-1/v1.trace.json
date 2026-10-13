@@ -1,0 +1,820 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "87677a2c52b84ad3a151a4a72f5bd3c4@jetpack",
+    "name": "Grammarly: AI Writing and Grammar Checker App",
+    "version": "8.936.0"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T10:57:25Z",
+    "duration_s": 18.25,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "src/js/Grammarly-bg.js",
+        "src/js/Grammarly-check.styles.js",
+        "src/js/Grammarly-check.js",
+        "src/js/Grammarly.styles.js",
+        "src/js/Grammarly.js",
+        "src/js/Grammarly-gDocs.styles.js",
+        "src/js/Grammarly-gDocs.js",
+        "src/js/Grammarly-gDocsEarlyInjector.js",
+        "src/js/Grammarly-gDocsIframeCs.js",
+        "src/js/Grammarly-overleafStartContentScript.js"
+      ],
+      "proxy_port": 62487,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "f-log-extension.grammarly.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "f-log-extension.grammarly.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "f-log-extension.grammarly.io",
+        "method": "CONNECT"
+      },
+      {
+        "host": "config.extension.grammarly.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "gateway.grammarly.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "gateway.grammarly.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "config.extension.grammarly.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "gateway.grammarly.com",
+        "method": "CONNECT"
+      }
+    ]
+  },
+  "manifest": {
+    "background": {
+      "scripts": [
+        "src/js/Grammarly-bg.js"
+      ]
+    },
+    "browser_action": {
+      "default_icon": "src/icon/toolbar/icon32.png",
+      "default_popup": "src/popup.html",
+      "default_title": "Grammarly"
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "match_about_blank": true,
+        "css": [
+          "src/css/Grammarly-fonts.styles.css"
+        ],
+        "js": [
+          "src/js/Grammarly-check.styles.js",
+          "src/js/Grammarly-check.js"
+        ],
+        "matches": [
+          "<all_urls>"
+        ],
+        "exclude_matches": [
+          "*://outlook.live.com/*",
+          "*://*.outlook.live.com/*",
+          "*://outlook.office.com/*",
+          "*://*.outlook.office.com/*",
+          "*://*.atlassian.net/*",
+          "*://mail.google.com/*",
+          "*://*.mail.google.com/*",
+          "*://quora.com/*",
+          "*://*.quora.com/*",
+          "*://*.slack.com/*",
+          "*://*.blackboard.com/*",
+          "*://*.blogger.com/*",
+          "*://publish.buffer.com/*",
+          "*://*.publish.buffer.com/*",
+          "*://facebook.com/*",
+          "*://*.facebook.com/*",
+          "*://calendar.google.com/*",
+          "*://*.calendar.google.com/*",
+          "*://keep.google.com/*",
+          "*://*.keep.google.com/*",
+          "*://intercom.io/*",
+          "*://*.intercom.io/*",
+          "*://linkedin.com/*",
+          "*://*.linkedin.com/*",
+          "*://medium.com/*",
+          "*://*.medium.com/*",
+          "*://messenger.com/*",
+          "*://*.messenger.com/*",
+          "*://teams.microsoft.com/*",
+          "*://*.teams.microsoft.com/*",
+          "*://translate.google.com/*",
+          "*://*.translate.google.com/*",
+          "*://reddit.com/*",
+          "*://*.reddit.com/*",
+          "*://youtube.com/*",
+          "*://*.youtube.com/*",
+          "*://twitter.com/*",
+          "*://*.twitter.com/*",
+          "*://x.com/*",
+          "*://*.x.com/*",
+          "*://*.lightning.force.com/*",
+          "*://trello.com/*",
+          "*://*.trello.com/*",
+          "*://upwork.com/*",
+          "*://*.upwork.com/*",
+          "*://web.whatsapp.com/*",
+          "*://*.web.whatsapp.com/*",
+          "*://wix.com/*",
+          "*://*.wix.com/*",
+          "*://wordpress.com/*",
+          "*://*.wordpress.com/*",
+          "*://*.zendesk.com/*",
+          "*://wattpad.com/*",
+          "*://*.wattpad.com/*",
+          "*://onlinechatdashboard.com/*",
+          "*://*.onlinechatdashboard.com/*",
+          "*://wordcounter.net/*",
+          "*://*.wordcounter.net/*",
+          "*://fiverr.com/*",
+          "*://*.fiverr.com/*",
+          "*://educationperfect.com/*",
+          "*://*.educationperfect.com/*",
+          "*://apclassroom.collegeboard.org/*",
+          "*://*.apclassroom.collegeboard.org/*",
+          "*://studio.youtube.com/*",
+          "*://*.studio.youtube.com/*",
+          "*://chat.google.com/*",
+          "*://*.chat.google.com/*",
+          "*://twitch.tv/*",
+          "*://*.twitch.tv/*",
+          "*://papago.naver.com/*",
+          "*://*.papago.naver.com/*",
+          "*://readworks.org/*",
+          "*://*.readworks.org/*",
+          "*://app.nearpod.com/*",
+          "*://*.app.nearpod.com/*",
+          "*://mail.aol.com/*",
+          "*://*.mail.aol.com/*",
+          "*://github.com/*",
+          "*://*.github.com/*",
+          "*://coursera.org/*",
+          "*://*.coursera.org/*",
+          "*://commonlit.org/*",
+          "*://*.commonlit.org/*",
+          "*://classroom.google.com/*",
+          "*://*.classroom.google.com/*",
+          "*://app.seesaw.me/*",
+          "*://*.app.seesaw.me/*",
+          "*://forms.office.com/*",
+          "*://*.forms.office.com/*",
+          "*://docs.google.com/document/*"
+        ],
+        "exclude_globs": [
+          "*docs.google.com*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": true,
+        "match_about_blank": true,
+        "css": [
+          "src/css/Grammarly-fonts.styles.css"
+        ],
+        "js": [
+          "src/js/Grammarly.styles.js",
+          "src/js/Grammarly.js"
+        ],
+        "matches": [
+          "*://*.atlassian.net/*",
+          "*://mail.google.com/*",
+          "*://*.mail.google.com/*",
+          "*://quora.com/*",
+          "*://*.quora.com/*",
+          "*://*.slack.com/*",
+          "*://*.blackboard.com/*",
+          "*://*.blogger.com/*",
+          "*://publish.buffer.com/*",
+          "*://*.publish.buffer.com/*",
+          "*://facebook.com/*",
+          "*://*.facebook.com/*",
+          "*://calendar.google.com/*",
+          "*://*.calendar.google.com/*",
+          "*://keep.google.com/*",
+          "*://*.keep.google.com/*",
+          "*://intercom.io/*",
+          "*://*.intercom.io/*",
+          "*://linkedin.com/*",
+          "*://*.linkedin.com/*",
+          "*://medium.com/*",
+          "*://*.medium.com/*",
+          "*://messenger.com/*",
+          "*://*.messenger.com/*",
+          "*://teams.microsoft.com/*",
+          "*://*.teams.microsoft.com/*",
+          "*://translate.google.com/*",
+          "*://*.translate.google.com/*",
+          "*://reddit.com/*",
+          "*://*.reddit.com/*",
+          "*://youtube.com/*",
+          "*://*.youtube.com/*",
+          "*://twitter.com/*",
+          "*://*.twitter.com/*",
+          "*://x.com/*",
+          "*://*.x.com/*",
+          "*://*.lightning.force.com/*",
+          "*://trello.com/*",
+          "*://*.trello.com/*",
+          "*://upwork.com/*",
+          "*://*.upwork.com/*",
+          "*://web.whatsapp.com/*",
+          "*://*.web.whatsapp.com/*",
+          "*://wix.com/*",
+          "*://*.wix.com/*",
+          "*://wordpress.com/*",
+          "*://*.wordpress.com/*",
+          "*://*.zendesk.com/*",
+          "*://wattpad.com/*",
+          "*://*.wattpad.com/*",
+          "*://onlinechatdashboard.com/*",
+          "*://*.onlinechatdashboard.com/*",
+          "*://wordcounter.net/*",
+          "*://*.wordcounter.net/*",
+          "*://fiverr.com/*",
+          "*://*.fiverr.com/*",
+          "*://educationperfect.com/*",
+          "*://*.educationperfect.com/*",
+          "*://apclassroom.collegeboard.org/*",
+          "*://*.apclassroom.collegeboard.org/*",
+          "*://studio.youtube.com/*",
+          "*://*.studio.youtube.com/*",
+          "*://chat.google.com/*",
+          "*://*.chat.google.com/*",
+          "*://twitch.tv/*",
+          "*://*.twitch.tv/*",
+          "*://papago.naver.com/*",
+          "*://*.papago.naver.com/*",
+          "*://readworks.org/*",
+          "*://*.readworks.org/*",
+          "*://app.nearpod.com/*",
+          "*://*.app.nearpod.com/*",
+          "*://mail.aol.com/*",
+          "*://*.mail.aol.com/*",
+          "*://github.com/*",
+          "*://*.github.com/*",
+          "*://coursera.org/*",
+          "*://*.coursera.org/*",
+          "*://commonlit.org/*",
+          "*://*.commonlit.org/*",
+          "*://classroom.google.com/*",
+          "*://*.classroom.google.com/*",
+          "*://app.seesaw.me/*",
+          "*://*.app.seesaw.me/*",
+          "*://forms.office.com/*",
+          "*://*.forms.office.com/*"
+        ],
+        "exclude_globs": [
+          "*docs.google.com*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": true,
+        "match_about_blank": false,
+        "css": [
+          "src/css/Grammarly-fonts.styles.css"
+        ],
+        "js": [
+          "src/js/Grammarly.styles.js",
+          "src/js/Grammarly.js"
+        ],
+        "matches": [
+          "*://outlook.live.com/*",
+          "*://*.outlook.live.com/*",
+          "*://outlook.office.com/*",
+          "*://*.outlook.office.com/*"
+        ],
+        "exclude_globs": [
+          "*docs.google.com*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": false,
+        "css": [
+          "src/css/Grammarly-fonts.styles.css"
+        ],
+        "js": [
+          "src/js/Grammarly-gDocs.styles.js",
+          "src/js/Grammarly-gDocs.js"
+        ],
+        "matches": [
+          "*://docs.google.com/document/*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "src/js/Grammarly-gDocsEarlyInjector.js"
+        ],
+        "matches": [
+          "*://docs.google.com/document/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "match_about_blank": true,
+        "js": [
+          "src/js/Grammarly-gDocsIframeCs.js"
+        ],
+        "matches": [
+          "*://docs.google.com/*"
+        ],
+        "exclude_matches": [
+          "*://docs.google.com/document/*"
+        ],
+        "run_at": "document_idle"
+      },
+      {
+        "all_frames": false,
+        "js": [
+          "src/js/Grammarly-overleafStartContentScript.js"
+        ],
+        "matches": [
+          "https://*.overleaf.com/*"
+        ],
+        "run_at": "document_start"
+      }
+    ],
+    "content_security_policy": "default-src 'none'; font-src 'self' data:; img-src * data: blob:; media-src https://assets.extension.grammarly.com; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-src 'self' https://applet-bundles.grammarly.net https://d3ttvzt45fz9bg.cloudfront.net; connect-src http://extdrift-report.test http://*.test https://*.test https://auth.grammarly.com https://assets.grammarly.com/ https://data.grammarly.com https://capi.grammarly.com https://dox.grammarly.com https://institution.grammarly.com wss://capi.grammarly.com https://gnar.grammarly.com https://in.grammarly.com https://f-log-extension.grammarly.io https://f-log-editor.grammarly.io https://f-log-inkwell.grammarly.io https://config.extension.grammarly.com https://chipmunk.grammarly.com https://treatment.grammarly.com https://gates.grammarly.com https://goldengate.grammarly.com https://femetrics.grammarly.io https://extension.femetrics.grammarly.io https://inkwell.femetrics.grammarly.io https://rwsgfy.grammarly.com https://assets.extension.grammarly.com https://api.iterable.com https://skills.grammarly.com https://skills-proxy.grammarly.com https://gateway.grammarly.com https://coda.grammarly.com https://coda.io https://codahosted.io https://subscription.grammarly.com https://id.superhuman.com https://gnar.superhuman.com https://capi.superhuman.com https://data.superhuman.com https://gateway.superhuman.com https://dox.superhuman.com https://institution.superhuman.com https://in.superhuman.com https://f-log-extension.superhuman.io https://f-log-editor.superhuman.io https://f-log-inkwell.superhuman.io https://config.extension.superhuman.com https://chipmunk.superhuman.com https://treatment.superhuman.com https://gates.superhuman.com https://subscription.superhuman.com ;  report-uri https://f-log-extension.grammarly.io/logv2; ",
+    "description": "Improve your writing with Grammarly's AI assistance. Get spell check, grammar check, generative AI, and more in one tool. Real-time suggestions for improving tone and clarity help ensure your writing makes the impression you want.",
+    "icons": {
+      "16": "src/icon/sidepanel/icon16.png",
+      "32": "src/icon/sidepanel/icon32.png",
+      "48": "src/icon/app/icon-48.png",
+      "128": "src/icon/app/icon-128.png"
+    },
+    "manifest_version": 2,
+    "name": "Grammarly: AI Writing and Grammar Checker App",
+    "short_name": "Grammarly",
+    "permissions": [
+      "http://*/*",
+      "https://*/*",
+      "tabs",
+      "notifications",
+      "cookies",
+      "identity",
+      "storage",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "version": "8.936.0",
+    "web_accessible_resources": [
+      "src/fonts/*.woff",
+      "src/fonts/*.woff2",
+      "src/images/*.png",
+      "src/images/*.svg",
+      "src/images/*.jpg",
+      "src/images/*.gif",
+      "src/images/*.webp",
+      "src/js/*.js",
+      "src/css/*.css",
+      "src/icon/toolbar/*.png",
+      "src/icon/toolbar/superhuman_go/*.png",
+      "src/icon/app/*.png",
+      "src/inkwell/index.html",
+      "src/inkwell/assets/*.js"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "87677a2c52b84ad3a151a4a72f5bd3c4@jetpack"
+      }
+    }
+  },
+  "network": [
+    {
+      "ts": 0.034,
+      "url": "https://config.extension.grammarly.com/dynamicConfig.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.136,
+      "url": "https://gateway.grammarly.com/experimentation/treatment/get",
+      "method": "POST",
+      "body_len": 16775,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.136,
+      "url": "https://gateway.grammarly.com/mise/api/v1/iterable/access/token",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.137,
+      "url": "https://config.extension.grammarly.com/browserplugin/config.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.617,
+      "url": "https://gateway.grammarly.com/experimentation/gates/get",
+      "method": "POST",
+      "body_len": 14301,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 3.012,
+      "event": "inject",
+      "target": "grammarly-desktop-integration",
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.029,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.03,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.034,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.036,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.039,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.059,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.06,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.06,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.085,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.085,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.109,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.109,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.135,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.135,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.136,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.485,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.517,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.549,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.58,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.61,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 10.616,
+      "api": "browser.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.01,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.01,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.runtime.getBrowserInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.032,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.037,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "api": "browser.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.038,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.046,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.046,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.05,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.059,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.06,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.06,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.061,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.062,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.078,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.079,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.054,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.058,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.062,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.064,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.116,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.143,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.178,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.18,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.215,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.22,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}
