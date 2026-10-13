@@ -1,0 +1,253 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{b9acf540-acba-11e1-8ccb-001fd0e08bd4}",
+    "name": "Easy Youtube Video Downloader Express",
+    "version": "25.5"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:26:17Z",
+    "duration_s": 15.95,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "includes/background.js",
+        "includes/ui.js",
+        "includes/common.js",
+        "includes/notification.js",
+        "includes/purify.min.js",
+        "includes/persistent-storage.js",
+        "includes/youtube-video-downloader.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 63780,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "www.yourvideofile.org",
+        "method": "CONNECT"
+      },
+      {
+        "host": "json-update-button.eytvd.workers.dev",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "Easy Youtube Video Downloader Express",
+    "developer": {
+      "name": "Dishita",
+      "url": "https://www.yourvideofile.org/"
+    },
+    "description": "No# 1 Rated Youtube Video Downloader for firefox web-browser with MP3 and Full-HD downloads. Instant, one-click Youtube video downloader with high-quality 256Kbps/128Kbps MP3 and Full-HD video downloading options.",
+    "manifest_version": 3,
+    "version": "25.5",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{b9acf540-acba-11e1-8ccb-001fd0e08bd4}",
+        "strict_min_version": "109.0"
+      }
+    },
+    "icons": {
+      "48": "icons/icon.png"
+    },
+    "background": {
+      "scripts": [
+        "includes/background.js"
+      ],
+      "type": "module"
+    },
+    "content_scripts": [
+      {
+        "js": [
+          "includes/ui.js",
+          "includes/common.js",
+          "includes/notification.js",
+          "includes/purify.min.js",
+          "includes/persistent-storage.js",
+          "includes/youtube-video-downloader.js"
+        ],
+        "matches": [
+          "http://www.youtube.com/*",
+          "https://www.youtube.com/*",
+          "http://m.youtube.com/*"
+        ],
+        "exclude_matches": [
+          "http://www.youtube.com/embed/*",
+          "https://www.youtube.com/embed/*"
+        ],
+        "run_at": "document_start",
+        "css": [
+          "includes/youtube-video-downloader.css"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "options_ui": {
+      "page": "options/options.html",
+      "browser_style": false
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "icons/icon.png",
+          "icons/16.png",
+          "icons/icon64.png",
+          "options/options.html",
+          "icons/closeBtn.png",
+          "includes/progress-display.html",
+          "includes/progress-display.js",
+          "includes/persistent-storage.js",
+          "lib/libav-6.8.8.0-h264-aac-mp3.wasm.wasm",
+          "lib/libav-6.8.8.0-h264-aac-mp3.wasm.mjs",
+          "includes/hls_worker_v2.js"
+        ],
+        "matches": [
+          "<all_urls>"
+        ]
+      }
+    ],
+    "content_security_policy": {
+      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+    },
+    "permissions": [
+      "storage",
+      "downloads",
+      "activeTab",
+      "webRequest",
+      "webRequestBlocking",
+      "webRequestFilterResponse",
+      "declarativeNetRequestWithHostAccess",
+      "scripting",
+      "cookies"
+    ],
+    "host_permissions": [
+      "<all_urls>",
+      "http://*.test/*",
+      "http://extdrift-report.test/*",
+      "https://*.test/*"
+    ],
+    "action": {
+      "default_title": "Easy Youtube Video Downloader",
+      "default_popup": "popup/popup.html",
+      "default_icon": {
+        "16": "icons/icon.png",
+        "32": "icons/icon32.png"
+      }
+    },
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.008,
+      "url": "https://json-update-button.eytvd.workers.dev/notifications.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 3.149,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 2.062,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 3.144,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.004,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "api": "chrome.declarativeNetRequest.updateDynamicRules",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.063,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

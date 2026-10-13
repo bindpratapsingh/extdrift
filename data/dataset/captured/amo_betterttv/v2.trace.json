@@ -1,0 +1,118 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "firefox@betterttv.net",
+    "name": "__MSG_EXTENSION_NAME__",
+    "version": "7.7.28"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:03:54Z",
+    "duration_s": 15.85,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.js",
+        "run.js"
+      ],
+      "proxy_port": 62599,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "version": "7.7.28",
+    "manifest_version": 2,
+    "name": "__MSG_EXTENSION_NAME__",
+    "description": "__MSG_EXTENSION_DESCRIPTION__",
+    "author": "NightDev, LLC",
+    "homepage_url": "https://betterttv.com",
+    "icons": {
+      "128": "icon.png"
+    },
+    "default_locale": "en",
+    "permissions": [
+      "scripting",
+      "activeTab",
+      "*://*.twitch.tv/*",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "*://*.youtube.com/*"
+    ],
+    "minimum_chrome_version": "89",
+    "web_accessible_resources": [
+      "betterttv.js",
+      "betterttv.css"
+    ],
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "js": [
+          "run.js"
+        ],
+        "matches": [
+          "*://*.twitch.tv/*"
+        ],
+        "exclude_matches": [
+          "*://*.twitch.tv/*.html",
+          "*://*.twitch.tv/*.html?*",
+          "*://*.twitch.tv/*.htm",
+          "*://*.twitch.tv/*.htm?*"
+        ]
+      }
+    ],
+    "background": {
+      "scripts": [
+        "background.js"
+      ]
+    },
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "firefox@betterttv.net",
+        "strict_min_version": "109.0"
+      },
+      "safari": {
+        "strict_min_version": "16"
+      }
+    }
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.009,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

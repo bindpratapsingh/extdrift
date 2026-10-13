@@ -1,0 +1,286 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-ZAdIEUB7XOzOJw@jetpack",
+    "name": "DuckDuckGo Search & Tracker Protection",
+    "version": "2026.10.6"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:06:51Z",
+    "duration_s": 16.21,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "public/js/background.js",
+        "public/js/content-scripts/content-scope-messaging.js",
+        "public/js/inject.js",
+        "public/js/content-scripts/autofill.js"
+      ],
+      "proxy_port": 62793,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "staticcdn.duckduckgo.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "DuckDuckGo Search & Tracker Protection",
+    "applications": {
+      "gecko": {
+        "id": "jid1-ZAdIEUB7XOzOJw@jetpack",
+        "strict_min_version": "102.0"
+      }
+    },
+    "default_locale": "en",
+    "version": "2026.10.6",
+    "description": "Privacy, simplified. Protect your data as you search and browse: tracker blocking, smarter encryption, private search, and more.",
+    "icons": {
+      "16": "img/icon_16.png",
+      "48": "img/icon_48.png",
+      "128": "img/icon_128.png"
+    },
+    "manifest_version": 2,
+    "browser_action": {
+      "default_icon": "img/icon_browser_action.png",
+      "default_popup": "dashboard/html/browser.html"
+    },
+    "omnibox": {
+      "keyword": "ddg"
+    },
+    "background": {
+      "scripts": [
+        "public/js/background.js"
+      ]
+    },
+    "chrome_settings_overrides": {
+      "search_provider": {
+        "favicon_url": "https://duckduckgo.com/favicon.ico",
+        "is_default": true,
+        "keyword": "duckduckgo.com",
+        "name": "DuckDuckGo",
+        "search_url": "https://duckduckgo.com/?q={searchTerms}&t=newext",
+        "suggest_url": "https://duckduckgo.com/ac/?q={searchTerms}&type=list"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "exclude_matches": [
+          "*://localhost/*",
+          "*://*.localhost/*"
+        ],
+        "match_about_blank": true,
+        "all_frames": true,
+        "world": "ISOLATED",
+        "js": [
+          "public/js/content-scripts/content-scope-messaging.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "exclude_matches": [
+          "*://localhost/*",
+          "*://*.localhost/*"
+        ],
+        "match_about_blank": true,
+        "all_frames": true,
+        "world": "MAIN",
+        "js": [
+          "public/js/inject.js"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "public/js/content-scripts/autofill.js"
+        ],
+        "css": [
+          "public/css/autofill-host-styles.css"
+        ],
+        "matches": [
+          "<all_urls>"
+        ],
+        "exclude_matches": [
+          "*://localhost/*",
+          "*://*.localhost/*"
+        ],
+        "all_frames": true,
+        "run_at": "document_start",
+        "match_about_blank": true
+      }
+    ],
+    "options_ui": {
+      "page": "html/options.html"
+    },
+    "permissions": [
+      "contextMenus",
+      "webRequest",
+      "webRequestBlocking",
+      "*://*/*",
+      "webNavigation",
+      "activeTab",
+      "tabs",
+      "storage",
+      "<all_urls>",
+      "alarms",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      "/web_accessible_resources/*",
+      "/public/css/autofill.css",
+      "/public/font/*"
+    ]
+  },
+  "network": [
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/negative-https-allowlist.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/trackerblocking/config/v4/extension-firefox-config.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/https-bloom.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/https-allowlist.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "url": "https://staticcdn.duckduckgo.com/https/negative-https-bloom.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "url": "https://duckduckgo.com/atb.js?5609064&browser=Firefox",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [],
+  "storage": [
+    {
+      "ts": 0.021,
+      "api": "localStorage.getItem",
+      "key": "ddg-autofill-debug",
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.005,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.006,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.016,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

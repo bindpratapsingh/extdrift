@@ -1,0 +1,222 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "jid1-93WyvpgvxzGATw@jetpack",
+    "name": "__MSG_extensionName__",
+    "version": "4.3.2"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:13:07Z",
+    "duration_s": 15.82,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "src/config.js",
+        "src/background/translate.js",
+        "src/content/modal.js",
+        "src/content/modal_iframe.js",
+        "src/content/content.js",
+        "src/l10n.js",
+        "src/content/translate_frame.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 63243,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extensionName__",
+    "description": "__MSG_extensionDescription__",
+    "version": "4.3.2",
+    "author": "Juan Escobar",
+    "homepage_url": "https://github.com/itsecurityco/to-google-translate",
+    "default_locale": "en",
+    "icons": {
+      "16": "icons/logo-16.png",
+      "32": "icons/logo-32.png",
+      "48": "icons/logo-48.png",
+      "96": "icons/logo-96.png"
+    },
+    "options_ui": {
+      "page": "src/options/options.html"
+    },
+    "background": {
+      "scripts": [
+        "src/config.js",
+        "src/background/translate.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "js": [
+          "src/config.js",
+          "src/content/modal.js",
+          "src/content/modal_iframe.js",
+          "src/content/content.js",
+          "src/l10n.js"
+        ],
+        "run_at": "document_idle",
+        "all_frames": false
+      },
+      {
+        "matches": [
+          "*://translate.google.com/*",
+          "*://translate.google.cn/*",
+          "*://translate.googleusercontent.com/*",
+          "*://translate.googleusercontent.cn/*"
+        ],
+        "js": [
+          "src/content/translate_frame.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "commands": {
+      "translate": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+1"
+        },
+        "description": "Translate selected text"
+      },
+      "tts": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+2"
+        },
+        "description": "TTS selected text"
+      },
+      "translatePage": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+3"
+        },
+        "description": "Translate page"
+      }
+    },
+    "permissions": [
+      "http://*/*",
+      "https://*/*",
+      "contextMenus",
+      "storage",
+      "webRequest",
+      "webRequestBlocking",
+      "tabs",
+      "cookies",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "web_accessible_resources": [
+      "icons/help.png",
+      "icons/loading.gif",
+      "supported_languages.json",
+      "src/content/modal.html",
+      "src/content/modal.css",
+      "src/content/modal_iframe.html"
+    ],
+    "applications": {
+      "gecko": {
+        "id": "jid1-93WyvpgvxzGATw@jetpack"
+      }
+    },
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 2.716,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.632,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 2.711,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.005,
+      "api": "chrome.runtime.openOptionsPage",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.633,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

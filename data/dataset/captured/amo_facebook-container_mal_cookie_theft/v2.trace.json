@@ -1,0 +1,1604 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "@contain-facebook",
+    "name": "Facebook Container",
+    "version": "2.3.13"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:12:18Z",
+    "duration_s": 15.84,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "psl.min.js",
+        "background.js",
+        "content_script.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 63188,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 63,
+        "body_preview": "{\"cookies\":1,\"page_cookie\":\"session=demo-session-token-abc123\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "Facebook Container",
+    "version": "2.3.13",
+    "incognito": "not_allowed",
+    "default_locale": "en",
+    "description": "__MSG_extensionDescription__",
+    "icons": {
+      "48": "/img/icon.svg",
+      "96": "/img/icon.svg"
+    },
+    "applications": {
+      "gecko": {
+        "id": "@contain-facebook",
+        "strict_min_version": "67.0"
+      }
+    },
+    "homepage_url": "https://github.com/mozilla/contain-facebook",
+    "browser_action": {
+      "browser_style": true,
+      "default_icon": "/img/fbc-icon-dark.svg",
+      "default_title": "Facebook Container",
+      "default_popup": "panel.html",
+      "theme_icons": [
+        {
+          "light": "/img/fbc-icon.svg",
+          "dark": "/img/fbc-icon-dark.svg",
+          "size": 16
+        },
+        {
+          "light": "/img/fbc-icon.svg",
+          "dark": "/img/fbc-icon-dark.svg",
+          "size": 32
+        }
+      ]
+    },
+    "permissions": [
+      "<all_urls>",
+      "browsingData",
+      "contextualIdentities",
+      "cookies",
+      "management",
+      "storage",
+      "tabs",
+      "webRequestBlocking",
+      "webRequest",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "background": {
+      "scripts": [
+        "psl.min.js",
+        "background.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "content_script.js"
+        ],
+        "css": [
+          "content_script.css"
+        ]
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "_extdrift_synthetic": {
+      "family": "cookie_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 2.725,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 63,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.635,
+      "event": "read",
+      "target": "document.cookie",
+      "value_len": 33,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.018,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.019,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.02,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.021,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.022,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.023,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.024,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.025,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.026,
+      "api": "browser.cookies.getAll",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.724,
+      "api": "chrome.cookies.getAll",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.007,
+      "api": "browser.management.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.01,
+      "api": "browser.management.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.011,
+      "api": "browser.runtime.getBrowserInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.017,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.018,
+      "api": "browser.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.029,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.636,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.154,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 6.193,
+      "api": "browser.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

@@ -1,0 +1,532 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
+    "name": "__MSG_extName__",
+    "version": "2026.9.4"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:10:04Z",
+    "duration_s": 18.03,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "content/content-message-handler.js",
+        "content/trigger-autofill-script-injection.js",
+        "extdrift_cs.js",
+        "vendor.js",
+        "background.js"
+      ],
+      "proxy_port": 63030,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "api.bitwarden.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "bitwarden.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "name": "__MSG_extName__",
+    "short_name": "Bitwarden",
+    "version": "2026.9.4",
+    "description": "__MSG_extDesc__",
+    "default_locale": "en",
+    "author": "Bitwarden Inc.",
+    "homepage_url": "https://bitwarden.com",
+    "icons": {
+      "16": "images/icon16.png",
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "96": "images/icon96.png",
+      "128": "images/icon128.png"
+    },
+    "content_scripts": [
+      {
+        "all_frames": false,
+        "js": [
+          "content/content-message-handler.js"
+        ],
+        "matches": [
+          "*://*/*",
+          "file:///*"
+        ],
+        "exclude_matches": [
+          "*://*/*.xml*",
+          "file:///*.xml*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "all_frames": true,
+        "css": [
+          "content/autofill.css"
+        ],
+        "js": [
+          "content/trigger-autofill-script-injection.js"
+        ],
+        "matches": [
+          "*://*/*",
+          "file:///*"
+        ],
+        "exclude_matches": [
+          "*://*/*.xml*",
+          "file:///*.xml*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "background": {
+      "page": "background.html",
+      "persistent": true
+    },
+    "browser_action": {
+      "default_icon": {
+        "19": "images/icon19.png",
+        "38": "images/icon38.png"
+      },
+      "default_title": "Bitwarden",
+      "default_popup": "popup/index.html"
+    },
+    "permissions": [
+      "<all_urls>",
+      "*://*/*",
+      "alarms",
+      "clipboardRead",
+      "clipboardWrite",
+      "contextMenus",
+      "idle",
+      "storage",
+      "tabs",
+      "unlimitedStorage",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "notifications",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "nativeMessaging",
+      "privacy"
+    ],
+    "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+    "commands": {
+      "_execute_browser_action": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+Y",
+          "linux": "Ctrl+Shift+U"
+        },
+        "description": "__MSG_commandOpenPopup__"
+      },
+      "_execute_sidebar_action": {
+        "suggested_key": {
+          "default": "Alt+Shift+Y",
+          "linux": "Alt+Shift+U"
+        },
+        "description": "__MSG_commandOpenSidebar__"
+      },
+      "autofill_login": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+L"
+        },
+        "description": "__MSG_commandAutofillLoginDesc__"
+      },
+      "autofill_card": {
+        "description": "__MSG_commandAutofillCardDesc__"
+      },
+      "autofill_identity": {
+        "description": "__MSG_commandAutofillIdentityDesc__"
+      },
+      "generate_password": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+9"
+        },
+        "description": "__MSG_commandGeneratePasswordDesc__"
+      },
+      "lock_vault": {
+        "description": "__MSG_commandLockVaultDesc__"
+      }
+    },
+    "web_accessible_resources": [
+      "content/fido2-page-script.js",
+      "notification/bar.html",
+      "images/icon38.png",
+      "images/icon38_locked.png",
+      "overlay/menu-button.html",
+      "overlay/menu-list.html",
+      "overlay/menu.html",
+      "popup/fonts/*"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
+        "strict_min_version": "91.0"
+      }
+    },
+    "sidebar_action": {
+      "default_title": "Bitwarden",
+      "default_panel": "popup/index.html?uilocation=sidebar",
+      "default_icon": "images/icon19.png",
+      "open_at_install": false,
+      "browser_style": false
+    },
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.053,
+      "url": "https://api.bitwarden.com/config",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.134,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.588,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.172,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 0.048,
+      "event": "inject",
+      "target": "script",
+      "origin": "moz-extension://6d9958b3-48ad-40e0-b582-5e7b57e80f40",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.134,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.134,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.134,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.586,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.587,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.587,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.171,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.172,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.172,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.008,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.043,
+      "api": "browser.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.047,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.047,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.047,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.047,
+      "api": "chrome.runtime.connect",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.083,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.193,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.866,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.866,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.866,
+      "api": "browser.management.getSelf",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.867,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.87,
+      "api": "chrome.tabs.create",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.886,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.886,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.886,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.889,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.891,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.083,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.084,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.092,
+      "api": "chrome.tabs.query",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.132,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.133,
+      "api": "chrome.tabs.executeScript",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.171,
+      "api": "chrome.tabs.get",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.172,
+      "api": "chrome.tabs.executeScript",
+      "arg_count": 3,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.377,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.377,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 2,
+      "frame": "content_script"
+    }
+  ]
+}

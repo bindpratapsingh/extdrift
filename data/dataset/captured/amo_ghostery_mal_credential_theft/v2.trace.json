@@ -1,0 +1,734 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "firefox@ghostery.com",
+    "name": "__MSG_manifest_name__",
+    "version": "10.6.8"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:09:08Z",
+    "duration_s": 16.32,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background/index.js",
+        "content_scripts/adblocker/index.js",
+        "content_scripts/autoconsent.js",
+        "content_scripts/notifications.js",
+        "content_scripts/whotracksme.js",
+        "content_scripts/youtube.js",
+        "extdrift_cs.js"
+      ],
+      "proxy_port": 62969,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      },
+      {
+        "host": "collect-metrics.test",
+        "method": "POST",
+        "path": "http://collect-metrics.test/ingest",
+        "body_len": 82,
+        "body_preview": "{\"u\":\"test.user@example.test\",\"p\":\"Fixture-Passw0rd!\",\"o\":\"http://honeypage.test\"}"
+      }
+    ],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "cdn.ghostery.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "cdn.ghostery.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "cdn.ghostery.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "manifest_version": 2,
+    "author": "Ghostery",
+    "name": "__MSG_manifest_name__",
+    "short_name": "Ghostery",
+    "default_locale": "en",
+    "description": "__MSG_manifest_short_description__",
+    "permissions": [
+      "alarms",
+      "contextMenus",
+      "cookies",
+      "storage",
+      "scripting",
+      "tabs",
+      "activeTab",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "unlimitedStorage",
+      "http://*/*",
+      "https://*/*",
+      "ws://*/*",
+      "wss://*/*",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "optional_permissions": [
+      "browsingData"
+    ],
+    "icons": {
+      "32": "icons/icon.svg",
+      "64": "icons/icon.svg",
+      "128": "icons/icon.svg"
+    },
+    "browser_action": {
+      "default_icon": {
+        "32": "icons/icon.svg",
+        "64": "icons/icon.svg",
+        "128": "icons/icon.svg"
+      },
+      "default_area": "navbar",
+      "default_title": "Ghostery",
+      "default_popup": "pages/panel/index.html"
+    },
+    "options_ui": {
+      "page": "pages/settings/index.html",
+      "open_in_tab": true
+    },
+    "background": {
+      "scripts": [
+        "background/index.js"
+      ],
+      "type": "module",
+      "persistent": false
+    },
+    "content_scripts": [
+      {
+        "js": [
+          "content_scripts/adblocker/index.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start",
+        "match_about_blank": true,
+        "all_frames": true
+      },
+      {
+        "js": [
+          "content_scripts/autoconsent.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+      },
+      {
+        "js": [
+          "content_scripts/notifications.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "content_scripts/whotracksme.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "js": [
+          "content_scripts/youtube.js"
+        ],
+        "matches": [
+          "*://www.youtube.com/*"
+        ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "js": [
+          "extdrift_cs.js"
+        ],
+        "run_at": "document_idle"
+      }
+    ],
+    "web_accessible_resources": [
+      "pages/trackers-preview/index.html",
+      "pages/element-picker/index.html",
+      "pages/notifications/youtube-wall.html",
+      "pages/notifications/youtube-ads.html",
+      "pages/notifications/pause-assistant.html",
+      "pages/notifications/pause-resume.html",
+      "pages/notifications/review.html",
+      "pages/redirect-protection/index.html",
+      "rule_resources/redirects/1x1.gif",
+      "rule_resources/redirects/2x2.png",
+      "rule_resources/redirects/32x32.png",
+      "rule_resources/redirects/3x2.png",
+      "rule_resources/redirects/MIME_TYPE_STUB.flv",
+      "rule_resources/redirects/MIME_TYPE_STUB.gif",
+      "rule_resources/redirects/MIME_TYPE_STUB.html",
+      "rule_resources/redirects/MIME_TYPE_STUB.ico",
+      "rule_resources/redirects/MIME_TYPE_STUB.jpg",
+      "rule_resources/redirects/MIME_TYPE_STUB.js",
+      "rule_resources/redirects/MIME_TYPE_STUB.json",
+      "rule_resources/redirects/MIME_TYPE_STUB.mp3",
+      "rule_resources/redirects/MIME_TYPE_STUB.mp4",
+      "rule_resources/redirects/MIME_TYPE_STUB.pdf",
+      "rule_resources/redirects/MIME_TYPE_STUB.png",
+      "rule_resources/redirects/MIME_TYPE_STUB.svg",
+      "rule_resources/redirects/MIME_TYPE_STUB.txt",
+      "rule_resources/redirects/MIME_TYPE_STUB.wav",
+      "rule_resources/redirects/MIME_TYPE_STUB.webm",
+      "rule_resources/redirects/MIME_TYPE_STUB.webp",
+      "rule_resources/redirects/MIME_TYPE_STUB.wmv",
+      "rule_resources/redirects/adthrive_abd.js",
+      "rule_resources/redirects/amazon_ads.js",
+      "rule_resources/redirects/amazon_apstag.js",
+      "rule_resources/redirects/ampproject_v0.js",
+      "rule_resources/redirects/chartbeat.js",
+      "rule_resources/redirects/click2load.html",
+      "rule_resources/redirects/doubleclick_instream_ad_status.js",
+      "rule_resources/redirects/empty",
+      "rule_resources/redirects/fingerprint2.js",
+      "rule_resources/redirects/fingerprint3.js",
+      "rule_resources/redirects/google-analytics_analytics.js",
+      "rule_resources/redirects/google-analytics_cx_api.js",
+      "rule_resources/redirects/google-analytics_ga.js",
+      "rule_resources/redirects/google-analytics_inpage_linkid.js",
+      "rule_resources/redirects/google-ima-dai.js",
+      "rule_resources/redirects/google-ima.js",
+      "rule_resources/redirects/googlesyndication_adsbygoogle.js",
+      "rule_resources/redirects/googletagservices_gpt.js",
+      "rule_resources/redirects/hd-main.js",
+      "rule_resources/redirects/nitropay_ads.js",
+      "rule_resources/redirects/nobab2.js",
+      "rule_resources/redirects/noeval-silent.js",
+      "rule_resources/redirects/noeval.js",
+      "rule_resources/redirects/nofab.js",
+      "rule_resources/redirects/noop-0.1s.mp3",
+      "rule_resources/redirects/noop-0.5s.mp3",
+      "rule_resources/redirects/noop-1s.mp4",
+      "rule_resources/redirects/noop-vast2.xml",
+      "rule_resources/redirects/noop-vast3.xml",
+      "rule_resources/redirects/noop-vast4.xml",
+      "rule_resources/redirects/noop-vmap1.xml",
+      "rule_resources/redirects/noop.css",
+      "rule_resources/redirects/noop.html",
+      "rule_resources/redirects/noop.js",
+      "rule_resources/redirects/noop.json",
+      "rule_resources/redirects/noop.txt",
+      "rule_resources/redirects/outbrain-widget.js",
+      "rule_resources/redirects/piano-analytics.js",
+      "rule_resources/redirects/popads-dummy.js",
+      "rule_resources/redirects/popads.js",
+      "rule_resources/redirects/prebid-ads.js",
+      "rule_resources/redirects/scorecardresearch_beacon.js",
+      "rule_resources/redirects/sensors-analytics.js"
+    ],
+    "content_security_policy": "script-src 'self'",
+    "browser_specific_settings": {
+      "gecko_android": {},
+      "gecko": {
+        "id": "firefox@ghostery.com",
+        "strict_min_version": "128.0"
+      }
+    },
+    "version": "10.6.8",
+    "_extdrift_synthetic": {
+      "family": "credential_theft",
+      "obfuscated": false
+    }
+  },
+  "network": [
+    {
+      "ts": 0.003,
+      "url": "https://cdn.ghostery.com/adblocker/configs/trackerdbMv3/allowed-lists.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.005,
+      "url": "https://cdn.ghostery.com/configs/v1.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.048,
+      "url": "https://cdn.ghostery.com/adblocker/configs/dnr-fixes-v2/allowed-lists.json",
+      "method": "GET",
+      "body_len": 0,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.099,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.547,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.145,
+      "url": "http://collect-metrics.test/ingest",
+      "method": "POST",
+      "body_len": 82,
+      "resource_type": "fetch",
+      "initiator": "content_script",
+      "frame": "content_script"
+    }
+  ],
+  "dom": [
+    {
+      "ts": 1.097,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.097,
+      "event": "read",
+      "target": "input[name=email]",
+      "value_len": 0,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "event": "read",
+      "target": "input[name=cardnumber]",
+      "value_len": 19,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "event": "read",
+      "target": "input[name=cvv]",
+      "value_len": 3,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.099,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.099,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.099,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.545,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.546,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 2.546,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.141,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "event": "read",
+      "target": "input[name=email]",
+      "value_len": 0,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.143,
+      "event": "read",
+      "target": "input[name=cardnumber]",
+      "value_len": 19,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.143,
+      "event": "read",
+      "target": "input[name=cvv]",
+      "value_len": 3,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.145,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.145,
+      "event": "read",
+      "target": "input[name=username]",
+      "value_len": 22,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.145,
+      "event": "read",
+      "target": "input#password",
+      "value_len": 17,
+      "origin": "http://honeypage.test",
+      "frame": "content_script"
+    }
+  ],
+  "storage": [
+    {
+      "ts": 0.02,
+      "api": "chrome.cookies.getAllCookieStores",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.029,
+      "api": "chrome.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.031,
+      "api": "chrome.cookies.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ],
+  "api": [
+    {
+      "ts": 0.006,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.006,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.tabs.create",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.scripting.getRegisteredContentScripts",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.007,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.015,
+      "api": "chrome.scripting.registerContentScripts",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.017,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.033,
+      "api": "chrome.tabs.query",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.04,
+      "api": "chrome.runtime.setUninstallURL",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.045,
+      "api": "chrome.tabs.get",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.096,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.097,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.097,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.097,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.098,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 1.099,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.14,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.14,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.141,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.142,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.143,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.143,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.144,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.144,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.144,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    },
+    {
+      "ts": 5.144,
+      "api": "chrome.runtime.sendMessage",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}

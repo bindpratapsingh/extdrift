@@ -1,0 +1,136 @@
+{
+  "schema_version": "0.1",
+  "extension": {
+    "id": "mozilla_cc3@internetdownloadmanager.com",
+    "name": "IDM Integration Module",
+    "version": "6.43.1"
+  },
+  "run": {
+    "browser": "firefox",
+    "scenario": "honeypage-harvest",
+    "replay_bundle": "local-proxy-v1",
+    "started_at": "2026-10-13T11:15:02Z",
+    "duration_s": 15.85,
+    "pages": [
+      "http://honeypage.test/harvest"
+    ],
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.js",
+        "content.js"
+      ],
+      "proxy_port": 63357,
+      "manifest_patched_for_capture": true
+    },
+    "collector_received": [],
+    "blocked_egress": [
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "firefox.settings.services.mozilla.com",
+        "method": "CONNECT"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "GET"
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      },
+      {
+        "host": "honeypage.test",
+        "method": "POST",
+        "body_len": 108
+      }
+    ]
+  },
+  "manifest": {
+    "name": "IDM Integration Module",
+    "description": "__MSG_extension_desc__",
+    "version": "6.43.1",
+    "author": "Tonec FZE",
+    "homepage_url": "http://www.internetdownloadmanager.com/",
+    "default_locale": "en",
+    "icons": {
+      "16": "images/logo16.png",
+      "48": "images/logo48.png",
+      "128": "images/logo128.png"
+    },
+    "browser_action": {
+      "default_icon": {
+        "16": "images/logo16.png",
+        "32": "images/logo32.png"
+      }
+    },
+    "background": {
+      "scripts": [
+        "background.js"
+      ]
+    },
+    "content_scripts": [
+      {
+        "js": [
+          "content.js"
+        ],
+        "matches": [
+          "http://*/*",
+          "https://*/*",
+          "ftp://*/*",
+          "file:///*"
+        ],
+        "all_frames": true,
+        "run_at": "document_start"
+      }
+    ],
+    "web_accessible_resources": [
+      "captured.html"
+    ],
+    "permissions": [
+      "<all_urls>",
+      "tabs",
+      "cookies",
+      "contextMenus",
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking",
+      "management",
+      "storage",
+      "nativeMessaging",
+      "privacy",
+      "idle",
+      "http://extdrift-report.test/*",
+      "http://*.test/*",
+      "https://*.test/*"
+    ],
+    "content_security_policy": "connect-src http://extdrift-report.test http://*.test https://*.test *; script-src 'self' 'sha256-3A6Y6ygbQdayC7L3d1LSwz60wQiRVT9GBErQTn6TwTo='; style-src 'unsafe-inline'; default-src 'self'",
+    "applications": {
+      "gecko": {
+        "id": "mozilla_cc3@internetdownloadmanager.com",
+        "strict_min_version": "79.0"
+      }
+    },
+    "manifest_version": 2
+  },
+  "network": [],
+  "dom": [],
+  "storage": [],
+  "api": [
+    {
+      "ts": 0.005,
+      "api": "browser.runtime.getBrowserInfo",
+      "arg_count": 0,
+      "frame": "content_script"
+    },
+    {
+      "ts": 0.005,
+      "api": "browser.runtime.getPlatformInfo",
+      "arg_count": 1,
+      "frame": "content_script"
+    }
+  ]
+}
