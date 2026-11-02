@@ -262,6 +262,7 @@ def main() -> int:
         print("\n  Playwright is missing, so no capture can run. Install it with:")
         print("    pip install -r requirements.txt && python -m playwright install chromium")
     print("\n  open %s   (Ctrl+C to stop)\n" % url)
+    sys.stdout.flush()   # so the banner appears even when output is piped to a file
 
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     if not args.no_browser:

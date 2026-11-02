@@ -87,6 +87,11 @@ The page is one scroll, in four numbered steps. Do not scroll ahead of your narr
 The dark log pane in step 2 is the thing to point at while the two runs happen. It is the
 only part of the demo where you will be waiting, about 15 seconds per version.
 
+**Read the counts off the screen, do not quote them from memory.** The *verdict* is driven
+by the set of distinct behaviours, which is stable run to run — the no-change case proves
+it. The raw row count for the weaponised version can move by a few, because its payload is
+on a timer and can fire more than once in a session. Same behaviours, sometimes repeated.
+
 ---
 
 ## 4. Run of show
@@ -138,7 +143,7 @@ This is the question the panel will ask. Ask it yourself, first.
 **Set slot N+1 to `reader-lite-1.0.1.zip`. Click Analyse.**
 
 > "Same baseline. This update is a genuine new feature — a reading-time badge. It changes
-> behaviour: three new DOM behaviours appear. The tool sees the change, says so, and
+> behaviour: a handful of new DOM behaviours appear. The tool sees the change, says so, and
 > returns **BENIGN**. One weak heuristic fires — new page injection, weight 0.25 — and
 > the model puts it at 0.001. A false alarm here would be the thing that makes a tool
 > like this useless in practice, because nearly every update is this one."
