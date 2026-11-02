@@ -1,0 +1,7 @@
+# Only the files named by the Dockerfiles belong in an image. In particular the dataset, trained
+# model, downloaded extensions, credentials and git metadata must never enter a build context.
+*
+!engine/__init__.py
+!engine/features/
+!engine/sandbox/
+**/__pycache__

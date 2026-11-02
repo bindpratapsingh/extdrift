@@ -1,0 +1,178 @@
+# Risk scoring configuration.
+#
+# These numbers are starting points chosen from the literature and from reasoning about each
+# behaviour. They are NOT probabilities and were not fitted to data. See
+# docs/design/RISK_CALIBRATION.md for how they behave on the labelled dataset.
+
+[bands]
+low = 0
+mild = 20
+moderate = 40
+high = 60
+critical = 80
+
+[factors]
+# How much an indicator counts, depending on how it is known and how it changed.
+confirmed = 1.0
+inferred = 0.8
+new = 1.0
+changed_parameters = 0.85
+increased = 0.6
+
+[combination]
+# See engine/scoring/combined.py for what these do.
+ml_flag_probability = 0.5
+ml_clear_probability = 0.1
+ml_only_floor = 40
+ml_only_ceiling = 59
+ml_clear_reduction = 15
+ml_clear_floor = 20
+
+# Each indicator: weight (0..1), the cluster it belongs to, and a plain-language explanation.
+# Within a cluster only the strongest indicator counts, so one underlying behaviour cannot add up
+# several times through related features. Clusters combine as a noisy-OR:
+#     score = 100 * (1 - product(1 - weight))
+
+[indicators.credential_exfiltration]
+weight = 0.97
+cluster = "exfiltration"
+direct_evidence = true
+why = "A synthetic password or one-time code left the browser for a destination that does not own it. The value itself was found in the request, so this is not inferred from timing."
+
+[indicators.session_exfiltration]
+weight = 0.95
+cluster = "exfiltration"
+direct_evidence = true
+why = "A synthetic session cookie or authentication token left the browser. Stolen session tokens allow account takeover without the password."
+
+[indicators.financial_exfiltration]
+weight = 0.95
+cluster = "exfiltration"
+direct_evidence = true
+why = "A synthetic payment or bank account value left the browser."
+
+[indicators.pii_exfiltration]
+weight = 0.75
+cluster = "exfiltration"
+direct_evidence = true
+why = "Synthetic personal data left the browser for a destination that does not own it."
+
+[indicators.temporal_exfiltration_candidate]
+weight = 0.55
+cluster = "exfiltration"
+why = "Data was uploaded soon after sensitive data was read. No synthetic value was recognised in the request, so it could be coincidence or could be encrypted data."
+
+[indicators.credential_field_read]
+weight = 0.35
+cluster = "credential_access"
+why = "The extension read the value of a password, payment or one-time-code field. Password managers do this legitimately, so on its own this is not proof of misuse."
+
+[indicators.key_capture]
+weight = 0.30
+cluster = "credential_access"
+why = "The extension listens to keystrokes or input on the whole page or on credential fields, which is how keyloggers work. Many benign tools also listen for input."
+
+[indicators.form_capture]
+weight = 0.30
+cluster = "credential_access"
+why = "The extension captured an entire form at once."
+
+[indicators.credential_field_lookup]
+weight = 0.10
+cluster = "credential_access"
+why = "The extension looked up a password or login element. Finding a field is not the same as reading its value."
+
+[indicators.cookie_bulk_read]
+weight = 0.50
+cluster = "cookie_access"
+why = "The extension read the whole cookie jar. Session hijacking commonly starts this way, while legitimate features usually read a single named cookie."
+
+[indicators.cookie_read]
+weight = 0.30
+cluster = "cookie_access"
+why = "The extension read cookies, which can include session identifiers."
+
+[indicators.sensitive_storage_read]
+weight = 0.30
+cluster = "storage_access"
+why = "The extension read a storage key that looks like a credential or session token."
+
+[indicators.sensitive_page_data_read]
+weight = 0.20
+cluster = "page_data_access"
+why = "The extension read a hidden token, or page text marked as sensitive personal or account data."
+
+[indicators.routine_storage]
+weight = 0.01
+cluster = "routine"
+why = "Ordinary storage use, which is expected of most extensions and carries little risk."
+
+[indicators.beaconing]
+weight = 0.45
+cluster = "beaconing"
+why = "The extension contacts one destination at regular intervals, which is how a compromised client checks in with a controller."
+
+[indicators.suspicious_upload_destination]
+weight = 0.15
+cluster = "destination"
+why = "Data was sent to a host whose name resembles generated or throwaway domains. This is a weak lexical signal, since legitimate vendors can also look like this."
+
+[indicators.unexpected_upload]
+weight = 0.35
+cluster = "destination"
+why = "A substantial upload went to a destination the manifest does not name."
+
+[indicators.small_telemetry]
+weight = 0.10
+cluster = "destination"
+why = "A small upload with no recognised sensitive data, which resembles routine analytics."
+
+[indicators.new_external_contact]
+weight = 0.05
+cluster = "destination"
+why = "The extension fetched from a host the manifest does not name. A new destination is not in itself malicious."
+
+[indicators.websocket_channel]
+weight = 0.15
+cluster = "destination"
+why = "The extension opened a persistent WebSocket connection, which is harder to inspect than ordinary requests."
+
+[indicators.form_tampering]
+weight = 0.50
+cluster = "page_tampering"
+why = "The extension changed a form's attributes, such as where it submits, which can redirect credentials."
+
+[indicators.overlay_form_injection]
+weight = 0.35
+cluster = "page_tampering"
+why = "The extension injected HTML containing a form, a pattern used by fake login overlays."
+
+[indicators.script_injection]
+weight = 0.25
+cluster = "page_tampering"
+why = "The extension injected a script or iframe into the page, giving code execution in the page's own context."
+
+[indicators.routine_dom_change]
+weight = 0.02
+cluster = "routine"
+why = "Ordinary changes to page content, which many extensions make as their main function."
+
+[indicators.privileged_api_use]
+weight = 0.20
+cluster = "privileged_api"
+why = "The extension called a privileged browser API. The API is often needed for the extension's purpose, so this is context rather than proof."
+
+[indicators.permission_escalation]
+weight = 0.30
+cluster = "permissions"
+why = "The update requests a high-risk permission the previous version did not have."
+
+[indicators.host_access_broadened]
+weight = 0.25
+cluster = "permissions"
+why = "The update extends access to every site, so it would also run on banking and email pages."
+
+[indicators.broad_declared_capability]
+weight = 0.05
+cluster = "permissions"
+why = "The manifest declares high-risk permissions or access to every site. A declaration only shows what the extension could do, not what it did."

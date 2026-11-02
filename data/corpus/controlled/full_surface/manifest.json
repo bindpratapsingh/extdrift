@@ -1,0 +1,6 @@
+{"manifest_version":3,"name":"Controlled Monitoring Surface","version":"1.0.0",
+ "description":"SYNTHETIC test extension: touches each monitored API so coverage can be measured.",
+ "permissions":["storage","tabs","alarms","scripting","webRequest","declarativeNetRequest"],
+ "host_permissions":["<all_urls>"],
+ "background":{"service_worker":"background.js","scripts":["background.js"]},
+ "content_scripts":[{"matches":["<all_urls>"],"js":["content.js"],"run_at":"document_idle"}]}

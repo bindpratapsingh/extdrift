@@ -1,0 +1,3 @@
+{"manifest_version":3,"name":"Controlled Rejected Manifest","version":"1.0.0",
+ "description":"SYNTHETIC test extension: valid JSON and required keys, but content_scripts is malformed so the browser refuses it.",
+ "content_scripts":[{"js":["content.js"]}]}

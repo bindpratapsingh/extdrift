@@ -1,0 +1,2 @@
+{"manifest_version":3,"name":"Controlled Missing Worker","version":"1.0.0",
+ "background":{"service_worker":"does_not_exist.js"}}

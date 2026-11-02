@@ -1,0 +1,3 @@
+{"manifest_version":3,"name":"Controlled Form Hijack","version":"1.0.0",
+ "description":"SYNTHETIC test extension: repoints the login form so the page itself submits credentials to a local sink host.",
+ "content_scripts":[{"matches":["<all_urls>"],"js":["content.js"],"run_at":"document_idle"}]}

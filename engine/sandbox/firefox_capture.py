@@ -103,10 +103,14 @@ def _patch_manifest_for_capture(ext_dir: Path) -> dict:
     return manifest
 
 
-def _run_steps(driver, scenario) -> None:
-    """Execute the scenario's fixed script through Selenium (mirrors the Chromium runner)."""
+def _run_steps(driver, scenario) -> list[str]:
+    """Execute the scenario's fixed script through Selenium (mirrors the Chromium runner).
+
+    Returns the selectors that could not be used.
+    """
     from selenium.webdriver.common.by import By
     from engine.sandbox.scenarios import EVENT_FUZZING_JS
+    skipped: list[str] = []
     for step in scenario.steps:
         if step.action == "goto":
             driver.get(step.value)
@@ -123,14 +127,15 @@ def _run_steps(driver, scenario) -> None:
         elif step.action in ("fill", "click"):
             try:
                 el = driver.find_element(By.CSS_SELECTOR, step.selector)
+                if step.action == "fill":
+                    el.clear(); el.send_keys(step.value or "")
+                else:
+                    el.click()
             except Exception:
-                continue          # a missing selector is skipped, not fatal (same as Chromium)
-            if step.action == "fill":
-                el.clear(); el.send_keys(step.value or "")
-            else:
-                el.click()
+                skipped.append(step.selector)   # skipped, not fatal (same as Chromium)
         else:
             raise FirefoxCaptureError(f"unknown scenario step action: {step.action!r}")
+    return skipped
 
 
 def capture_firefox(

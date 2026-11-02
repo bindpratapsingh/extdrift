@@ -46,6 +46,23 @@ class TraceError(ValueError):
     """Raised when a trace does not satisfy the schema."""
 
 
+def legacy_view(trace: dict) -> dict:
+    """The trace without events flagged ``extended``.
+
+    The 26 features in :mod:`engine.features.extract` were fixed when the dataset and trained
+    model were produced. Newer instrumentation emits many more event kinds, each flagged
+    ``extended``. Feature extraction reads this view, so richer capture cannot silently shift
+    what those features mean, and the model stays applicable. The newer events feed
+    :mod:`engine.features.behaviour` instead.
+    """
+    if not any(e.get("extended") for channel in CHANNELS for e in trace.get(channel, [])):
+        return trace
+    view = dict(trace)
+    for channel in CHANNELS:
+        view[channel] = [e for e in trace.get(channel, []) if not e.get("extended")]
+    return view
+
+
 def validate_trace(trace: dict, *, source: str = "<trace>") -> dict:
     """Check *trace* against the schema and return it unchanged.
 

@@ -1,0 +1,4 @@
+{"manifest_version":3,"name":"Controlled Marker Sender","version":"1.0.0",
+ "description":"SYNTHETIC test extension: posts a hardcoded synthetic marker to a local sink host.",
+ "permissions":[],"host_permissions":["*://collect-metrics.test/*"],
+ "background":{"service_worker":"background.js","scripts":["background.js"]}}

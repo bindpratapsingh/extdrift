@@ -1,0 +1,5 @@
+{"manifest_version":3,"name":"Controlled Cookie Access","version":"1.0.0",
+ "description":"SYNTHETIC test extension: reads synthetic cookies and sends nothing.",
+ "permissions":["cookies"],"host_permissions":["<all_urls>"],
+ "background":{"service_worker":"background.js","scripts":["background.js"]},
+ "content_scripts":[{"matches":["<all_urls>"],"js":["content.js"],"run_at":"document_idle"}]}

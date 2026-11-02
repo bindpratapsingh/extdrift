@@ -23,6 +23,10 @@ from pathlib import Path
 
 CRX_MAGIC = b"Cr24"
 
+#: Limits on what unpacking an untrusted archive may produce.
+MAX_ARCHIVE_FILES = 20000
+MAX_ARCHIVE_BYTES = 512 * 1024 * 1024
+
 #: Field number of ``signed_header_data`` in the CRX3 ``CrxFileHeader`` protobuf.
 _CRX3_SIGNED_HEADER_FIELD = 10000
 #: Field number of ``crx_id`` inside ``SignedData``.
@@ -139,14 +143,20 @@ def read_crx_header(data: bytes) -> dict:
     raise CrxError(f"unsupported CRX format version {version}")
 
 
-def safe_extract(archive: zipfile.ZipFile, dest: Path) -> int:
+def safe_extract(archive: zipfile.ZipFile, dest: Path, *, max_files: int = MAX_ARCHIVE_FILES,
+                 max_total_bytes: int = MAX_ARCHIVE_BYTES) -> int:
     """Extract *archive* into *dest*, refusing any entry that escapes it.
 
     Returns the number of files written.  Rejects absolute paths, ``..`` traversal and
-    symlinks - the three ways a crafted archive tries to write outside its directory.
+    symlinks - the three ways a crafted archive tries to write outside its directory - and
+    stops at a size and file-count ceiling, because a zip bomb is a denial of service against
+    the host that unpacks it.
     """
     dest = dest.resolve()
     written = 0
+    total_bytes = 0
+    if len(archive.infolist()) > max_files:
+        raise CrxError(f"archive has more than {max_files} entries")
     for info in archive.infolist():
         name = info.filename
         if name.endswith("/"):
@@ -163,7 +173,12 @@ def safe_extract(archive: zipfile.ZipFile, dest: Path) -> int:
 
         target.parent.mkdir(parents=True, exist_ok=True)
         with archive.open(info) as source, target.open("wb") as handle:
-            handle.write(source.read())
+            # The size in the archive header can lie, so the limit applies to bytes really read.
+            while chunk := source.read(1024 * 1024):
+                total_bytes += len(chunk)
+                if total_bytes > max_total_bytes:
+                    raise CrxError(f"archive expands past the {max_total_bytes} byte limit")
+                handle.write(chunk)
         written += 1
     return written
 

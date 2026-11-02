@@ -1,0 +1,1828 @@
+{
+  "tool": "extdrift",
+  "report_version": "1.0",
+  "mode": "compare",
+  "status": "COMPLETED",
+  "A_summary": {
+    "extension_name": "Controlled Update Pair",
+    "extension_id": "unsigned-8e839599431bebf2c8a8e5df",
+    "extension_id_source": "derived_from_name",
+    "extension_version": "1.1.0",
+    "baseline_version": "1.0.0",
+    "browser": "chromium",
+    "browser_version": "153.0.8010.12",
+    "analysis_id": "20261102-221510-289b0b",
+    "analysis_date": "2026-11-02T16:45:10+00:00",
+    "sandbox_execution_status": "COMPLETED",
+    "scenarios_requested": [
+      "general-browsing",
+      "honeypage-harvest",
+      "financial-portal-login",
+      "webmail-login",
+      "checkout-form",
+      "sensitive-profile",
+      "interactive-dom",
+      "idle-background",
+      "manifest-targeted"
+    ],
+    "scenarios_completed": 9,
+    "number_of_browsing_scenarios": 9,
+    "total_execution_seconds": 287.8
+  },
+  "B_manifest": {
+    "candidate": {
+      "manifest_version": 3,
+      "permissions": [
+        "cookies",
+        "storage"
+      ],
+      "optional_permissions": [],
+      "host_permissions": [
+        "<all_urls>"
+      ],
+      "background_kind": "service_worker",
+      "service_worker": "background.js",
+      "background_scripts": [
+        "background.js"
+      ],
+      "content_scripts": [
+        {
+          "matches": [
+            "<all_urls>"
+          ],
+          "js": [
+            "content.js"
+          ],
+          "css": null,
+          "run_at": "document_idle",
+          "all_frames": null,
+          "world": null
+        }
+      ],
+      "web_accessible_resources": [],
+      "externally_connectable": null
+    },
+    "baseline": {
+      "manifest_version": 3,
+      "permissions": [
+        "storage"
+      ],
+      "optional_permissions": [],
+      "host_permissions": [],
+      "background_kind": "service_worker",
+      "service_worker": "background.js",
+      "background_scripts": [
+        "background.js"
+      ],
+      "content_scripts": [
+        {
+          "matches": [
+            "<all_urls>"
+          ],
+          "js": [
+            "content.js"
+          ],
+          "css": null,
+          "run_at": "document_idle",
+          "all_frames": null,
+          "world": null
+        }
+      ],
+      "web_accessible_resources": [],
+      "externally_connectable": null
+    },
+    "permission_changes": {
+      "version_from": "1.0.0",
+      "version_to": "1.1.0",
+      "manifest_version_changed": false,
+      "background_changed": false,
+      "added_permissions": [
+        {
+          "permission": "cookies",
+          "risk": "high"
+        }
+      ],
+      "removed_permissions": [],
+      "added_host_permissions": [
+        "<all_urls>"
+      ],
+      "removed_host_permissions": [],
+      "added_content_script_matches": [],
+      "escalated_to_broad_host_access": true,
+      "high_risk_added": [
+        "cookies"
+      ]
+    },
+    "permission_change_summary": [
+      "Host access escalated to every site the user visits.",
+      "New permission 'cookies' (risk: high).",
+      "New host permission '<all_urls>'."
+    ],
+    "validation_warnings": []
+  },
+  "C_runtime_summary": {
+    "candidate": {
+      "network_requests_total": 89,
+      "network_requests_extension": 18,
+      "network_requests_page": 43,
+      "network_requests_browser_internal": 28,
+      "unique_destinations_extension": 2,
+      "dom_access_events": 139,
+      "storage_operations": 1,
+      "cookie_operations": 34,
+      "extension_api_calls": 19,
+      "script_injections": 0,
+      "suspicious_events": 9
+    },
+    "baseline": {
+      "network_requests_total": 72,
+      "network_requests_extension": 1,
+      "network_requests_page": 43,
+      "network_requests_browser_internal": 28,
+      "unique_destinations_extension": 1,
+      "dom_access_events": 3,
+      "storage_operations": 1,
+      "cookie_operations": 0,
+      "extension_api_calls": 1,
+      "script_injections": 0,
+      "suspicious_events": 0
+    }
+  },
+  "D_suspicious_activity": [
+    {
+      "description": "Synthetic credential values (password) were sent to telemetry-sync9.test",
+      "indicator": "credential_exfiltration",
+      "category": "network",
+      "timestamp": "2026-11-02T16:48:32.086+00:00",
+      "evidence": [
+        {
+          "signature": "net:POST:telemetry-sync9.test/v1/up",
+          "label": "POST to telemetry-sync9.test/v1/up",
+          "category": "network",
+          "count": 17,
+          "scenarios": [
+            "checkout-form",
+            "financial-portal-login",
+            "honeypage-harvest",
+            "manifest-targeted",
+            "webmail-login"
+          ],
+          "contexts": [
+            "service_worker"
+          ],
+          "targets": [
+            "telemetry-sync9.test"
+          ],
+          "first_timestamp": "2026-11-02T16:48:32.086+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "0ef6cb0fef3cf1da",
+            "4c38bbfae0cefd49",
+            "9dd2fe1180ed6fb9",
+            "0ce1d5798820fde5",
+            "8d7683137bcbc22b"
+          ],
+          "details": {
+            "markers": [
+              {
+                "kind": "password",
+                "sensitivity": "credential",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "username",
+                "sensitivity": "pii",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "session",
+                "sensitivity": "session",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "auth_token",
+                "sensitivity": "session",
+                "encoding": "plain",
+                "location": "body"
+              }
+            ],
+            "max_body_len": 255
+          },
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 17
+        }
+      ],
+      "why_suspicious": "A synthetic password or one-time code left the browser for a destination that does not own it. The value itself was found in the request, so this is not inferred from timing.",
+      "risk_contribution": 22.1,
+      "weight": 0.97,
+      "counted_in_score": true,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "Read the entire cookie jar 17 times in 5 test scenarios",
+      "indicator": "cookie_bulk_read",
+      "category": "storage",
+      "timestamp": "2026-11-02T16:48:32.074+00:00",
+      "evidence": [
+        {
+          "signature": "cookie:read_all:cookies.getAll",
+          "label": "Cookie read_all through cookies.getAll",
+          "category": "storage",
+          "count": 17,
+          "scenarios": [
+            "checkout-form",
+            "financial-portal-login",
+            "honeypage-harvest",
+            "manifest-targeted",
+            "webmail-login"
+          ],
+          "contexts": [
+            "service_worker"
+          ],
+          "first_timestamp": "2026-11-02T16:48:32.074+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "22f076a0013c854e",
+            "296dfcd1cdc63547",
+            "5327f16be1c8e83c",
+            "cf142483d31ac4ab",
+            "8f93eaafdf75238e"
+          ],
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 17
+        }
+      ],
+      "why_suspicious": "The extension read the whole cookie jar. Session hijacking commonly starts this way, while legitimate features usually read a single named cookie.",
+      "risk_contribution": 0.7,
+      "weight": 0.5,
+      "counted_in_score": true,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "Read credential or payment field values 36 times in 6 test scenarios (input#late-password, input#password, input[name=cvv])",
+      "indicator": "credential_field_read",
+      "category": "dom",
+      "timestamp": "2026-11-02T16:48:32.072+00:00",
+      "evidence": [
+        {
+          "signature": "dom:field_read:password",
+          "label": "Read the value of a password field",
+          "category": "dom",
+          "count": 30,
+          "scenarios": [
+            "financial-portal-login",
+            "honeypage-harvest",
+            "interactive-dom",
+            "manifest-targeted",
+            "webmail-login"
+          ],
+          "contexts": [
+            "content_script"
+          ],
+          "targets": [
+            "input#late-password",
+            "input#password"
+          ],
+          "first_timestamp": "2026-11-02T16:48:32.072+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "1ff5c366cee487e2",
+            "ef6bc16f2f8ab3a7",
+            "80572cc5dca77115",
+            "39bc38d11b666b60",
+            "ff89f0d8d29791ee"
+          ],
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 30
+        },
+        {
+          "signature": "dom:field_read:payment",
+          "label": "Read the value of a payment field",
+          "category": "dom",
+          "count": 6,
+          "scenarios": [
+            "checkout-form"
+          ],
+          "contexts": [
+            "content_script"
+          ],
+          "targets": [
+            "input[name=cvv]"
+          ],
+          "first_timestamp": "2026-11-02T16:49:06.519+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "442fde28e5c60cca",
+            "f22e9509b60004c7",
+            "dc2ce804b835d901",
+            "c1e3cf5f8b959707",
+            "38211a6f788aef2d"
+          ],
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 6
+        }
+      ],
+      "why_suspicious": "The extension read the value of a password, payment or one-time-code field. Password managers do this legitimately, so on its own this is not proof of misuse.",
+      "risk_contribution": 0.4,
+      "weight": 0.35,
+      "counted_in_score": true,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "New high-risk permissions: cookies",
+      "indicator": "permission_escalation",
+      "category": "permissions",
+      "timestamp": null,
+      "evidence": [],
+      "why_suspicious": "The update requests a high-risk permission the previous version did not have.",
+      "risk_contribution": 0.3,
+      "weight": 0.3,
+      "counted_in_score": true,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "Synthetic session values (auth_token, session) were sent to telemetry-sync9.test",
+      "indicator": "session_exfiltration",
+      "category": "network",
+      "timestamp": "2026-11-02T16:48:32.086+00:00",
+      "evidence": [
+        {
+          "signature": "net:POST:telemetry-sync9.test/v1/up",
+          "label": "POST to telemetry-sync9.test/v1/up",
+          "category": "network",
+          "count": 17,
+          "scenarios": [
+            "checkout-form",
+            "financial-portal-login",
+            "honeypage-harvest",
+            "manifest-targeted",
+            "webmail-login"
+          ],
+          "contexts": [
+            "service_worker"
+          ],
+          "targets": [
+            "telemetry-sync9.test"
+          ],
+          "first_timestamp": "2026-11-02T16:48:32.086+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "0ef6cb0fef3cf1da",
+            "4c38bbfae0cefd49",
+            "9dd2fe1180ed6fb9",
+            "0ce1d5798820fde5",
+            "8d7683137bcbc22b"
+          ],
+          "details": {
+            "markers": [
+              {
+                "kind": "password",
+                "sensitivity": "credential",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "username",
+                "sensitivity": "pii",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "session",
+                "sensitivity": "session",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "auth_token",
+                "sensitivity": "session",
+                "encoding": "plain",
+                "location": "body"
+              }
+            ],
+            "max_body_len": 255
+          },
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 17
+        }
+      ],
+      "why_suspicious": "A synthetic session cookie or authentication token left the browser. Stolen session tokens allow account takeover without the password.",
+      "risk_contribution": 0.0,
+      "weight": 0.95,
+      "counted_in_score": false,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "Synthetic personal data (username) was sent to telemetry-sync9.test",
+      "indicator": "pii_exfiltration",
+      "category": "network",
+      "timestamp": "2026-11-02T16:48:32.086+00:00",
+      "evidence": [
+        {
+          "signature": "net:POST:telemetry-sync9.test/v1/up",
+          "label": "POST to telemetry-sync9.test/v1/up",
+          "category": "network",
+          "count": 17,
+          "scenarios": [
+            "checkout-form",
+            "financial-portal-login",
+            "honeypage-harvest",
+            "manifest-targeted",
+            "webmail-login"
+          ],
+          "contexts": [
+            "service_worker"
+          ],
+          "targets": [
+            "telemetry-sync9.test"
+          ],
+          "first_timestamp": "2026-11-02T16:48:32.086+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "0ef6cb0fef3cf1da",
+            "4c38bbfae0cefd49",
+            "9dd2fe1180ed6fb9",
+            "0ce1d5798820fde5",
+            "8d7683137bcbc22b"
+          ],
+          "details": {
+            "markers": [
+              {
+                "kind": "password",
+                "sensitivity": "credential",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "username",
+                "sensitivity": "pii",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "session",
+                "sensitivity": "session",
+                "encoding": "plain",
+                "location": "body"
+              },
+              {
+                "kind": "auth_token",
+                "sensitivity": "session",
+                "encoding": "plain",
+                "location": "body"
+              }
+            ],
+            "max_body_len": 255
+          },
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 17
+        }
+      ],
+      "why_suspicious": "Synthetic personal data left the browser for a destination that does not own it.",
+      "risk_contribution": 0.0,
+      "weight": 0.75,
+      "counted_in_score": false,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "Read cookies 17 times in 5 test scenarios",
+      "indicator": "cookie_read",
+      "category": "dom",
+      "timestamp": "2026-11-02T16:48:32.073+00:00",
+      "evidence": [
+        {
+          "signature": "dom:cookie_read",
+          "label": "Read document.cookie",
+          "category": "dom",
+          "count": 17,
+          "scenarios": [
+            "checkout-form",
+            "financial-portal-login",
+            "honeypage-harvest",
+            "manifest-targeted",
+            "webmail-login"
+          ],
+          "contexts": [
+            "content_script"
+          ],
+          "targets": [
+            "document.cookie"
+          ],
+          "first_timestamp": "2026-11-02T16:48:32.073+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "a1c084d8112dd40d",
+            "4ffcbc5f4169ded0",
+            "c19688f7b0dfc7eb",
+            "c3227cbd5ba33310",
+            "f0e6dedf85bc5cc5"
+          ],
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 17
+        }
+      ],
+      "why_suspicious": "The extension read cookies, which can include session identifiers.",
+      "risk_contribution": 0.0,
+      "weight": 0.3,
+      "counted_in_score": false,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "Host access widened to every site",
+      "indicator": "host_access_broadened",
+      "category": "permissions",
+      "timestamp": null,
+      "evidence": [],
+      "why_suspicious": "The update extends access to every site, so it would also run on banking and email pages.",
+      "risk_contribution": 0.0,
+      "weight": 0.25,
+      "counted_in_score": false,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    },
+    {
+      "description": "Looked up password or login elements 27 times in 9 test scenarios",
+      "indicator": "credential_field_lookup",
+      "category": "dom",
+      "timestamp": "2026-11-02T16:48:30.464+00:00",
+      "evidence": [
+        {
+          "signature": "dom:query:password",
+          "label": "Looked up password elements",
+          "category": "dom",
+          "count": 24,
+          "scenarios": [
+            "checkout-form",
+            "financial-portal-login",
+            "general-browsing",
+            "honeypage-harvest",
+            "idle-background",
+            "interactive-dom",
+            "manifest-targeted",
+            "sensitive-profile",
+            "webmail-login"
+          ],
+          "contexts": [
+            "content_script"
+          ],
+          "targets": [
+            "input[type=password]"
+          ],
+          "first_timestamp": "2026-11-02T16:48:30.464+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "eef923b7fc52d895",
+            "19089b285f195002",
+            "1eb2c7125cffbb07",
+            "130f9444580703bc",
+            "587c1852f73b8a7f"
+          ],
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 24
+        },
+        {
+          "signature": "dom:query:payment",
+          "label": "Looked up payment elements",
+          "category": "dom",
+          "count": 3,
+          "scenarios": [
+            "checkout-form"
+          ],
+          "contexts": [
+            "content_script"
+          ],
+          "targets": [
+            "input[type=password]"
+          ],
+          "first_timestamp": "2026-11-02T16:49:06.518+00:00",
+          "attribution_confidence": "confirmed",
+          "event_ids": [
+            "a6c22255d5e84392",
+            "4864a264aa565b2c",
+            "e42387f5f0973384"
+          ],
+          "change": "new",
+          "baseline_count": 0,
+          "candidate_count": 3
+        }
+      ],
+      "why_suspicious": "The extension looked up a password or login element. Finding a field is not the same as reading its value.",
+      "risk_contribution": 0.0,
+      "weight": 0.1,
+      "counted_in_score": false,
+      "attribution_confidence": "confirmed",
+      "change": "new"
+    }
+  ],
+  "E_version_comparison": {
+    "newly_introduced_behaviours": [
+      {
+        "behaviour": "Extension API runtime.sendMessage",
+        "signature": "api:api_call:runtime.sendMessage",
+        "category": "api",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [
+          "runtime.sendMessage"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Extension API runtime.onMessage.addListener",
+        "signature": "api:event_listener:runtime.onMessage.addListener",
+        "category": "api",
+        "baseline_count": 0,
+        "candidate_count": 1,
+        "scenarios": [
+          "startup"
+        ],
+        "targets": [
+          "runtime.onMessage.addListener"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Cookie read_all through cookies.getAll",
+        "signature": "cookie:read_all:cookies.getAll",
+        "category": "storage",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Read document.cookie",
+        "signature": "dom:cookie_read",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [
+          "document.cookie"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Read the value of a password field",
+        "signature": "dom:field_read:password",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 30,
+        "scenarios": [
+          "financial-portal-login",
+          "honeypage-harvest",
+          "interactive-dom",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [
+          "input#late-password",
+          "input#password"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Read the value of a payment field",
+        "signature": "dom:field_read:payment",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 6,
+        "scenarios": [
+          "checkout-form"
+        ],
+        "targets": [
+          "input[name=cvv]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Read the value of a username field",
+        "signature": "dom:field_read:username",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 12,
+        "scenarios": [
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted"
+        ],
+        "targets": [
+          "input[name=username]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Listens for submit on root",
+        "signature": "dom:listener:submit:root",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "general-browsing",
+          "honeypage-harvest",
+          "idle-background",
+          "interactive-dom",
+          "manifest-targeted",
+          "sensitive-profile",
+          "webmail-login"
+        ],
+        "targets": [
+          "document"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Looked up other elements",
+        "signature": "dom:query:other",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 15,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "general-browsing",
+          "idle-background",
+          "interactive-dom",
+          "sensitive-profile",
+          "webmail-login"
+        ],
+        "targets": [
+          "input[name=username]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Looked up password elements",
+        "signature": "dom:query:password",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 24,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "general-browsing",
+          "honeypage-harvest",
+          "idle-background",
+          "interactive-dom",
+          "manifest-targeted",
+          "sensitive-profile",
+          "webmail-login"
+        ],
+        "targets": [
+          "input[type=password]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Looked up payment elements",
+        "signature": "dom:query:payment",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 3,
+        "scenarios": [
+          "checkout-form"
+        ],
+        "targets": [
+          "input[type=password]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Looked up username elements",
+        "signature": "dom:query:username",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 12,
+        "scenarios": [
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted"
+        ],
+        "targets": [
+          "input[name=username]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "POST to telemetry-sync9.test/v1/up",
+        "signature": "net:POST:telemetry-sync9.test/v1/up",
+        "category": "network",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [
+          "telemetry-sync9.test"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      }
+    ],
+    "newly_introduced_and_suspicious": [
+      {
+        "behaviour": "Cookie read_all through cookies.getAll",
+        "signature": "cookie:read_all:cookies.getAll",
+        "category": "storage",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Read document.cookie",
+        "signature": "dom:cookie_read",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [
+          "document.cookie"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Read the value of a password field",
+        "signature": "dom:field_read:password",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 30,
+        "scenarios": [
+          "financial-portal-login",
+          "honeypage-harvest",
+          "interactive-dom",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [
+          "input#late-password",
+          "input#password"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Read the value of a payment field",
+        "signature": "dom:field_read:payment",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 6,
+        "scenarios": [
+          "checkout-form"
+        ],
+        "targets": [
+          "input[name=cvv]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Looked up password elements",
+        "signature": "dom:query:password",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 24,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "general-browsing",
+          "honeypage-harvest",
+          "idle-background",
+          "interactive-dom",
+          "manifest-targeted",
+          "sensitive-profile",
+          "webmail-login"
+        ],
+        "targets": [
+          "input[type=password]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "Looked up payment elements",
+        "signature": "dom:query:payment",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 3,
+        "scenarios": [
+          "checkout-form"
+        ],
+        "targets": [
+          "input[type=password]"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "POST to telemetry-sync9.test/v1/up",
+        "signature": "net:POST:telemetry-sync9.test/v1/up",
+        "category": "network",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "honeypage-harvest",
+          "manifest-targeted",
+          "webmail-login"
+        ],
+        "targets": [
+          "telemetry-sync9.test"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      }
+    ],
+    "increased_behaviours": [],
+    "changed_parameter_behaviours": [],
+    "removed_behaviours": [],
+    "decreased_behaviours": [],
+    "unstable_behaviours_excluded": [],
+    "unchanged_behaviour_count": 4,
+    "permission_differences": {
+      "version_from": "1.0.0",
+      "version_to": "1.1.0",
+      "manifest_version_changed": false,
+      "background_changed": false,
+      "added_permissions": [
+        {
+          "permission": "cookies",
+          "risk": "high"
+        }
+      ],
+      "removed_permissions": [],
+      "added_host_permissions": [
+        "<all_urls>"
+      ],
+      "removed_host_permissions": [],
+      "added_content_script_matches": [],
+      "escalated_to_broad_host_access": true,
+      "high_risk_added": [
+        "cookies"
+      ]
+    },
+    "network_destination_differences": {
+      "new": [
+        "telemetry-sync9.test"
+      ],
+      "removed": [],
+      "common": [
+        "api.readermode.test"
+      ]
+    },
+    "network_differences": {
+      "new": [
+        "POST to telemetry-sync9.test/v1/up"
+      ]
+    },
+    "dom_differences": {
+      "new": [
+        "Read document.cookie",
+        "Read the value of a password field",
+        "Read the value of a payment field",
+        "Read the value of a username field",
+        "Listens for submit on root",
+        "Looked up other elements",
+        "Looked up password elements",
+        "Looked up payment elements",
+        "Looked up username elements"
+      ]
+    },
+    "storage_differences": {
+      "new": [
+        "Cookie read_all through cookies.getAll"
+      ]
+    },
+    "extension_api_differences": {
+      "new": [
+        "Extension API runtime.sendMessage",
+        "Extension API runtime.onMessage.addListener"
+      ]
+    },
+    "sensitive_data_access_differences": {
+      "new": [
+        "Cookie read_all through cookies.getAll",
+        "Read document.cookie",
+        "Read the value of a password field",
+        "Read the value of a payment field",
+        "Looked up password elements",
+        "Looked up payment elements",
+        "POST to telemetry-sync9.test/v1/up"
+      ]
+    },
+    "feature_difference_vector": {
+      "net_outbound_requests": 17.0,
+      "net_unique_domains": 1.0,
+      "net_uploads": 17.0,
+      "net_upload_bytes": 3573.0,
+      "net_undeclared_domains": 1.0,
+      "net_suspicious_destinations": 1.0,
+      "net_marker_requests": 17.0,
+      "dom_password_field_reads": 30.0,
+      "dom_password_field_lookups": 24.0,
+      "dom_login_form_interactions": 79.0,
+      "dom_sensitive_reads": 36.0,
+      "cookie_reads": 34.0,
+      "cookie_bulk_reads": 17.0,
+      "api_calls": 18.0,
+      "api_distinct": 2.0,
+      "api_privileged_calls": 17.0,
+      "exfil_events": 17.0,
+      "exfil_credential_events": 14.0,
+      "exfil_session_events": 17.0,
+      "worker_uploads": 17.0,
+      "sensitive_scenarios": 6.0,
+      "perm_high_risk": 1.0,
+      "perm_broad_host": 1.0
+    },
+    "legacy_feature_delta": {
+      "net_requests": 17.0,
+      "net_hosts": 1.0,
+      "net_third_party_hosts": 1.0,
+      "net_ext_initiated": 17.0,
+      "net_posts": 17.0,
+      "net_upload_bytes": 3573.0,
+      "net_max_upload_bytes": 127.0,
+      "net_encoded_params": 0.0,
+      "net_worker_initiated": 17.0,
+      "dom_reads": 65.0,
+      "dom_sensitive_reads": 53.0,
+      "dom_identity_reads": 12.0,
+      "dom_injections": 0.0,
+      "storage_calls": 17.0,
+      "cookie_reads": 17.0,
+      "cookie_bulk_reads": 17.0,
+      "api_calls": 17.0,
+      "api_distinct": 1.0,
+      "api_high_risk": 0.0,
+      "perm_count": 1.0,
+      "perm_high_risk": 1.0,
+      "host_perm_breadth": 1.0,
+      "exfil_flows": 17.0,
+      "exfil_flows_third_party": 17.0,
+      "msg_passing": 17.0,
+      "net_lowrep_hosts": 1.0
+    },
+    "comparability": {
+      "problems": [],
+      "notes": [],
+      "bundle_digest": "86c2aaabe8b19bceb46fe261c0eb96a4f2e83264475d419bd8fb4f836fb887b1",
+      "page_requests_only_in_baseline": [],
+      "page_requests_only_in_candidate": []
+    },
+    "noise_floor_applied": true
+  },
+  "F_risk_assessment": {
+    "overall_risk_score": 99,
+    "risk_classification": "Critical observed risk",
+    "weighted_baseline_score": 99,
+    "ml_classification": "MALICIOUS",
+    "ml_probability": 0.9933,
+    "ml_confidence_is_calibrated": false,
+    "ml": {
+      "status": "available",
+      "model": "ml-rf",
+      "model_type": "RandomForestClassifier",
+      "probability": 0.9933,
+      "scenario": "honeypage-harvest",
+      "per_scenario": [
+        {
+          "scenario": "general-browsing",
+          "probability": 0.0
+        },
+        {
+          "scenario": "honeypage-harvest",
+          "probability": 0.9933
+        },
+        {
+          "scenario": "financial-portal-login",
+          "probability": 0.9933
+        },
+        {
+          "scenario": "webmail-login",
+          "probability": 0.99
+        },
+        {
+          "scenario": "checkout-form",
+          "probability": 0.99
+        },
+        {
+          "scenario": "sensitive-profile",
+          "probability": 0.0
+        },
+        {
+          "scenario": "interactive-dom",
+          "probability": 0.3933
+        },
+        {
+          "scenario": "idle-background",
+          "probability": 0.0
+        },
+        {
+          "scenario": "manifest-targeted",
+          "probability": 0.9867
+        }
+      ],
+      "classification": "MALICIOUS",
+      "confidence_is_calibrated": false,
+      "confidence_note": "The probability is the fraction of trees voting malicious. It is uncalibrated: use it to rank updates, not as a real-world likelihood.",
+      "important_features_that_moved": [
+        {
+          "feature": "net_hosts",
+          "delta": 1.0,
+          "global_importance": 0.0446
+        },
+        {
+          "feature": "net_third_party_hosts",
+          "delta": 1.0,
+          "global_importance": 0.0462
+        },
+        {
+          "feature": "net_upload_bytes",
+          "delta": 3573.0,
+          "global_importance": 0.1122
+        },
+        {
+          "feature": "net_max_upload_bytes",
+          "delta": 127.0,
+          "global_importance": 0.0718
+        },
+        {
+          "feature": "dom_reads",
+          "delta": 65.0,
+          "global_importance": 0.1029
+        },
+        {
+          "feature": "dom_sensitive_reads",
+          "delta": 53.0,
+          "global_importance": 0.1046
+        },
+        {
+          "feature": "api_calls",
+          "delta": 17.0,
+          "global_importance": 0.0246
+        },
+        {
+          "feature": "api_distinct",
+          "delta": 1.0,
+          "global_importance": 0.1112
+        }
+      ],
+      "model_card": {
+        "winner": "rf",
+        "cv_pr_auc": 0.9842,
+        "cv_fpr_at_recall90": 0.0126,
+        "training_data": "Synthetic update pairs, plus real benign AMO updates and real extensions with injected synthetic payloads. Not validated on real-world malicious updates."
+      },
+      "domain_note": "Trained mostly on synthetic data and Firefox captures, with features from a narrower instrumentation. Chromium-in-Docker input may differ."
+    },
+    "combination": {
+      "rule_score": 99,
+      "combined_score": 99,
+      "rule_applied": "direct_evidence_overrides_ml",
+      "agreement": "agree",
+      "explanation": "A synthetic secret was observed leaving the browser. The classifier agrees.",
+      "classification": "Critical observed risk"
+    },
+    "primary_risk_indicators": [
+      "credential_exfiltration",
+      "cookie_bulk_read",
+      "credential_field_read",
+      "permission_escalation"
+    ],
+    "score_explanation": [
+      "Risk score: 99/100 (Critical observed risk).",
+      "Synthetic credential values (password) were sent to telemetry-sync9.test. [credential_exfiltration, weight 0.97]",
+      "Read the entire cookie jar 17 times in 5 test scenarios. [cookie_bulk_read, weight 0.50]",
+      "Read credential or payment field values 36 times in 6 test scenarios (input#late-password, input#password, input[name=cvv]). [credential_field_read, weight 0.35]",
+      "New high-risk permissions: cookies. [permission_escalation, weight 0.30]"
+    ],
+    "lower_risk_observations": [],
+    "scored_input": "behaviours the update introduced, increased or changed",
+    "baseline_version_own_risk": {
+      "score": 2,
+      "classification": "Low observed risk",
+      "explanation": [
+        "Risk score: 2/100 (Low observed risk).",
+        "No risk indicator fired during this analysis."
+      ]
+    },
+    "existing_rule_scorer_for_reference": {
+      "scorer": "weighted-rules",
+      "scorer_version": "0.1",
+      "score": 0.9963,
+      "verdict": "MALICIOUS",
+      "fired_rules": [
+        {
+          "id": "R01",
+          "name": "New exfiltration flow to a third party",
+          "weight": 0.75,
+          "provenance": "ExtPrivA S&P'23; Cyberhaven Dec'24",
+          "evidence": "17 new sensitive-read -> outbound-upload flows, destination: telemetry-sync9.test"
+        },
+        {
+          "id": "R02",
+          "name": "New bulk cookie read",
+          "weight": 0.55,
+          "provenance": "Cyberhaven Dec'24",
+          "evidence": "17 new whole-cookie-jar reads (getAll) not present in the old version"
+        },
+        {
+          "id": "R03",
+          "name": "New credential-field access",
+          "weight": 0.5,
+          "provenance": "ExtPrivA S&P'23; VEX NDSS'10",
+          "evidence": "53 new reads of credential-bearing fields: document.cookie, input#late-password, input#password, input[name=cvv]"
+        },
+        {
+          "id": "R04",
+          "name": "New upload destination",
+          "weight": 0.6,
+          "provenance": "Hulk USENIX'14; ExtPrivA S&P'23",
+          "evidence": "data now uploaded to a party the old version never contacted: telemetry-sync9.test"
+        },
+        {
+          "id": "R06",
+          "name": "High-risk permission escalation",
+          "weight": 0.4,
+          "provenance": "VEX NDSS'10; MV3 permission model",
+          "evidence": "update declares new high-risk permission(s): cookies"
+        },
+        {
+          "id": "R07",
+          "name": "Host permission broadened",
+          "weight": 0.35,
+          "provenance": "VEX NDSS'10",
+          "evidence": "host access widened: <all_urls>"
+        },
+        {
+          "id": "R09",
+          "name": "Service-worker-initiated beaconing",
+          "weight": 0.4,
+          "provenance": "Karami NDSS'21",
+          "evidence": "MV3 service worker now sends traffic to a new host with no page involvement"
+        },
+        {
+          "id": "R10",
+          "name": "Outbound volume spike",
+          "weight": 0.3,
+          "provenance": "Hulk USENIX'14",
+          "evidence": "outbound payload volume grew by 3573 bytes over the baseline version"
+        }
+      ],
+      "rules_evaluated": 12,
+      "weights_calibrated": false
+    },
+    "feature_vector_candidate": {
+      "net_outbound_requests": 18.0,
+      "net_unique_domains": 2.0,
+      "net_uploads": 17.0,
+      "net_upload_bytes": 3573.0,
+      "net_undeclared_domains": 1.0,
+      "net_suspicious_destinations": 1.0,
+      "net_marker_requests": 17.0,
+      "net_websockets": 0.0,
+      "net_attempts_not_on_wire": 0.0,
+      "net_beacon_groups": 0.0,
+      "net_beacon_max_repeats": 0.0,
+      "dom_password_field_reads": 30.0,
+      "dom_password_field_lookups": 24.0,
+      "dom_login_form_interactions": 79.0,
+      "dom_sensitive_reads": 36.0,
+      "dom_scripts_injected": 0.0,
+      "dom_modifications": 3.0,
+      "dom_form_tampering": 0.0,
+      "dom_key_listeners": 0.0,
+      "dom_form_captures": 0.0,
+      "cookie_reads": 34.0,
+      "cookie_bulk_reads": 17.0,
+      "storage_reads": 0.0,
+      "storage_writes": 1.0,
+      "storage_deletes": 0.0,
+      "storage_sensitive_accesses": 0.0,
+      "api_calls": 19.0,
+      "api_distinct": 3.0,
+      "api_privileged_calls": 17.0,
+      "exfil_events": 17.0,
+      "exfil_credential_events": 14.0,
+      "exfil_session_events": 17.0,
+      "exfil_temporal_candidates": 0.0,
+      "worker_uploads": 17.0,
+      "sensitive_scenarios": 6.0,
+      "perm_high_risk": 1.0,
+      "perm_broad_host": 1.0
+    },
+    "feature_vector_baseline": {
+      "net_outbound_requests": 1.0,
+      "net_unique_domains": 1.0,
+      "net_uploads": 0.0,
+      "net_upload_bytes": 0.0,
+      "net_undeclared_domains": 0.0,
+      "net_suspicious_destinations": 0.0,
+      "net_marker_requests": 0.0,
+      "net_websockets": 0.0,
+      "net_attempts_not_on_wire": 0.0,
+      "net_beacon_groups": 0.0,
+      "net_beacon_max_repeats": 0.0,
+      "dom_password_field_reads": 0.0,
+      "dom_password_field_lookups": 0.0,
+      "dom_login_form_interactions": 0.0,
+      "dom_sensitive_reads": 0.0,
+      "dom_scripts_injected": 0.0,
+      "dom_modifications": 3.0,
+      "dom_form_tampering": 0.0,
+      "dom_key_listeners": 0.0,
+      "dom_form_captures": 0.0,
+      "cookie_reads": 0.0,
+      "cookie_bulk_reads": 0.0,
+      "storage_reads": 0.0,
+      "storage_writes": 1.0,
+      "storage_deletes": 0.0,
+      "storage_sensitive_accesses": 0.0,
+      "api_calls": 1.0,
+      "api_distinct": 1.0,
+      "api_privileged_calls": 0.0,
+      "exfil_events": 0.0,
+      "exfil_credential_events": 0.0,
+      "exfil_session_events": 0.0,
+      "exfil_temporal_candidates": 0.0,
+      "worker_uploads": 0.0,
+      "sensitive_scenarios": 0.0,
+      "perm_high_risk": 0.0,
+      "perm_broad_host": 0.0
+    }
+  },
+  "G_verdict": {
+    "verdict": "Critical behaviour detected",
+    "plain_language": "The extension did something that very commonly indicates theft of sensitive data. It should not be trusted until reviewed.",
+    "failure": null,
+    "limitations": [
+      "This is dynamic analysis. It can only report behaviour that happened during this run, so malicious code that stayed dormant, was tied to a date, a specific website, a specific user, or a server response that the sealed sandbox could not provide, would not appear here.",
+      "No suspicious behaviour being captured does not show that an extension is safe.",
+      "The score reflects observed behavioural risk. It is not the probability that the extension is malicious, and its bands are configurable starting points rather than established boundaries.",
+      "An extension could detect the analysis environment and behave differently. Instrumentation is inside the extension's own JavaScript, so sufficiently careful code could evade or tamper with it. The network record, kept in a separate container, is harder to evade than the other channels.",
+      "Browser scheduling, service-worker lifetimes and asynchronous code mean two runs are not perfectly identical, even though both versions receive the same pages and scripted actions."
+    ]
+  },
+  "isolation": {
+    "checks": {
+      "browser": {
+        "role": "browser",
+        "passed": true,
+        "checks": [
+          {
+            "name": "runs_as_non_root",
+            "passed": true,
+            "detail": "uid=1000"
+          },
+          {
+            "name": "no_effective_capabilities",
+            "passed": true,
+            "detail": "CapEff=0000000000000000"
+          },
+          {
+            "name": "no_new_privileges",
+            "passed": true,
+            "detail": "1"
+          },
+          {
+            "name": "seccomp_filter_active",
+            "passed": true,
+            "detail": "2"
+          },
+          {
+            "name": "root_filesystem_read_only",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "docker_socket_absent",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "no_host_directories_mounted",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "no_host_credentials_in_environment",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "environment_is_allow_listed",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "memory_limit_applied",
+            "passed": true,
+            "detail": "2147483648"
+          },
+          {
+            "name": "pid_limit_applied",
+            "passed": true,
+            "detail": "1024"
+          },
+          {
+            "name": "egress_blocked",
+            "passed": true,
+            "detail": "all probes failed to connect"
+          },
+          {
+            "name": "external_dns_blocked",
+            "passed": true,
+            "detail": "resolution failed"
+          },
+          {
+            "name": "gateway_reachable",
+            "passed": true,
+            "detail": "gateway:8080"
+          },
+          {
+            "name": "input_read_only",
+            "passed": true,
+            "detail": ""
+          }
+        ]
+      },
+      "gateway": {
+        "role": "gateway",
+        "passed": true,
+        "checks": [
+          {
+            "name": "runs_as_non_root",
+            "passed": true,
+            "detail": "uid=1000"
+          },
+          {
+            "name": "no_effective_capabilities",
+            "passed": true,
+            "detail": "CapEff=0000000000000000"
+          },
+          {
+            "name": "no_new_privileges",
+            "passed": true,
+            "detail": "1"
+          },
+          {
+            "name": "seccomp_filter_active",
+            "passed": true,
+            "detail": "2"
+          },
+          {
+            "name": "root_filesystem_read_only",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "docker_socket_absent",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "no_host_directories_mounted",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "no_host_credentials_in_environment",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "environment_is_allow_listed",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "memory_limit_applied",
+            "passed": true,
+            "detail": "536870912"
+          },
+          {
+            "name": "pid_limit_applied",
+            "passed": true,
+            "detail": "256"
+          },
+          {
+            "name": "egress_blocked",
+            "passed": true,
+            "detail": "all probes failed to connect"
+          },
+          {
+            "name": "external_dns_blocked",
+            "passed": true,
+            "detail": "resolution failed"
+          }
+        ]
+      }
+    },
+    "hardening": {
+      "browser": [
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--user",
+        "1000:1000",
+        "--ipc",
+        "private",
+        "--cgroupns",
+        "private",
+        "--hostname",
+        "sandbox",
+        "--log-driver",
+        "json-file",
+        "--log-opt",
+        "max-size=5m",
+        "--label",
+        "extdrift.sandbox=1",
+        "--memory",
+        "2g",
+        "--memory-swap",
+        "2g",
+        "--cpus",
+        "2",
+        "--pids-limit",
+        "1024",
+        "--shm-size",
+        "256m",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,nodev,size=1g",
+        "--security-opt",
+        "seccomp=docker/seccomp-browser.json"
+      ],
+      "gateway": [
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--user",
+        "1000:1000",
+        "--ipc",
+        "private",
+        "--cgroupns",
+        "private",
+        "--hostname",
+        "sandbox",
+        "--log-driver",
+        "json-file",
+        "--log-opt",
+        "max-size=5m",
+        "--label",
+        "extdrift.sandbox=1",
+        "--memory",
+        "512m",
+        "--memory-swap",
+        "512m",
+        "--cpus",
+        "1",
+        "--pids-limit",
+        "256",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,nodev,size=128m"
+      ],
+      "network": "--internal"
+    },
+    "browser_process_sandbox": {
+      "adequate": true,
+      "summary": "Sandbox Status | Layer 1 Sandbox\tNamespace | PID namespaces\tYes | Network namespaces\tYes | Seccomp-BPF sandbox\tYes"
+    },
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.js",
+        "content.js"
+      ],
+      "declared_but_missing": [],
+      "manifest_changes": []
+    }
+  },
+  "monitoring_coverage": {
+    "candidate": {
+      "complete": true,
+      "problems": [],
+      "notes": [],
+      "realms_seen": {
+        "service_worker": 39,
+        "content_script": 198
+      },
+      "pages_with_content_script": [
+        "http://app-widgets.test/dashboard",
+        "http://blank.test/",
+        "http://daily-news.test/",
+        "http://daily-news.test/article/2",
+        "http://honeypage.test/harvest",
+        "http://profile-demo.test/account",
+        "http://shop-checkout.test/checkout",
+        "http://shop-checkout.test/pay",
+        "https://accounts.google.com/",
+        "https://business.facebook.com/",
+        "https://login.microsoftonline.com/",
+        "https://mail-portal.test/inbox",
+        "https://mail-portal.test/login",
+        "https://secure-bank.test/login",
+        "https://secure-bank.test/session",
+        "https://secure-bank.test/transfer"
+      ],
+      "expected": {
+        "background": true,
+        "content_scripts": true,
+        "content_scripts_match_visited_pages": true
+      },
+      "dimensions": {
+        "network": "ok",
+        "dom": "ok",
+        "storage": "ok",
+        "api": "ok"
+      },
+      "wire_counts": {
+        "http": 89,
+        "extension_attributed": 18,
+        "browser_internal": 28,
+        "page": 43
+      },
+      "scenarios_completed": 9,
+      "scenarios_total": 9,
+      "reports_lost": 0,
+      "duplicate_reports_dropped": 0
+    },
+    "baseline": {
+      "complete": true,
+      "problems": [],
+      "notes": [],
+      "realms_seen": {
+        "service_worker": 4,
+        "content_script": 34
+      },
+      "pages_with_content_script": [
+        "http://app-widgets.test/dashboard",
+        "http://blank.test/",
+        "http://daily-news.test/",
+        "http://daily-news.test/article/2",
+        "http://honeypage.test/harvest",
+        "http://profile-demo.test/account",
+        "http://shop-checkout.test/checkout",
+        "http://shop-checkout.test/pay",
+        "https://accounts.google.com/",
+        "https://business.facebook.com/",
+        "https://login.microsoftonline.com/",
+        "https://mail-portal.test/inbox",
+        "https://mail-portal.test/login",
+        "https://secure-bank.test/login",
+        "https://secure-bank.test/session",
+        "https://secure-bank.test/transfer"
+      ],
+      "expected": {
+        "background": true,
+        "content_scripts": true,
+        "content_scripts_match_visited_pages": true
+      },
+      "dimensions": {
+        "network": "ok",
+        "dom": "ok",
+        "storage": "ok",
+        "api": "ok"
+      },
+      "wire_counts": {
+        "http": 72,
+        "extension_attributed": 1,
+        "browser_internal": 28,
+        "page": 43
+      },
+      "scenarios_completed": 9,
+      "scenarios_total": 9,
+      "reports_lost": 0,
+      "duplicate_reports_dropped": 0
+    }
+  },
+  "reproducibility": {
+    "scenarios": [
+      "general-browsing",
+      "honeypage-harvest",
+      "financial-portal-login",
+      "webmail-login",
+      "checkout-form",
+      "sensitive-profile",
+      "interactive-dom",
+      "idle-background",
+      "manifest-targeted"
+    ],
+    "targeted_hosts": [
+      "accounts.google.com",
+      "business.facebook.com",
+      "login.microsoftonline.com"
+    ],
+    "bundle": {
+      "name": "synthetic-web-v1",
+      "digest": "86c2aaabe8b19bceb46fe261c0eb96a4f2e83264475d419bd8fb4f836fb887b1",
+      "hosts": [
+        "accounts.google.com",
+        "api.readermode.test",
+        "app-widgets.test",
+        "blank.test",
+        "business.facebook.com",
+        "daily-news.test",
+        "demo-bank.test",
+        "fonts.readercdn.test",
+        "honeypage.test",
+        "login.microsoftonline.com",
+        "mail-portal.test",
+        "pixel.ads-partner.test",
+        "profile-demo.test",
+        "secure-bank.test",
+        "shop-checkout.test",
+        "webmail.test"
+      ]
+    },
+    "images": {
+      "sandbox_image": "sha256:2abc518026b4767609984f18a244b73f4acc45d4c3199a7ba849cafb1b9405dc",
+      "gateway_image": "sha256:14ca7c44e64b3d664b8d782a84c07400a783aca6d28211a1c044741ae8f42e6b"
+    },
+    "docker_server_version": "28.3.0",
+    "browser_version": "153.0.8010.12",
+    "determinism_notes": [
+      "Both versions received the same bundle of pages, proven by its content hash, and the same scripted actions in the same order. Timing and event ordering inside the browser are not controlled, so small count differences can occur between otherwise identical runs.",
+      "A second run of the baseline measured the noise floor, and behaviours that varied between those runs were excluded from scoring."
+    ]
+  },
+  "artefacts": {
+    "directory": "20261102-221510-289b0b"
+  }
+}

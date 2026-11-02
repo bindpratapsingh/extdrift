@@ -1,0 +1,3 @@
+{"manifest_version":3,"name":"Controlled Credential Access","version":"1.0.0",
+ "description":"SYNTHETIC test extension: reads synthetic password fields and sends nothing.",
+ "content_scripts":[{"matches":["<all_urls>"],"js":["content.js"],"run_at":"document_idle"}]}

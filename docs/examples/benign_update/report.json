@@ -1,0 +1,872 @@
+{
+  "tool": "extdrift",
+  "report_version": "1.0",
+  "mode": "compare",
+  "status": "COMPLETED",
+  "A_summary": {
+    "extension_name": "Controlled Update Pair",
+    "extension_id": "unsigned-8e839599431bebf2c8a8e5df",
+    "extension_id_source": "derived_from_name",
+    "extension_version": "1.0.1",
+    "baseline_version": "1.0.0",
+    "browser": "chromium",
+    "browser_version": "153.0.8010.12",
+    "analysis_id": "20261102-221958-c22675",
+    "analysis_date": "2026-11-02T16:49:58+00:00",
+    "sandbox_execution_status": "COMPLETED",
+    "scenarios_requested": [
+      "general-browsing",
+      "honeypage-harvest",
+      "financial-portal-login",
+      "webmail-login",
+      "checkout-form",
+      "sensitive-profile",
+      "interactive-dom",
+      "idle-background",
+      "manifest-targeted"
+    ],
+    "scenarios_completed": 9,
+    "number_of_browsing_scenarios": 9,
+    "total_execution_seconds": 192.5
+  },
+  "B_manifest": {
+    "candidate": {
+      "manifest_version": 3,
+      "permissions": [
+        "storage"
+      ],
+      "optional_permissions": [],
+      "host_permissions": [],
+      "background_kind": "service_worker",
+      "service_worker": "background.js",
+      "background_scripts": [
+        "background.js"
+      ],
+      "content_scripts": [
+        {
+          "matches": [
+            "<all_urls>"
+          ],
+          "js": [
+            "content.js"
+          ],
+          "css": null,
+          "run_at": "document_idle",
+          "all_frames": null,
+          "world": null
+        }
+      ],
+      "web_accessible_resources": [],
+      "externally_connectable": null
+    },
+    "baseline": {
+      "manifest_version": 3,
+      "permissions": [
+        "storage"
+      ],
+      "optional_permissions": [],
+      "host_permissions": [],
+      "background_kind": "service_worker",
+      "service_worker": "background.js",
+      "background_scripts": [
+        "background.js"
+      ],
+      "content_scripts": [
+        {
+          "matches": [
+            "<all_urls>"
+          ],
+          "js": [
+            "content.js"
+          ],
+          "css": null,
+          "run_at": "document_idle",
+          "all_frames": null,
+          "world": null
+        }
+      ],
+      "web_accessible_resources": [],
+      "externally_connectable": null
+    },
+    "permission_changes": {
+      "version_from": "1.0.0",
+      "version_to": "1.0.1",
+      "manifest_version_changed": false,
+      "background_changed": false,
+      "added_permissions": [],
+      "removed_permissions": [],
+      "added_host_permissions": [],
+      "removed_host_permissions": [],
+      "added_content_script_matches": [],
+      "escalated_to_broad_host_access": false,
+      "high_risk_added": []
+    },
+    "permission_change_summary": [
+      "No declared-capability change between the two versions."
+    ],
+    "validation_warnings": []
+  },
+  "C_runtime_summary": {
+    "candidate": {
+      "network_requests_total": 73,
+      "network_requests_extension": 2,
+      "network_requests_page": 43,
+      "network_requests_browser_internal": 28,
+      "unique_destinations_extension": 2,
+      "dom_access_events": 20,
+      "storage_operations": 2,
+      "cookie_operations": 0,
+      "extension_api_calls": 1,
+      "script_injections": 0,
+      "suspicious_events": 0
+    },
+    "baseline": {
+      "network_requests_total": 72,
+      "network_requests_extension": 1,
+      "network_requests_page": 43,
+      "network_requests_browser_internal": 28,
+      "unique_destinations_extension": 1,
+      "dom_access_events": 3,
+      "storage_operations": 1,
+      "cookie_operations": 0,
+      "extension_api_calls": 1,
+      "script_injections": 0,
+      "suspicious_events": 0
+    }
+  },
+  "D_suspicious_activity": [],
+  "E_version_comparison": {
+    "newly_introduced_behaviours": [
+      {
+        "behaviour": "Added a aside element",
+        "signature": "dom:node_injected:aside",
+        "category": "dom",
+        "baseline_count": 0,
+        "candidate_count": 17,
+        "scenarios": [
+          "checkout-form",
+          "financial-portal-login",
+          "general-browsing",
+          "honeypage-harvest",
+          "idle-background",
+          "interactive-dom",
+          "manifest-targeted",
+          "sensitive-profile",
+          "webmail-login"
+        ],
+        "targets": [
+          "aside.reader-panel"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      },
+      {
+        "behaviour": "GET to fonts.readercdn.test/inter-var.woff2",
+        "signature": "net:GET:fonts.readercdn.test/inter-var.woff2",
+        "category": "network",
+        "baseline_count": 0,
+        "candidate_count": 1,
+        "scenarios": [
+          "startup"
+        ],
+        "targets": [
+          "fonts.readercdn.test"
+        ],
+        "attribution_confidence": "confirmed",
+        "detail": {}
+      }
+    ],
+    "newly_introduced_and_suspicious": [],
+    "increased_behaviours": [],
+    "changed_parameter_behaviours": [],
+    "removed_behaviours": [],
+    "decreased_behaviours": [],
+    "unstable_behaviours_excluded": [],
+    "unchanged_behaviour_count": 4,
+    "permission_differences": {
+      "version_from": "1.0.0",
+      "version_to": "1.0.1",
+      "manifest_version_changed": false,
+      "background_changed": false,
+      "added_permissions": [],
+      "removed_permissions": [],
+      "added_host_permissions": [],
+      "removed_host_permissions": [],
+      "added_content_script_matches": [],
+      "escalated_to_broad_host_access": false,
+      "high_risk_added": []
+    },
+    "network_destination_differences": {
+      "new": [
+        "fonts.readercdn.test"
+      ],
+      "removed": [],
+      "common": [
+        "api.readermode.test"
+      ]
+    },
+    "network_differences": {
+      "new": [
+        "GET to fonts.readercdn.test/inter-var.woff2"
+      ]
+    },
+    "dom_differences": {
+      "new": [
+        "Added a aside element"
+      ]
+    },
+    "storage_differences": {},
+    "extension_api_differences": {},
+    "sensitive_data_access_differences": {},
+    "feature_difference_vector": {
+      "net_outbound_requests": 1.0,
+      "net_unique_domains": 1.0,
+      "dom_modifications": 17.0,
+      "storage_writes": 1.0
+    },
+    "legacy_feature_delta": {
+      "net_requests": 1.0,
+      "net_hosts": 1.0,
+      "net_third_party_hosts": 1.0,
+      "net_ext_initiated": 1.0,
+      "net_posts": 0.0,
+      "net_upload_bytes": 0.0,
+      "net_max_upload_bytes": 0.0,
+      "net_encoded_params": 0.0,
+      "net_worker_initiated": 1.0,
+      "dom_reads": 0.0,
+      "dom_sensitive_reads": 0.0,
+      "dom_identity_reads": 0.0,
+      "dom_injections": 17.0,
+      "storage_calls": 0.0,
+      "cookie_reads": 0.0,
+      "cookie_bulk_reads": 0.0,
+      "api_calls": 0.0,
+      "api_distinct": 0.0,
+      "api_high_risk": 0.0,
+      "perm_count": 0.0,
+      "perm_high_risk": 0.0,
+      "host_perm_breadth": 0.0,
+      "exfil_flows": 0.0,
+      "exfil_flows_third_party": 0.0,
+      "msg_passing": 0.0,
+      "net_lowrep_hosts": 0.0
+    },
+    "comparability": {
+      "problems": [],
+      "notes": [],
+      "bundle_digest": "86c2aaabe8b19bceb46fe261c0eb96a4f2e83264475d419bd8fb4f836fb887b1",
+      "page_requests_only_in_baseline": [],
+      "page_requests_only_in_candidate": []
+    },
+    "noise_floor_applied": false
+  },
+  "F_risk_assessment": {
+    "overall_risk_score": 2,
+    "risk_classification": "Low observed risk",
+    "weighted_baseline_score": 2,
+    "ml_classification": "BENIGN",
+    "ml_probability": 0.0073,
+    "ml_confidence_is_calibrated": false,
+    "ml": {
+      "status": "available",
+      "model": "ml-rf",
+      "model_type": "RandomForestClassifier",
+      "probability": 0.0073,
+      "scenario": "webmail-login",
+      "per_scenario": [
+        {
+          "scenario": "general-browsing",
+          "probability": 0.0006
+        },
+        {
+          "scenario": "honeypage-harvest",
+          "probability": 0.0011
+        },
+        {
+          "scenario": "financial-portal-login",
+          "probability": 0.0006
+        },
+        {
+          "scenario": "webmail-login",
+          "probability": 0.0073
+        },
+        {
+          "scenario": "checkout-form",
+          "probability": 0.0073
+        },
+        {
+          "scenario": "sensitive-profile",
+          "probability": 0.0011
+        },
+        {
+          "scenario": "interactive-dom",
+          "probability": 0.0011
+        },
+        {
+          "scenario": "idle-background",
+          "probability": 0.0011
+        },
+        {
+          "scenario": "manifest-targeted",
+          "probability": 0.0006
+        }
+      ],
+      "classification": "BENIGN",
+      "confidence_is_calibrated": false,
+      "confidence_note": "The probability is the fraction of trees voting malicious. It is uncalibrated: use it to rank updates, not as a real-world likelihood.",
+      "important_features_that_moved": [
+        {
+          "feature": "net_hosts",
+          "delta": 1.0,
+          "global_importance": 0.0446
+        },
+        {
+          "feature": "net_third_party_hosts",
+          "delta": 1.0,
+          "global_importance": 0.0462
+        },
+        {
+          "feature": "dom_injections",
+          "delta": 17.0,
+          "global_importance": 0.0699
+        }
+      ],
+      "model_card": {
+        "winner": "rf",
+        "cv_pr_auc": 0.9842,
+        "cv_fpr_at_recall90": 0.0126,
+        "training_data": "Synthetic update pairs, plus real benign AMO updates and real extensions with injected synthetic payloads. Not validated on real-world malicious updates."
+      },
+      "domain_note": "Trained mostly on synthetic data and Firefox captures, with features from a narrower instrumentation. Chromium-in-Docker input may differ."
+    },
+    "combination": {
+      "rule_score": 2,
+      "combined_score": 2,
+      "rule_applied": "both_quiet",
+      "agreement": "agree",
+      "explanation": "Neither the rules nor the classifier (probability 0.01) flag this update.",
+      "classification": "Low observed risk"
+    },
+    "primary_risk_indicators": [],
+    "score_explanation": [
+      "Risk score: 2/100 (Low observed risk).",
+      "No risk indicator fired during this analysis."
+    ],
+    "lower_risk_observations": [
+      "17 routine page changes"
+    ],
+    "scored_input": "behaviours the update introduced, increased or changed",
+    "baseline_version_own_risk": {
+      "score": 2,
+      "classification": "Low observed risk",
+      "explanation": [
+        "Risk score: 2/100 (Low observed risk).",
+        "No risk indicator fired during this analysis."
+      ]
+    },
+    "existing_rule_scorer_for_reference": {
+      "scorer": "weighted-rules",
+      "scorer_version": "0.1",
+      "score": 0.55,
+      "verdict": "SUSPICIOUS",
+      "fired_rules": [
+        {
+          "id": "R09",
+          "name": "Service-worker-initiated beaconing",
+          "weight": 0.4,
+          "provenance": "Karami NDSS'21",
+          "evidence": "MV3 service worker now sends traffic to a new host with no page involvement"
+        },
+        {
+          "id": "R11",
+          "name": "New page-content injection",
+          "weight": 0.25,
+          "provenance": "VEX NDSS'10",
+          "evidence": "17 new nodes injected into page content"
+        }
+      ],
+      "rules_evaluated": 12,
+      "weights_calibrated": false
+    },
+    "feature_vector_candidate": {
+      "net_outbound_requests": 2.0,
+      "net_unique_domains": 2.0,
+      "net_uploads": 0.0,
+      "net_upload_bytes": 0.0,
+      "net_undeclared_domains": 0.0,
+      "net_suspicious_destinations": 0.0,
+      "net_marker_requests": 0.0,
+      "net_websockets": 0.0,
+      "net_attempts_not_on_wire": 0.0,
+      "net_beacon_groups": 0.0,
+      "net_beacon_max_repeats": 0.0,
+      "dom_password_field_reads": 0.0,
+      "dom_password_field_lookups": 0.0,
+      "dom_login_form_interactions": 0.0,
+      "dom_sensitive_reads": 0.0,
+      "dom_scripts_injected": 0.0,
+      "dom_modifications": 20.0,
+      "dom_form_tampering": 0.0,
+      "dom_key_listeners": 0.0,
+      "dom_form_captures": 0.0,
+      "cookie_reads": 0.0,
+      "cookie_bulk_reads": 0.0,
+      "storage_reads": 0.0,
+      "storage_writes": 2.0,
+      "storage_deletes": 0.0,
+      "storage_sensitive_accesses": 0.0,
+      "api_calls": 1.0,
+      "api_distinct": 1.0,
+      "api_privileged_calls": 0.0,
+      "exfil_events": 0.0,
+      "exfil_credential_events": 0.0,
+      "exfil_session_events": 0.0,
+      "exfil_temporal_candidates": 0.0,
+      "worker_uploads": 0.0,
+      "sensitive_scenarios": 0.0,
+      "perm_high_risk": 0.0,
+      "perm_broad_host": 0.0
+    },
+    "feature_vector_baseline": {
+      "net_outbound_requests": 1.0,
+      "net_unique_domains": 1.0,
+      "net_uploads": 0.0,
+      "net_upload_bytes": 0.0,
+      "net_undeclared_domains": 0.0,
+      "net_suspicious_destinations": 0.0,
+      "net_marker_requests": 0.0,
+      "net_websockets": 0.0,
+      "net_attempts_not_on_wire": 0.0,
+      "net_beacon_groups": 0.0,
+      "net_beacon_max_repeats": 0.0,
+      "dom_password_field_reads": 0.0,
+      "dom_password_field_lookups": 0.0,
+      "dom_login_form_interactions": 0.0,
+      "dom_sensitive_reads": 0.0,
+      "dom_scripts_injected": 0.0,
+      "dom_modifications": 3.0,
+      "dom_form_tampering": 0.0,
+      "dom_key_listeners": 0.0,
+      "dom_form_captures": 0.0,
+      "cookie_reads": 0.0,
+      "cookie_bulk_reads": 0.0,
+      "storage_reads": 0.0,
+      "storage_writes": 1.0,
+      "storage_deletes": 0.0,
+      "storage_sensitive_accesses": 0.0,
+      "api_calls": 1.0,
+      "api_distinct": 1.0,
+      "api_privileged_calls": 0.0,
+      "exfil_events": 0.0,
+      "exfil_credential_events": 0.0,
+      "exfil_session_events": 0.0,
+      "exfil_temporal_candidates": 0.0,
+      "worker_uploads": 0.0,
+      "sensitive_scenarios": 0.0,
+      "perm_high_risk": 0.0,
+      "perm_broad_host": 0.0
+    }
+  },
+  "G_verdict": {
+    "verdict": "No significant suspicious behaviour observed",
+    "plain_language": "Nothing concerning happened during this test. This is not proof that the extension is safe, because some behaviour only appears under conditions this test did not create.",
+    "failure": null,
+    "limitations": [
+      "This is dynamic analysis. It can only report behaviour that happened during this run, so malicious code that stayed dormant, was tied to a date, a specific website, a specific user, or a server response that the sealed sandbox could not provide, would not appear here.",
+      "No suspicious behaviour being captured does not show that an extension is safe.",
+      "The score reflects observed behavioural risk. It is not the probability that the extension is malicious, and its bands are configurable starting points rather than established boundaries.",
+      "An extension could detect the analysis environment and behave differently. Instrumentation is inside the extension's own JavaScript, so sufficiently careful code could evade or tamper with it. The network record, kept in a separate container, is harder to evade than the other channels.",
+      "Browser scheduling, service-worker lifetimes and asynchronous code mean two runs are not perfectly identical, even though both versions receive the same pages and scripted actions."
+    ]
+  },
+  "isolation": {
+    "checks": {
+      "browser": {
+        "role": "browser",
+        "passed": true,
+        "checks": [
+          {
+            "name": "runs_as_non_root",
+            "passed": true,
+            "detail": "uid=1000"
+          },
+          {
+            "name": "no_effective_capabilities",
+            "passed": true,
+            "detail": "CapEff=0000000000000000"
+          },
+          {
+            "name": "no_new_privileges",
+            "passed": true,
+            "detail": "1"
+          },
+          {
+            "name": "seccomp_filter_active",
+            "passed": true,
+            "detail": "2"
+          },
+          {
+            "name": "root_filesystem_read_only",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "docker_socket_absent",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "no_host_directories_mounted",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "no_host_credentials_in_environment",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "environment_is_allow_listed",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "memory_limit_applied",
+            "passed": true,
+            "detail": "2147483648"
+          },
+          {
+            "name": "pid_limit_applied",
+            "passed": true,
+            "detail": "1024"
+          },
+          {
+            "name": "egress_blocked",
+            "passed": true,
+            "detail": "all probes failed to connect"
+          },
+          {
+            "name": "external_dns_blocked",
+            "passed": true,
+            "detail": "resolution failed"
+          },
+          {
+            "name": "gateway_reachable",
+            "passed": true,
+            "detail": "gateway:8080"
+          },
+          {
+            "name": "input_read_only",
+            "passed": true,
+            "detail": ""
+          }
+        ]
+      },
+      "gateway": {
+        "role": "gateway",
+        "passed": true,
+        "checks": [
+          {
+            "name": "runs_as_non_root",
+            "passed": true,
+            "detail": "uid=1000"
+          },
+          {
+            "name": "no_effective_capabilities",
+            "passed": true,
+            "detail": "CapEff=0000000000000000"
+          },
+          {
+            "name": "no_new_privileges",
+            "passed": true,
+            "detail": "1"
+          },
+          {
+            "name": "seccomp_filter_active",
+            "passed": true,
+            "detail": "2"
+          },
+          {
+            "name": "root_filesystem_read_only",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "docker_socket_absent",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "name": "no_host_directories_mounted",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "no_host_credentials_in_environment",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "environment_is_allow_listed",
+            "passed": true,
+            "detail": "[]"
+          },
+          {
+            "name": "memory_limit_applied",
+            "passed": true,
+            "detail": "536870912"
+          },
+          {
+            "name": "pid_limit_applied",
+            "passed": true,
+            "detail": "256"
+          },
+          {
+            "name": "egress_blocked",
+            "passed": true,
+            "detail": "all probes failed to connect"
+          },
+          {
+            "name": "external_dns_blocked",
+            "passed": true,
+            "detail": "resolution failed"
+          }
+        ]
+      }
+    },
+    "hardening": {
+      "browser": [
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--user",
+        "1000:1000",
+        "--ipc",
+        "private",
+        "--cgroupns",
+        "private",
+        "--hostname",
+        "sandbox",
+        "--log-driver",
+        "json-file",
+        "--log-opt",
+        "max-size=5m",
+        "--label",
+        "extdrift.sandbox=1",
+        "--memory",
+        "2g",
+        "--memory-swap",
+        "2g",
+        "--cpus",
+        "2",
+        "--pids-limit",
+        "1024",
+        "--shm-size",
+        "256m",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,nodev,size=1g",
+        "--security-opt",
+        "seccomp=docker/seccomp-browser.json"
+      ],
+      "gateway": [
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--user",
+        "1000:1000",
+        "--ipc",
+        "private",
+        "--cgroupns",
+        "private",
+        "--hostname",
+        "sandbox",
+        "--log-driver",
+        "json-file",
+        "--log-opt",
+        "max-size=5m",
+        "--label",
+        "extdrift.sandbox=1",
+        "--memory",
+        "512m",
+        "--memory-swap",
+        "512m",
+        "--cpus",
+        "1",
+        "--pids-limit",
+        "256",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,nodev,size=128m"
+      ],
+      "network": "--internal"
+    },
+    "browser_process_sandbox": {
+      "adequate": true,
+      "summary": "Sandbox Status | Layer 1 Sandbox\tNamespace | PID namespaces\tYes | Network namespaces\tYes | Seccomp-BPF sandbox\tYes"
+    },
+    "instrumentation": {
+      "technique": "static prelude injection into the extension's own bundle",
+      "instrumented_scripts": [
+        "background.js",
+        "content.js"
+      ],
+      "declared_but_missing": [],
+      "manifest_changes": []
+    }
+  },
+  "monitoring_coverage": {
+    "candidate": {
+      "complete": true,
+      "problems": [],
+      "notes": [],
+      "realms_seen": {
+        "service_worker": 6,
+        "content_script": 51
+      },
+      "pages_with_content_script": [
+        "http://app-widgets.test/dashboard",
+        "http://blank.test/",
+        "http://daily-news.test/",
+        "http://daily-news.test/article/2",
+        "http://honeypage.test/harvest",
+        "http://profile-demo.test/account",
+        "http://shop-checkout.test/checkout",
+        "http://shop-checkout.test/pay",
+        "https://accounts.google.com/",
+        "https://business.facebook.com/",
+        "https://login.microsoftonline.com/",
+        "https://mail-portal.test/inbox",
+        "https://mail-portal.test/login",
+        "https://secure-bank.test/login",
+        "https://secure-bank.test/session",
+        "https://secure-bank.test/transfer"
+      ],
+      "expected": {
+        "background": true,
+        "content_scripts": true,
+        "content_scripts_match_visited_pages": true
+      },
+      "dimensions": {
+        "network": "ok",
+        "dom": "ok",
+        "storage": "ok",
+        "api": "ok"
+      },
+      "wire_counts": {
+        "http": 73,
+        "extension_attributed": 2,
+        "browser_internal": 28,
+        "page": 43
+      },
+      "scenarios_completed": 9,
+      "scenarios_total": 9,
+      "reports_lost": 0,
+      "duplicate_reports_dropped": 0
+    },
+    "baseline": {
+      "complete": true,
+      "problems": [],
+      "notes": [],
+      "realms_seen": {
+        "service_worker": 4,
+        "content_script": 34
+      },
+      "pages_with_content_script": [
+        "http://app-widgets.test/dashboard",
+        "http://blank.test/",
+        "http://daily-news.test/",
+        "http://daily-news.test/article/2",
+        "http://honeypage.test/harvest",
+        "http://profile-demo.test/account",
+        "http://shop-checkout.test/checkout",
+        "http://shop-checkout.test/pay",
+        "https://accounts.google.com/",
+        "https://business.facebook.com/",
+        "https://login.microsoftonline.com/",
+        "https://mail-portal.test/inbox",
+        "https://mail-portal.test/login",
+        "https://secure-bank.test/login",
+        "https://secure-bank.test/session",
+        "https://secure-bank.test/transfer"
+      ],
+      "expected": {
+        "background": true,
+        "content_scripts": true,
+        "content_scripts_match_visited_pages": true
+      },
+      "dimensions": {
+        "network": "ok",
+        "dom": "ok",
+        "storage": "ok",
+        "api": "ok"
+      },
+      "wire_counts": {
+        "http": 72,
+        "extension_attributed": 1,
+        "browser_internal": 28,
+        "page": 43
+      },
+      "scenarios_completed": 9,
+      "scenarios_total": 9,
+      "reports_lost": 0,
+      "duplicate_reports_dropped": 0
+    }
+  },
+  "reproducibility": {
+    "scenarios": [
+      "general-browsing",
+      "honeypage-harvest",
+      "financial-portal-login",
+      "webmail-login",
+      "checkout-form",
+      "sensitive-profile",
+      "interactive-dom",
+      "idle-background",
+      "manifest-targeted"
+    ],
+    "targeted_hosts": [
+      "accounts.google.com",
+      "business.facebook.com",
+      "login.microsoftonline.com"
+    ],
+    "bundle": {
+      "name": "synthetic-web-v1",
+      "digest": "86c2aaabe8b19bceb46fe261c0eb96a4f2e83264475d419bd8fb4f836fb887b1",
+      "hosts": [
+        "accounts.google.com",
+        "api.readermode.test",
+        "app-widgets.test",
+        "blank.test",
+        "business.facebook.com",
+        "daily-news.test",
+        "demo-bank.test",
+        "fonts.readercdn.test",
+        "honeypage.test",
+        "login.microsoftonline.com",
+        "mail-portal.test",
+        "pixel.ads-partner.test",
+        "profile-demo.test",
+        "secure-bank.test",
+        "shop-checkout.test",
+        "webmail.test"
+      ]
+    },
+    "images": {
+      "sandbox_image": "sha256:2abc518026b4767609984f18a244b73f4acc45d4c3199a7ba849cafb1b9405dc",
+      "gateway_image": "sha256:14ca7c44e64b3d664b8d782a84c07400a783aca6d28211a1c044741ae8f42e6b"
+    },
+    "docker_server_version": "28.3.0",
+    "browser_version": "153.0.8010.12",
+    "determinism_notes": [
+      "Both versions received the same bundle of pages, proven by its content hash, and the same scripted actions in the same order. Timing and event ordering inside the browser are not controlled, so small count differences can occur between otherwise identical runs.",
+      "No second baseline run was made, so run-to-run noise was not measured for this analysis. Use --aa-check to measure it."
+    ]
+  },
+  "artefacts": {
+    "directory": "20261102-221958-c22675"
+  }
+}

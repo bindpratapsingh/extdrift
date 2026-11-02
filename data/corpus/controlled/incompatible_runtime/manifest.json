@@ -1,0 +1,3 @@
+{"manifest_version":3,"name":"Controlled Worker-Only MV3","version":"1.0.0",
+ "description":"SYNTHETIC test extension: a service-worker-only MV3 manifest, which Firefox does not accept.",
+ "background":{"service_worker":"background.js"}}

@@ -5,8 +5,8 @@
 > sync with the code; it is the single place to see "what exists and what's left" at a glance.
 > The full narrative is in [PROJECT_REPORT.md](PROJECT_REPORT.md).
 
-**Last updated:** 2026-09-21 · **at commit:** `3a91346` · **tests:** 111 passing · **dataset:**
-1,047 pairs (1,000 synthetic + 45 real + 2 fixtures), 266 extensions.
+**Last updated:** 2026-11-02 · **tests:** 222 fast passing + 36 Docker end-to-end passing · **dataset:**
+1,152 pairs (1,000 synthetic + 150 real + 2 fixtures).
 
 **Done this session:** P1 evaluation rigor (all essentials), P3 Chromium-on-real + MV3, P5 adware
 sub-study, P7 CI + reproducibility + performance, report updated. **All laptop-only essentials are
@@ -40,6 +40,26 @@ final presentation & thesis write-up). See §6.
 | Predict bridge (trained model on one pair) | ✅ | `engine/ml/predict.py` |
 | Report rendering (text + JSON verdict) | ✅ | `engine/report/render.py` |
 | End-to-end runner + CLI | ✅ | `engine/runner.py`, `engine/cli.py` |
+
+## 1b. Built — Docker analysis pipeline
+
+| Component | Status | Where |
+|---|:--:|---|
+| Hardened sandbox (non-root, no caps, seccomp, read-only, limits, no-route network, disposable) | ✅ | `engine/sandbox/docker_manager.py`, `docker/` |
+| Run-time isolation proof (preflight) | ✅ | `engine/sandbox/preflight.py` |
+| In-container driver: Chromium + Firefox ESR | ✅ | `engine/sandbox/container_runner.py` |
+| mitmproxy gateway: replay, sink, wire record, markers | ✅ | `engine/sandbox/gateway_addon.py`, `markers.py` |
+| Synthetic web + 6 new scenarios + manifest-targeted hosts | ✅ | `engine/sandbox/synthetic_web.py`, `scenarios.py` |
+| Replay bundles (fixed web, content hash, recording) | 🟡 | `engine/sandbox/replay.py` — record and replay tested end to end against a local server; recording real websites not exercised |
+| Extended instrumentation (DOM, storage, IndexedDB, nested APIs, realms) | ✅ | `engine/sandbox/prelude.js` |
+| Attribution with confidence + central event schema + coverage | ✅ | `engine/sandbox/attribution.py`, `normalise.py` |
+| Extended features + behaviour diff | ✅ | `engine/features/behaviour.py`, `behaviour_diff.py` |
+| 0-100 risk score + ML combination | ✅ | `engine/scoring/risk.py`, `combined.py`, `config/risk_scoring.toml` |
+| Random Forest integration with stated availability | ✅ | `engine/ml/inference.py` |
+| Sectioned JSON / Markdown / HTML report | ✅ | `engine/report/security_report.py` |
+| Orchestration, validation, states, failure reports | ✅ | `engine/pipeline/`, `engine/cli.py` |
+| Score evaluation on labelled data | ✅ | `experiments/risk_calibration.py`, `docs/design/RISK_CALIBRATION.md` |
+| Chrome, Edge, Brave | ⬜ | Refused with an explanation; not tested |
 
 ## 2. Built — data generation
 
@@ -136,6 +156,9 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-11-02** — Docker analysis pipeline: hardened sandbox, mitmproxy gateway, marker-based
+  exfiltration evidence, attribution, behaviour diff, 0-100 risk score with ML combination, JSON /
+  Markdown / HTML reports, controlled test extensions, end-to-end tests. See `docs/SANDBOX.md`.
 - **2026-09-21** — P3 done: Chromium engine validated on a real MV3 extension (`9509109`) + P7
   performance characterization (`c3fb8ba`). All laptop-only essentials complete.
 - **2026-09-21** — P5 adware sub-study (`3a91346`); report updated with rigor results (`41ad263`);

@@ -13,6 +13,7 @@ useless to the analyst this tool is built for.
 
 from __future__ import annotations
 
+from engine.features.schema import legacy_view
 from engine.features.extract import (
     FEATURE_ORDER,
     SENSITIVE_TARGET_RE,
@@ -53,6 +54,7 @@ def behavioral_delta(trace_v1: dict, trace_v2: dict) -> dict:
     caller (engine.cli) enforces that, because comparing runs against different page
     content is precisely the false-positive trap record/replay exists to close.
     """
+    trace_v1, trace_v2 = legacy_view(trace_v1), legacy_view(trace_v2)
     f1 = extract_features(trace_v1)
     f2 = extract_features(trace_v2)
 

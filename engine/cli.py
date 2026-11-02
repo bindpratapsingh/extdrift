@@ -205,6 +205,86 @@ def cmd_validate(args) -> int:
     return 0
 
 
+def _pipeline(args):
+    from engine.pipeline.orchestrator import AnalysisPipeline
+
+    scenarios = args.scenarios.split(",") if args.scenarios else None
+    return AnalysisPipeline(browser=args.browser, scenarios=scenarios, out_root=args.out_dir,
+                            progress=(None if args.quiet else lambda line: print(line, file=sys.stderr)),
+                            aa_check=getattr(args, "aa_check", False), bundle_file=args.bundle)
+
+
+def _finish_analysis(report: dict, args) -> int:
+    verdict = report["G_verdict"]
+    risk = report["F_risk_assessment"]
+    directory = (report.get("artefacts") or {}).get("directory")
+    print(f"Verdict : {verdict['verdict']}")
+    if risk.get("overall_risk_score") is not None:
+        print(f"Score   : {risk['overall_risk_score']}/100 ({risk.get('risk_classification')})")
+    if verdict.get("failure"):
+        print(f"Failure : {verdict['failure']['stage']}: {verdict['failure']['reason']}")
+        for problem in verdict["failure"].get("details", {}).get("problems", []):
+            print(f"          {problem}")
+    for line in (risk.get("score_explanation") or [])[1:]:
+        print(f"  - {line}")
+    print(f"Report  : {directory}/report.html (also report.md, report.json)")
+    if report["status"] != "COMPLETED":
+        return 3
+    if args.fail_at is not None and (risk.get("overall_risk_score") or 0) >= args.fail_at:
+        return 2
+    return 0
+
+
+def cmd_analyze(args) -> int:
+    """Mode A: run one extension in the Docker sandbox and score what it did."""
+    return _finish_analysis(_pipeline(args).analyse(args.package), args)
+
+
+def cmd_compare(args) -> int:
+    """Mode B: run two versions under identical conditions and score what the update changed."""
+    return _finish_analysis(_pipeline(args).compare(args.baseline, args.candidate), args)
+
+
+def cmd_sandbox_build(args) -> int:
+    from engine.pipeline.config import load_sandbox_config
+    from engine.sandbox.docker_manager import DockerError, build_images, check_daemon
+    try:
+        check_daemon()
+        build_images(load_sandbox_config(), no_cache=args.no_cache)
+    except DockerError as exc:
+        raise SystemExit(f"error: {exc}")
+    return 0
+
+
+def cmd_sandbox_clean(args) -> int:
+    from engine.sandbox.docker_manager import DockerError, clean_all
+    try:
+        found = clean_all()
+    except DockerError as exc:
+        raise SystemExit(f"error: {exc}")
+    print("removed:", {k: len(v) for k, v in found.items()})
+    return 0
+
+
+def cmd_record_bundle(args) -> int:
+    from engine.sandbox.replay import record_urls
+    bundle = record_urls(args.urls, args.out, name=args.name, proxy=args.proxy)
+    print(f"recorded {sum(len(p) for p in bundle.pages.values())} responses from "
+          f"{len(bundle.hosts)} hosts into {args.out} (digest {bundle.digest})")
+    return 0
+
+
+def _add_analysis_options(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--browser", default="chromium",
+                        help="chromium (default) or firefox; see config/sandbox.toml")
+    parser.add_argument("--scenarios", help="comma-separated scenario names (default: full suite)")
+    parser.add_argument("--bundle", help="browse a recorded replay bundle instead of the synthetic web")
+    parser.add_argument("--out-dir", default="out/analyses", help="where to write analysis results")
+    parser.add_argument("--fail-at", type=int, metavar="SCORE",
+                        help="exit with status 2 when the score reaches SCORE")
+    parser.add_argument("--quiet", action="store_true", help="do not print progress")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="extdrift",
@@ -259,6 +339,36 @@ def build_parser() -> argparse.ArgumentParser:
     validate = subparsers.add_parser("validate", help="check a trace against the schema")
     validate.add_argument("trace")
     validate.set_defaults(func=cmd_validate)
+
+    analyze = subparsers.add_parser(
+        "analyze", help="Mode A: analyse one extension in the isolated Docker sandbox")
+    analyze.add_argument("package", help=".crx, .xpi, .zip or unpacked directory")
+    _add_analysis_options(analyze)
+    analyze.set_defaults(func=cmd_analyze)
+
+    compare = subparsers.add_parser(
+        "compare", help="Mode B: compare two versions in the isolated Docker sandbox")
+    compare.add_argument("baseline", help="the trusted version N")
+    compare.add_argument("candidate", help="the candidate version N+1")
+    compare.add_argument("--aa-check", action="store_true",
+                         help="run the baseline twice to measure and exclude run-to-run noise")
+    _add_analysis_options(compare)
+    compare.set_defaults(func=cmd_compare)
+
+    build = subparsers.add_parser("sandbox-build", help="build the sandbox and gateway Docker images")
+    build.add_argument("--no-cache", action="store_true")
+    build.set_defaults(func=cmd_sandbox_build)
+
+    clean = subparsers.add_parser("sandbox-clean", help="remove sandbox resources left by a crashed run")
+    clean.set_defaults(func=cmd_sandbox_clean)
+
+    record = subparsers.add_parser(
+        "record-bundle", help="record pages into a replay bundle, with no extension loaded")
+    record.add_argument("urls", nargs="+")
+    record.add_argument("--out", required=True)
+    record.add_argument("--name", default="recorded")
+    record.add_argument("--proxy", help="optional proxy to record through")
+    record.set_defaults(func=cmd_record_bundle)
 
     return parser
 

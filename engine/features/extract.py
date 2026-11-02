@@ -14,6 +14,8 @@ import re
 from collections import Counter
 from urllib.parse import urlsplit, parse_qsl
 
+from engine.features.schema import legacy_view
+
 # --------------------------------------------------------------------------------------
 # Vocabulary
 # --------------------------------------------------------------------------------------
@@ -262,6 +264,7 @@ def split_permissions(manifest: dict) -> tuple[set[str], set[str]]:
 
 def extract_features(trace: dict) -> dict[str, float]:
     """Reduce one validated trace to the flat feature vector defined by FEATURE_ORDER."""
+    trace = legacy_view(trace)
     network = trace.get("network", [])
     dom = trace.get("dom", [])
     storage = trace.get("storage", [])

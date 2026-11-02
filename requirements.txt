@@ -12,6 +12,10 @@
 playwright>=1.40
 selenium>=4.15
 
+# The DOCKER pipeline (engine/pipeline, engine/sandbox/docker_manager) needs only Docker on the
+# host. mitmproxy, Playwright's browser and Firefox are installed inside the images
+# (docker/*.Dockerfile, built with: python -m engine.cli sandbox-build), not here.
+
 # The DATA & ML tier (engine/synth, engine/batch, engine/ml) needs:
 #     pip install -r requirements.txt
 # These are light enough to train on the laptop; heavy browser capture wants the MacBook.

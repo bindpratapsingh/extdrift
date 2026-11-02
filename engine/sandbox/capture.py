@@ -235,13 +235,14 @@ def _absorb_report(trace, request, ts) -> None:
     trace[channel].append(event)
 
 
-def _run_steps(page, scenario) -> None:
-    """Execute the scenario's fixed script.
+def _run_steps(page, scenario) -> list[str]:
+    """Execute the scenario's fixed script and return the selectors that could not be used.
 
     A missing selector is skipped, not fatal: the page may legitimately not have the
     element, and aborting would throw away the whole trace over one click. Both versions
     get the same sequence of attempts either way.
     """
+    skipped: list[str] = []
     for step in scenario.steps:
         if step.action == "goto":
             page.goto(step.value, wait_until="load")
@@ -260,10 +261,17 @@ def _run_steps(page, scenario) -> None:
             try:
                 element = page.wait_for_selector(step.selector, timeout=3000)
             except Exception:
+                skipped.append(step.selector)
                 continue
-            if step.action == "fill":
-                element.fill(step.value or "")
-            else:
-                element.click()
+            try:
+                if step.action == "click":
+                    element.click(timeout=5000)
+                elif step.seconds:
+                    element.type(step.value or "", delay=step.seconds * 1000)
+                else:
+                    element.fill(step.value or "", timeout=5000)
+            except Exception:
+                skipped.append(step.selector)
         else:
             raise CaptureError(f"unknown scenario step action: {step.action!r}")
+    return skipped

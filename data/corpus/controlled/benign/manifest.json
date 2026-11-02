@@ -1,0 +1,5 @@
+{"manifest_version":3,"name":"Controlled Benign Reader","version":"1.0.0",
+ "description":"SYNTHETIC test extension: shows a reading-time badge. Touches nothing sensitive.",
+ "permissions":["storage"],
+ "background":{"service_worker":"background.js","scripts":["background.js"]},
+ "content_scripts":[{"matches":["http://daily-news.test/*"],"js":["content.js"],"run_at":"document_idle"}]}

@@ -1,0 +1,3 @@
+{"manifest_version":3,"name":"Controlled Beacon","version":"1.0.0",
+ "description":"SYNTHETIC test extension: periodic background beacon to a local sink host.",
+ "background":{"service_worker":"background.js","scripts":["background.js"]}}

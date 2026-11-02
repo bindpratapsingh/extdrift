@@ -3,7 +3,7 @@
 **Catch a browser extension the moment an update turns it malicious — by diffing what it *does*, not what its code says.**
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
-![Tests](https://img.shields.io/badge/tests-93%20passing-2ea44f)
+![Tests](https://img.shields.io/badge/tests-258%20passing-2ea44f)
 ![Analysis](https://img.shields.io/badge/analysis-dynamic%20%2B%20ML-0f766e)
 ![Status](https://img.shields.io/badge/status-working%20prototype-a4690a)
 ![License](https://img.shields.io/badge/license-academic-lightgrey)
@@ -95,7 +95,39 @@ concrete case for ML over rules, on real data.
 
 ---
 
-## Quickstart
+## Isolated Docker analysis
+
+Run one extension, or two versions of it, inside hardened disposable containers on a network with no
+route out. All traffic goes through mitmproxy, which answers everything locally and searches each
+request for unique synthetic secrets, so "the password left the browser" is seen directly.
+
+```bash
+python -m engine.cli sandbox-build                                  # once
+python -m engine.cli compare data/corpus/controlled/pair_v1 data/corpus/controlled/pair_v2
+python -m engine.cli analyze path/to/extension.crx --browser firefox
+```
+
+```text
+Verdict : Critical behaviour detected
+Score   : 99/100 (Critical observed risk)
+  - Synthetic credential values (password) were sent to telemetry-sync9.test. [credential_exfiltration, weight 0.97]
+  - Read the entire cookie jar 3 times in 1 test scenario. [cookie_bulk_read, weight 0.50]
+  - Read credential or payment field values 6 times in 1 test scenario (input#password). [credential_field_read, weight 0.35]
+  - New high-risk permissions: cookies. [permission_escalation, weight 0.30]
+Report  : out/analyses/<id>/report.html (also report.md, report.json)
+```
+
+The report has a 0-100 risk score with its evidence, a behaviour-level comparison of the versions,
+the Random Forest's opinion, proof of the isolation checks, and a statement of what the run could not
+show. The score reflects observed behaviour. It is not a probability of malice, and a low score does
+not mean an extension is safe. See **[docs/SANDBOX.md](docs/SANDBOX.md)** for how it works, its isolation
+limits, what it can and cannot observe, and [docs/design/RISK_CALIBRATION.md](docs/design/RISK_CALIBRATION.md)
+for how the score behaves on labelled data. Real example reports are in [docs/examples/](docs/examples/).
+
+## Quickstart without Docker
+
+These are the original host-side paths. They run the extension directly on your machine with only
+network sealing, so use them only with samples you trust.
 
 ```bash
 pip install -r requirements.txt && playwright install chromium
@@ -147,20 +179,23 @@ reported only when it beats them.
 ```
 engine/
   unpack/       .crx/.xpi unpacking + static manifest diff
-  sandbox/      two capture engines (Chromium/Playwright + Firefox/Selenium) + proxy + test-site
-  features/     trace schema, dynamic + static-code feature extraction, Δ = f(v2) − f(v1)
-  scoring/      12 explainable heuristic rules
+  pipeline/     Docker pipeline orchestration, validation, states
+  sandbox/      Docker sandbox + gateway, two capture engines, instrumentation, scenarios, synthetic web
+  features/     trace schema, dynamic + static-code features, Δ = f(v2) − f(v1), behaviour diff
+  scoring/      12 explainable heuristic rules; the 0-100 risk score and combined assessment
   synth/        synthetic update-pair corpus generator
   weaponiser/   real JS payloads (clean + obfuscated) → labelled malicious versions
   baseline/     static code-delta scorer (the prior-work baseline we beat)
   ml/           model bake-off, anomaly layer, live prediction
   collector/    real version collection (AMO API, Chrome Web Store + delisting probe, snapshots)
-  report/       explainable text + JSON verdicts
+  report/       explainable text + JSON verdicts; JSON, Markdown and HTML security reports
+config/         sandbox and risk-scoring settings
+docker/         the two Dockerfiles and the seccomp profile
 experiments/    ablations · learning curve · real static + behavioural capture (AMO/weaponised)
 data/
   dataset/      the generated ~1,000-pair delta table (deltas.csv)
   real/         7,382 known-malicious extension IDs (public IOC DB, CC BY 4.0)
-tests/          93 tests (incl. live browser integration)
+tests/          fast unit and integration tests, plus Docker end-to-end tests
 ```
 
 > **Data.** The synthetic corpus is generated (`python -m engine.batch`) and committed as
@@ -183,9 +218,12 @@ only live browser capture needs a browser.
 - **Deliberately out of scope:** consumer-side prevention before an update runs, discovery of
   unknown code vulnerabilities, and language-specific analysis — positioned instead for
   store / enterprise / researcher use.
-- **Safety:** every run is inside a network-sealed sandbox against fake pages with dummy
-  credentials — all egress is blackholed by the capture proxy, so nothing (real extension
-  traffic or injected-payload exfil) ever leaves the machine. Real extensions are analysed
+- **Safety:** the Docker pipeline isolates the browser in a hardened container on a no-route
+  network, though Docker alone is not a complete boundary for hostile samples (see
+  [docs/SANDBOX.md](docs/SANDBOX.md)). The original host-side engines seal only the network and run
+  the extension on the host itself. Either way, fake pages and dummy credentials are all that is
+  exposed, and all egress is blackholed, so nothing (real extension traffic or injected-payload
+  exfil) ever leaves the machine. Real extensions are analysed
   locally; their downloaded code is **never redistributed** (only our own behavioural traces
   and generated dataset are committed). Injected payloads are synthetic and beacon only to the
   local sandbox.

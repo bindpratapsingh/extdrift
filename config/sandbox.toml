@@ -1,0 +1,71 @@
+# Docker sandbox configuration. Paths are relative to the repository root.
+
+[images]
+sandbox = "extdrift/sandbox:dev"
+gateway = "extdrift/gateway:dev"
+
+[limits]
+browser_memory = "2g"
+browser_cpus = "2"
+browser_pids = 1024
+browser_shm = "256m"
+browser_tmpfs = "1g"
+gateway_memory = "512m"
+gateway_cpus = "1"
+gateway_pids = 256
+gateway_tmpfs = "128m"
+# The wall-clock ceiling for one browser container, after which it is killed and the run fails.
+run_timeout_seconds = 420
+
+[security]
+seccomp_profile = "docker/seccomp-browser.json"
+# When false, a Chromium whose own sandbox cannot start fails the run rather than continuing.
+allow_degraded_browser_sandbox = false
+
+[collection]
+# Hard ceilings on what is read back from a container, whose output is treated as hostile.
+max_collected_bytes = 1073741824
+max_collected_file_bytes = 536870912
+max_evidence_bytes = 268435456
+
+[scenarios]
+navigation_timeout_ms = 20000
+# Visit hostnames named in the manifest, capped so a <huge> host list cannot dominate the run.
+targeted_host_limit = 8
+# Always visited, because real campaigns have gated payloads on these kinds of sites. They are
+# neutral synthetic login pages served by the gateway, on a network with no route out.
+extra_targeted_hosts = ["accounts.google.com", "business.facebook.com", "login.microsoftonline.com"]
+
+# Browsers that have actually been run end to end in this image.
+# Anything not listed here is refused with an explanation rather than assumed to work.
+[browsers.chromium]
+supported = true
+note = "Playwright's Chromium build. Extension loading verified in the hardened container."
+
+[browsers.firefox]
+supported = true
+note = "Debian firefox-esr with geckodriver. Temporary add-on loading verified."
+
+[browsers.chrome]
+supported = false
+note = "Branded Chrome 137+ removed --load-extension, and Google ships no arm64 Linux build."
+
+[browsers.edge]
+supported = false
+note = "Not installed in the image and never tested. Similar APIs do not prove extension loading works."
+
+[browsers.brave]
+supported = false
+note = "Not installed in the image and never tested. Similar APIs do not prove extension loading works."
+
+[attribution]
+# Seconds either side of a wire request in which a prelude self-report may be matched to it.
+report_match_window_seconds = 8.0
+# The browser's own background traffic. A request to these is treated as the browser's only when
+# nothing ties it to the extension and it carries no synthetic marker, so they are not a safe
+# hiding place for traffic that is otherwise attributable.
+browser_noise_domains = [
+  "gvt1.com", "gstatic.com", "googleapis.com", "google.com", "googleusercontent.com",
+  "chrome.com", "chromium.org", "mozilla.org", "mozilla.net", "mozilla.com", "mozaws.net",
+  "firefox.com", "firefoxusercontent.com", "digicert.com",
+]

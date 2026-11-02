@@ -92,8 +92,13 @@ def _background_page_scripts(work_dir: Path, manifest: dict) -> list[str]:
     return out
 
 
-def instrument_extension(unpacked_dir: str | Path, work_dir: str | Path) -> dict:
+def instrument_extension(unpacked_dir: str | Path, work_dir: str | Path,
+                         *, all_scripts: bool = False) -> dict:
     """Copy *unpacked_dir* to *work_dir* and prepend the prelude to its scripts.
+
+    With *all_scripts* every ``.js``/``.mjs`` file is instrumented, reaching popup and options
+    pages and files loaded later through ``chrome.scripting`` or ``importScripts``. The default
+    keeps the declared-scripts behaviour the existing captures were made with.
 
     Returns a record of exactly what was changed, for the trace and the report.
     """
@@ -105,11 +110,17 @@ def instrument_extension(unpacked_dir: str | Path, work_dir: str | Path) -> dict
     if work_dir.exists():
         shutil.rmtree(work_dir)
     shutil.copytree(unpacked_dir, work_dir)
+    # Store metadata describes the original bytes, and Chromium refuses to load an unpacked
+    # extension containing this directory at all.
+    shutil.rmtree(work_dir / "_metadata", ignore_errors=True)
 
     manifest = json.loads((work_dir / "manifest.json").read_text(encoding="utf-8"))
-    prelude = PRELUDE_JS.read_text(encoding="utf-8")
+    prelude = PRELUDE_JS.read_bytes()
 
     targets = scripts_declared_by(manifest) + _background_page_scripts(work_dir, manifest)
+    if all_scripts:
+        targets += sorted(p.relative_to(work_dir).as_posix() for p in work_dir.rglob("*")
+                          if p.is_file() and p.suffix in (".js", ".mjs"))
     seen_t, ordered_t = set(), []
     for t in targets:
         if t not in seen_t:
@@ -121,13 +132,13 @@ def instrument_extension(unpacked_dir: str | Path, work_dir: str | Path) -> dict
         if not target.exists():
             missing.append(relative)
             continue
-        source = target.read_text(encoding="utf-8")
-        if PRELUDE_MARKER in source:
+        # Bytes, not text: a sample's script need not be valid UTF-8, and it must not be altered.
+        source = target.read_bytes()
+        if PRELUDE_MARKER.encode() in source:
             continue
-        target.write_text(
-            f"/* extdrift instrumentation prelude - injected for analysis */\n"
-            f"{prelude}\n/* --- original {relative} follows --- */\n{source}",
-            encoding="utf-8",
+        target.write_bytes(
+            b"/* extdrift instrumentation prelude - injected for analysis */\n"
+            + prelude + f"\n/* --- original {relative} follows --- */\n".encode() + source
         )
         instrumented.append(relative)
 

@@ -318,6 +318,19 @@ flowchart LR
 
 ---
 
+### The Docker pipeline
+
+The engines above run the browser on the host, so they seal the network but do not isolate the
+extension from the machine. The Docker pipeline (`engine/pipeline/`, full description in
+[SANDBOX.md](SANDBOX.md)) adds that isolation for submitted extensions, without replacing the
+engines used to build the dataset. Each version runs in a disposable hardened container on a no-route
+network, with mitmproxy recording real wire traffic, unique synthetic secrets providing direct
+exfiltration evidence, attribution with stated confidence, and a 0-100 explainable score
+([design/RISK_CALIBRATION.md](design/RISK_CALIBRATION.md)). New instrumentation is flagged so the 26
+features, and therefore the trained model, keep their meaning.
+
+---
+
 ## 7. The trace schema
 
 Defined and enforced in `engine/features/schema.py`. Every capture — Chromium, Firefox, or

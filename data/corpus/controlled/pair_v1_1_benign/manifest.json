@@ -1,0 +1,26 @@
+{
+ "manifest_version": 3,
+ "name": "Controlled Update Pair",
+ "version": "1.0.1",
+ "description": "SYNTHETIC test extension, benign update: adds a font fetch from the vendor CDN and more UI.",
+ "permissions": [
+  "storage"
+ ],
+ "background": {
+  "service_worker": "background.js",
+  "scripts": [
+   "background.js"
+  ]
+ },
+ "content_scripts": [
+  {
+   "matches": [
+    "<all_urls>"
+   ],
+   "js": [
+    "content.js"
+   ],
+   "run_at": "document_idle"
+  }
+ ]
+}

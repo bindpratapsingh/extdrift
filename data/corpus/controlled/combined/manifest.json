@@ -1,0 +1,4 @@
+{"manifest_version":3,"name":"Controlled Combined Theft","version":"1.0.0",
+ "description":"SYNTHETIC test extension: reads a synthetic password field and posts it to a local sink.",
+ "host_permissions":["*://collect-metrics.test/*"],
+ "content_scripts":[{"matches":["<all_urls>"],"js":["content.js"],"run_at":"document_idle"}]}

@@ -1,0 +1,13 @@
+const chrome_ = typeof browser !== "undefined" ? browser : chrome;
+chrome_.storage.local.set({ surface: 1 });
+chrome_.storage.local.get("surface");
+chrome_.storage.sync.get(null).catch?.(() => {});
+chrome_.storage.local.remove("surface");
+chrome_.tabs.query({});
+chrome_.alarms.create("a", { delayInMinutes: 1 });
+chrome_.webRequest.onBeforeRequest.addListener(() => {}, { urls: ["<all_urls>"] });
+chrome_.declarativeNetRequest && chrome_.declarativeNetRequest.getDynamicRules();
+chrome_.runtime.onMessage.addListener(() => {});
+chrome_.permissions.getAll();
+const socket = new WebSocket("wss://collect-metrics.test/socket");
+socket.onopen = () => socket.send("XDRFT-APIKEY-a4e8d1c7f2b09635");

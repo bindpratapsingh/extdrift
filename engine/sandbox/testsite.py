@@ -20,6 +20,8 @@ import random
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+from engine.sandbox.synthetic_web import EXTENDED_SITE
+
 #: Host -> path -> (content type, body).  Bodies are byte-identical on every request.
 SITE: dict[str, dict[str, tuple[str, str]]] = {
     "demo-bank.test": {
@@ -81,6 +83,8 @@ SITE: dict[str, dict[str, tuple[str, str]]] = {
         "/inter-var.woff2": ("font/woff2", "stub-font-bytes"),
     },
 }
+
+SITE.update(EXTENDED_SITE)
 
 #: Hosts that exist purely to receive stolen data during an analysis run. Includes the
 #: collector used by the weaponiser payloads (engine.weaponiser.payloads.COLLECTOR) so a
