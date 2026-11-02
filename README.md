@@ -3,7 +3,7 @@
 **Catch a browser extension the moment an update turns it malicious — by diffing what it *does*, not what its code says.**
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
-![Tests](https://img.shields.io/badge/tests-258%20passing-2ea44f)
+![Tests](https://img.shields.io/badge/tests-222%20passing-2ea44f)
 ![Analysis](https://img.shields.io/badge/analysis-dynamic%20%2B%20ML-0f766e)
 ![Status](https://img.shields.io/badge/status-working%20prototype-a4690a)
 ![License](https://img.shields.io/badge/license-academic-lightgrey)
@@ -18,6 +18,33 @@ prompts, and code signing had all already passed the *benign* version.
 runs each in a sealed, deterministic sandbox, records what each actually does, diffs the
 behaviour, and returns an **explainable verdict** — with transparent rules, a machine-learning
 model, and an anomaly detector for the unseen.
+
+---
+
+## See it work, in one command
+
+```bash
+pip install -r requirements.txt && playwright install chromium
+python demo/server.py            # opens http://127.0.0.1:8765/
+```
+
+Choose version N and version N+1 — bundled samples, or drop in your own `.zip` / `.crx` /
+`.xpi` — and watch the whole analysis happen: both versions executed in the sealed
+sandbox, the behaviour each one produced side by side with the new behaviour marked, the
+fake collector's log of what the update actually tried to send, and the verdict with the
+rules that fired and where each rule comes from.
+
+The three bundled packages give the three outcomes that matter:
+
+| Version N | Version N+1 | Verdict |
+|---|---|---|
+| `reader-lite-1.0.0` | `reader-lite-1.1.0` | **MALICIOUS** — credential and cookie exfiltration, leak confirmed by the collector |
+| `reader-lite-1.0.0` | `reader-lite-1.0.1` | **BENIGN** — the update adds a feature; behaviour changed, nothing dangerous |
+| `reader-lite-1.0.0` | `reader-lite-1.0.0` | **NO CHANGE** — the same extension against itself, two separate runs, zero difference |
+
+That third row is the control: it is what says the other two are measuring the extension
+and not the noise. A run-of-show for presenting this is in
+[docs/DEMO_MANUAL.md](docs/DEMO_MANUAL.md).
 
 ---
 
@@ -189,6 +216,7 @@ engine/
   ml/           model bake-off, anomaly layer, live prediction
   collector/    real version collection (AMO API, Chrome Web Store + delisting probe, snapshots)
   report/       explainable text + JSON verdicts; JSON, Markdown and HTML security reports
+demo/           the local web front end: server, UI, and the packaged sample versions
 config/         sandbox and risk-scoring settings
 docker/         the two Dockerfiles and the seccomp profile
 experiments/    ablations · learning curve · real static + behavioural capture (AMO/weaponised)

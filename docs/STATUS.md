@@ -5,13 +5,18 @@
 > sync with the code; it is the single place to see "what exists and what's left" at a glance.
 > The full narrative is in [PROJECT_REPORT.md](PROJECT_REPORT.md).
 
-**Last updated:** 2026-11-02 · **tests:** 222 fast passing + 36 Docker end-to-end passing · **dataset:**
+**Last updated:** 2026-11-03 · **tests:** 222 fast passing + 36 Docker end-to-end passing · **dataset:**
 1,152 pairs (1,000 synthetic + 150 real + 2 fixtures).
 
-**Done this session:** P1 evaluation rigor (all essentials), P3 Chromium-on-real + MV3, P5 adware
-sub-study, P7 CI + reproducibility + performance, report updated. **All laptop-only essentials are
-now complete.** **Remaining = Mac/Suhani:** P2 scale data, P4 real-malicious live, P6 GNN (+ the
-final presentation & thesis write-up). See §6.
+**Done this session:** merged the Docker analysis pipeline into `main`; built `demo/` — a local
+web front end that runs a pair end to end and shows the process (see `docs/DEMO_MANUAL.md`);
+**fixed a capture-determinism defect** in which a service worker's first instrumentation reports
+could be emitted before the driver was listening, so an MV3 listener registration appeared in some
+runs of an extension and not others — a false difference between two runs of identical code. The
+prelude now buffers and re-posts its reports and both absorbers drop duplicates by
+`(realm_id, report_seq)`; five consecutive runs of each version now produce identical behaviour
+sets. **Remaining:** P4 real-malicious live, P6 GNN, the 24% empty-capture problem in the real
+benign corpus, and the written deliverables. See §6.
 
 **Legend:** ✅ done & tested · 🟡 partial / needs validation · ⬜ not started · ❌ blocked (with reason)
 
@@ -40,6 +45,7 @@ final presentation & thesis write-up). See §6.
 | Predict bridge (trained model on one pair) | ✅ | `engine/ml/predict.py` |
 | Report rendering (text + JSON verdict) | ✅ | `engine/report/render.py` |
 | End-to-end runner + CLI | ✅ | `engine/runner.py`, `engine/cli.py` |
+| Local web front end (upload two versions, watch the run, see the verdict) | ✅ | `demo/server.py`, `demo/analysis.py`, `demo/ui/` — three bundled sample pairs covering MALICIOUS / BENIGN / NO CHANGE |
 
 ## 1b. Built — Docker analysis pipeline
 
@@ -141,7 +147,7 @@ final presentation & thesis write-up). See §6.
 - ✅ **[E]** Throughput / performance characterization — `experiments/performance.py`.
 - ✅ **[E]** One-command reproducibility package — `scripts/reproduce.sh`.
 - ✅ **[S]** CI (tests on push) — `.github/workflows/tests.yml`.
-- ⬜ **[S]** Analyst-facing report dashboard beyond CLI text/JSON.
+- ✅ **[E]** Analyst-facing interface beyond CLI text/JSON — `demo/server.py` (local web UI).
 
 ### Academic deliverables
 - ⬜ **[E]** Final report / thesis (much raw material exists in `docs/`).
@@ -156,6 +162,15 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-11-03** — Capture determinism fix: the prelude buffers every report and re-posts it at
+  t+2s and t+6s; `capture.py` and `proxy.py` drop repeats by `(realm_id, report_seq)`. Before the
+  fix, 1 run in 4 of an unchanged extension lost `chrome.runtime.onMessage.addListener` and so
+  produced a spurious behavioural difference; after it, 5/5 runs of both `readerlite/1.0.0` and
+  `readerlite/1.1.0` are byte-identical in their behaviour key sets.
+- **2026-11-03** — Added `demo/`: a dependency-free local web front end that takes two packages,
+  runs the real pipeline, and shows stages, per-version behaviour with the new rows marked, the
+  collector's ground-truth log and the explained verdict. Run-of-show in `docs/DEMO_MANUAL.md`.
+- **2026-11-03** — Merged the Docker analysis pipeline branch into `main`.
 - **2026-11-02** — Docker analysis pipeline: hardened sandbox, mitmproxy gateway, marker-based
   exfiltration evidence, attribution, behaviour diff, 0-100 risk score with ML combination, JSON /
   Markdown / HTML reports, controlled test extensions, end-to-end tests. See `docs/SANDBOX.md`.

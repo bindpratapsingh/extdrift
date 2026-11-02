@@ -1,5 +1,11 @@
 # extdrift — Demo Guide (what to show the professor, and how)
 
+> **For a live demonstration, use [DEMO_MANUAL.md](DEMO_MANUAL.md) instead.** It drives the
+> web front end (`python demo/server.py`), which shows the process on screen rather than in a
+> terminal, and covers all three outcomes including the no-change control. This file remains the
+> command-line version: use it when the audience wants the evidence and the numbers rather than
+> the walk-through.
+
 A run-of-show for a ~15-minute live demo, with the exact commands, what each output proves, and
 what to say. Ordered for impact and reliability. Everything except the two live-browser steps runs
 offline in seconds from committed data.
