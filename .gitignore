@@ -35,3 +35,6 @@ data/real/extensiondeltas/
 .extdrift-work*/
 **/work-v1/
 **/work-v2/
+
+# Node deps used only to build the presentations
+node_modules/

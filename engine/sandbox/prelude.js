@@ -73,6 +73,27 @@
   const nativeFetch = globalScope.fetch ? globalScope.fetch.bind(globalScope) : null;
   const nativeStringify = JSON.stringify;
 
+  // Every report is kept so it can be sent again. A service worker starts while the
+  // driver is still attaching its request listener, so the first events a worker emits
+  // can be posted with nobody listening - which showed up as an MV3 listener
+  // registration that appeared in some runs of an extension and not others, i.e. a
+  // false difference between two runs of identical code. Re-posting the buffer twice
+  // closes that window; the driver discards the duplicates by (realm_id, report_seq).
+  const buffered = [];
+  const MAX_BUFFERED = 500;
+
+  const post = (body) => {
+    // Prefer a plain fetch: it works from the service worker, the MV2 background page and
+    // the content script alike. A content script drops a keepalive/no-cors report and a
+    // sendBeacon, so those were losing every content-script dom/network event; a plain
+    // POST (the same shape the payloads themselves use successfully) lands.
+    if (nativeFetch) {
+      nativeFetch(REPORT_URL, { method: "POST", body }).catch(() => {});
+    } else if (!inServiceWorker && navigator.sendBeacon) {
+      navigator.sendBeacon(REPORT_URL, body);
+    }
+  };
+
   const report = (event) => {
     try {
       event.frame = event.frame || frame;
@@ -81,17 +102,13 @@
       event.report_seq = ++reportSeq;
       event.t_wall = dateNow();
       const body = nativeStringify(event);
-      // Prefer a plain fetch: it works from the service worker, the MV2 background page and
-      // the content script alike. A content script drops a keepalive/no-cors report and a
-      // sendBeacon, so those were losing every content-script dom/network event; a plain
-      // POST (the same shape the payloads themselves use successfully) lands.
-      if (nativeFetch) {
-        nativeFetch(REPORT_URL, { method: "POST", body }).catch(() => {});
-      } else if (!inServiceWorker && navigator.sendBeacon) {
-        navigator.sendBeacon(REPORT_URL, body);
-      }
+      if (buffered.length < MAX_BUFFERED) buffered.push(body);
+      post(body);
     } catch (_) { /* instrumentation must never break the sample */ }
   };
+
+  const replay = () => { for (let i = 0; i < buffered.length; i++) post(buffered[i]); };
+  try { setTimeout(replay, 2000); setTimeout(replay, 6000); } catch (_) {}
   globalScope.__extdriftReport = report;
   // Lets the collector know this realm really ran. A declared script that never says this was
   // not exercised, which is a very different finding from "exercised and did nothing".

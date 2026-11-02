@@ -71,11 +71,21 @@ class _ProxyHandler(BaseHTTPRequestHandler):
             self.wfile.write(body)
 
     def _absorb_report(self, raw: bytes) -> None:
-        """Turn one prelude report POST into a trace event on the right channel."""
+        """Turn one prelude report POST into a trace event on the right channel.
+
+        The prelude re-posts its buffer so an event emitted before anything was
+        listening still arrives; (realm_id, report_seq) identifies an event exactly, so
+        a repeat is dropped here rather than counted twice.
+        """
         try:
             event = json.loads(raw or b"{}")
         except json.JSONDecodeError:
             return
+        marker = (event.get("realm_id"), event.get("report_seq"))
+        if marker[0] is not None and marker[1] is not None:
+            if marker in self.server.seen_reports:
+                return
+            self.server.seen_reports.add(marker)
         channel = event.pop("channel", None)
         if channel in _REPORT_CHANNELS:
             event.setdefault("ts", 0.0)
@@ -134,6 +144,7 @@ class CaptureProxy:
         self.server.channels = {c: [] for c in _REPORT_CHANNELS}
         self.server.collected = []
         self.server.blocked = []
+        self.server.seen_reports = set()
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
 
     @property

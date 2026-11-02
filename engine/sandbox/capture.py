@@ -192,6 +192,9 @@ def _wait_for_extension_origin(context, timeout_ms: int = 5000) -> str:
 
 def _wire_request_capture(context, trace, extension_origin, ts) -> None:
     """Record every outgoing request, splitting off the instrumentation's own reports."""
+    # The prelude re-posts its buffer so an event emitted before we were listening is not
+    # lost; (realm_id, report_seq) identifies an event exactly, so a repeat is dropped.
+    seen_reports: set = set()
 
     def on_request(request):
         url = request.url
@@ -202,7 +205,7 @@ def _wire_request_capture(context, trace, extension_origin, ts) -> None:
             frame_url = ""
 
         if REPORT_HOST in url:
-            _absorb_report(trace, request, ts)
+            _absorb_report(trace, request, ts, seen_reports)
             return
 
         initiator = _initiator_for(url, frame_url, extension_origin)
@@ -219,8 +222,12 @@ def _wire_request_capture(context, trace, extension_origin, ts) -> None:
     context.on("request", on_request)
 
 
-def _absorb_report(trace, request, ts) -> None:
-    """Turn one instrumentation report request into a dom/storage/api trace event."""
+def _absorb_report(trace, request, ts, seen: set) -> None:
+    """Turn one instrumentation report request into a dom/storage/api trace event.
+
+    *seen* holds the (realm_id, report_seq) of every event already recorded, so the
+    prelude's replayed buffer adds the events that were missed and nothing else.
+    """
     raw = request.post_data
     if not raw:
         return
@@ -228,6 +235,11 @@ def _absorb_report(trace, request, ts) -> None:
         event = json.loads(raw)
     except json.JSONDecodeError:
         return
+    marker = (event.get("realm_id"), event.get("report_seq"))
+    if marker[0] is not None and marker[1] is not None:
+        if marker in seen:
+            return
+        seen.add(marker)
     channel = event.pop("channel", None)
     if channel not in ("dom", "storage", "api"):
         return

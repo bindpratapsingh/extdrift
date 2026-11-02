@@ -50,7 +50,7 @@ def _docker(*args: str, input_bytes: bytes | None = None, timeout: float = 120,
         result = subprocess.run(["docker", *args], input=input_bytes, capture_output=True,
                                 timeout=timeout, check=False)
     except FileNotFoundError as exc:
-        raise DockerError("the docker command is not installed") from exc
+        raise DockerError("Docker is not installed, or the docker command is not on PATH") from exc
     except subprocess.TimeoutExpired as exc:
         raise DockerError(f"docker {args[0]} timed out after {timeout}s") from exc
     if check and result.returncode != 0:
