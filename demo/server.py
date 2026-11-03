@@ -112,6 +112,26 @@ def samples() -> list[dict]:
     return out
 
 
+def _resolve_msg_name(name: str, ext_dir: Path) -> str:
+    """Resolve a ``__MSG_key__`` extension name against its ``_locales`` so the page shows
+    "LanguageTool", not the raw i18n placeholder. Falls back to a tidied slug."""
+    if not name.startswith("__MSG_"):
+        return name
+    key = name.strip("_")[4:]
+    try:
+        manifest = json.loads((ext_dir / "manifest.json").read_text(encoding="utf-8"))
+        for cand in (manifest.get("default_locale", "en"), "en", "en_US"):
+            msgs_path = ext_dir / "_locales" / cand / "messages.json"
+            if msgs_path.is_file():
+                msgs = json.loads(msgs_path.read_text(encoding="utf-8-sig"))
+                hit = msgs.get(key) or msgs.get(key.lower())
+                if isinstance(hit, dict) and hit.get("message"):
+                    return hit["message"]
+    except (ValueError, OSError):
+        pass
+    return name
+
+
 def _discover_pairs(manifest: Path, prefix: str) -> list[dict]:
     """Load a pairs manifest into pair-grouped entries the page can offer as one click.
 
@@ -131,7 +151,10 @@ def _discover_pairs(manifest: Path, prefix: str) -> list[dict]:
         v2_dir = (ROOT / str(p.get("v2_dir", ""))).resolve()
         if not ((v1_dir / "manifest.json").is_file() and (v2_dir / "manifest.json").is_file()):
             continue
-        slug, name = str(p.get("slug", "?")), str(p.get("name", p.get("slug", "?")))
+        slug = str(p.get("slug", "?"))
+        name = _resolve_msg_name(str(p.get("name") or slug), v1_dir)
+        if name.startswith("__MSG_") or not name.strip():
+            name = slug.replace("_", " ").replace("-", " ").title()
         entry = {
             "slug": slug, "name": name, "mv": p.get("mv"),
             "v1": {"ref": "%s%s/v1" % (prefix, slug), "version": str(p.get("v1", "")),
