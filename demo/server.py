@@ -45,16 +45,20 @@ CONTENT_TYPES = {".html": "text/html; charset=utf-8", ".css": "text/css; charset
 
 # Which sample is which, so the page can label them instead of showing bare filenames.
 SAMPLE_LABELS = {
-    "reader-lite-1.0.0.zip": ("Version N - the trusted baseline",
-                              "A reader extension that does what it says: tidies the "
-                              "article, asks its own background script for a config."),
-    "reader-lite-1.0.1.zip": ("A genuinely benign update",
-                              "Adds a reading-time badge. New behaviour, no new "
-                              "capability, nothing leaves the page."),
-    "reader-lite-1.1.0.zip": ("A maliciously updated version",
-                              "The same reader, plus a payload that harvests the login "
-                              "form and beacons it out - the Cyberhaven pattern."),
+    "reader-lite-1.0.0": ("Version N - the trusted baseline",
+                          "A reader extension that does what it says: tidies the "
+                          "article, asks its own background script for a config."),
+    "reader-lite-1.0.1": ("A genuinely benign update",
+                          "Adds a reading-time badge. New behaviour, no new "
+                          "capability, nothing leaves the page."),
+    "reader-lite-1.1.0": ("A maliciously updated version",
+                          "The same reader, plus a payload that harvests the login "
+                          "form and beacons it out - the Cyberhaven pattern."),
 }
+
+#: Packages we will read. .crx is what Chrome ships and what the samples are; .zip and
+#: .xpi are accepted because that is what a developer or AMO hands you.
+PACKAGE_SUFFIXES = (".crx", ".zip", ".xpi")
 
 _runs: dict[str, dict] = {}
 _runs_lock = threading.Lock()
@@ -84,13 +88,15 @@ def environment() -> dict:
 
 
 def samples() -> list[dict]:
+    """The bundled packages, signed CRX3 first because that is what a browser installs."""
     if not SAMPLES_DIR.is_dir():
         return []
     out = []
-    for path in sorted(SAMPLES_DIR.glob("*.zip")):
-        label, blurb = SAMPLE_LABELS.get(path.name, (path.stem, ""))
+    for path in sorted(SAMPLES_DIR.glob("*.crx")) + sorted(SAMPLES_DIR.glob("*.zip")):
+        label, blurb = SAMPLE_LABELS.get(path.stem, (path.stem, ""))
         out.append({"ref": "sample:" + path.name, "file": path.name, "label": label,
-                    "blurb": blurb, "bytes": path.stat().st_size})
+                    "blurb": blurb, "bytes": path.stat().st_size,
+                    "kind": path.suffix.lstrip(".")})
     return out
 
 
@@ -207,8 +213,8 @@ class Handler(BaseHTTPRequestHandler):
         if route.path == "/api/upload":
             run_id = (query.get("run") or [""])[0] or uuid.uuid4().hex[:8]
             name = Path((query.get("name") or ["package.zip"])[0]).name
-            if not name.lower().endswith((".zip", ".crx", ".xpi")):
-                self._json({"error": "expected a .zip, .crx or .xpi package"}, 400)
+            if not name.lower().endswith(PACKAGE_SUFFIXES):
+                self._json({"error": "expected a .crx, .zip or .xpi package"}, 400)
                 return
             dest = RUNS_DIR / run_id / "uploads"
             dest.mkdir(parents=True, exist_ok=True)

@@ -28,3 +28,6 @@ joblib>=1.3
 # Optional: SHAP gives per-prediction attribution. We currently use scikit-learn's
 # permutation_importance instead (lighter to install); enable SHAP if you want it.
 # shap>=0.44
+
+# Signing CRX3 packages for the corpus (engine/unpack/crx.py: write_crx3).
+cryptography>=42.0

@@ -28,7 +28,8 @@ python -m pytest tests/ -q
 #  -> 222 passed, 38 skipped      (takes ~90 s)
 
 python demo/package_samples.py
-#  -> writes demo/extensions/reader-lite-{1.0.0,1.0.1,1.1.0}.zip
+#  -> writes signed .crx and plain .zip for each version, and prints one extension id
+#     shared by all three (if it prints "made a new signing key", that is fine)
 
 python demo/server.py
 #  -> prints "sandbox : host-sealed Chromium", "model : trained model loaded"
@@ -53,9 +54,16 @@ They are in `demo/extensions/`, and their source is in `data/corpus/readerlite/`
 
 | Package | Role | What it is |
 |---|---|---|
-| `reader-lite-1.0.0.zip` | **version N** | A real-shaped reader extension. Tidies an article, adds a toolbar, asks its own background service worker for a config. Permissions: `storage`. |
-| `reader-lite-1.0.1.zip` | a benign update | Same extension, plus a reading-time badge. More behaviour, no new permission, nothing leaves the page. |
-| `reader-lite-1.1.0.zip` | **version N+1, weaponised** | Same extension, plus a payload that reads the login form, asks the service worker for the whole cookie jar, and POSTs both to an outside host. Permissions: `storage` **+ `cookies`**. |
+| `reader-lite-1.0.0.crx` | **version N** | A real-shaped reader extension. Tidies an article, adds a toolbar, asks its own background service worker for a config. Permissions: `storage`. |
+| `reader-lite-1.0.1.crx` | a benign update | Same extension, plus a reading-time badge. More behaviour, no new permission, nothing leaves the page. |
+| `reader-lite-1.1.0.crx` | **version N+1, weaponised** | Same extension, plus a payload that reads the login form, asks the service worker for the whole cookie jar, and POSTs both to an outside host. Permissions: `storage` **+ `cookies`**. |
+
+These are **signed CRX3 packages**, the format Chrome itself ships, not loose zips. All
+three are signed with one key, so all three carry the **same extension id** — which is
+precisely how a browser decides that an update is an update to the extension you already
+trust rather than a different extension. The page shows that id on both slots, and the log
+checks it matches before it compares anything. A `.zip` of each is in the same folder for
+anyone who wants one, and `.xpi` is accepted too.
 
 All three are written by us. The payload is synthetic and its destination host resolves
 only inside the sandbox — it cannot reach anything real. Say this out loud when you first
@@ -86,6 +94,16 @@ The page is one scroll, in four numbered steps. Do not scroll ahead of your narr
 
 The dark log pane in step 2 is the thing to point at while the two runs happen. It is the
 only part of the demo where you will be waiting, about 15 seconds per version.
+
+**If you are asked whether the log is real:** the answer is on the screen. Lines prefixed
+`config` are settings — they say how the run was set up. Every other line is read back off
+the run that just happened: the port the test site actually bound, the scripts actually
+instrumented, every host actually contacted and whether any of them was outside the
+sandbox, the per-channel event counts, the rules that actually fired, the model's actual
+output, and the collector's actual log. Nothing on the page is a canned string standing in
+for a measurement. The one presentational choice is that table rows are revealed over
+about two seconds instead of all at once; the rows themselves were all recorded during
+the run.
 
 **Read the counts off the screen, do not quote them from memory.** The *verdict* is driven
 by the set of distinct behaviours, which is stable run to run — the no-change case proves

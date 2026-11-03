@@ -28,7 +28,7 @@ pip install -r requirements.txt && playwright install chromium
 python demo/server.py            # opens http://127.0.0.1:8765/
 ```
 
-Choose version N and version N+1 — bundled samples, or drop in your own `.zip` / `.crx` /
+Choose version N and version N+1 — bundled samples, or drop in your own `.crx` / `.zip` /
 `.xpi` — and watch the whole analysis happen: both versions executed in the sealed
 sandbox, the behaviour each one produced side by side with the new behaviour marked, the
 fake collector's log of what the update actually tried to send, and the verdict with the
@@ -43,8 +43,14 @@ The three bundled packages give the three outcomes that matter:
 | `reader-lite-1.0.0` | `reader-lite-1.0.0` | **NO CHANGE** — the same extension against itself, two separate runs, zero difference |
 
 That third row is the control: it is what says the other two are measuring the extension
-and not the noise. A run-of-show for presenting this is in
-[docs/DEMO_MANUAL.md](docs/DEMO_MANUAL.md).
+and not the noise.
+
+The samples are **signed CRX3 packages** built by `demo/package_samples.py` — the format
+Chrome ships, not loose archives. All versions are signed with one key, so they share one
+extension id, which is what makes them an update chain rather than three unrelated
+extensions. `engine.unpack.crx` both reads (CRX2 and CRX3) and writes that format.
+
+A run-of-show for presenting this is in [docs/DEMO_MANUAL.md](docs/DEMO_MANUAL.md).
 
 ---
 

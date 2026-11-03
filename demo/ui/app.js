@@ -30,8 +30,8 @@ async function boot() {
   renderStages(state.boot.stages);
   for (const slot of ["v1", "v2"]) setupSlot(slot);
   // The pairing that tells the story best, pre-selected so a demo can start in one click.
-  pick("v1", "sample:reader-lite-1.0.0.zip");
-  pick("v2", "sample:reader-lite-1.1.0.zip");
+  pick("v1", "sample:reader-lite-1.0.0.crx");
+  pick("v2", "sample:reader-lite-1.1.0.crx");
   $("#run").addEventListener("click", analyse);
   $("#only-new").addEventListener("change", ev =>
     $("#pane-v2").classList.toggle("filtered", ev.target.checked));
@@ -60,9 +60,9 @@ function setupSlot(slot) {
   const select = $(".slot-select", root);
   const input = $("input[type=file]", root);
 
-  select.innerHTML = `<option value="">Choose a package&hellip;</option>` +
+  select.innerHTML = `<option value="">Choose a package...</option>` +
     state.boot.samples.map(s =>
-      `<option value="${esc(s.ref)}">${esc(s.file)} &mdash; ${esc(s.label)}</option>`).join("");
+      `<option value="${esc(s.ref)}">${esc(s.file)} : ${esc(s.label)}</option>`).join("");
   select.addEventListener("change", () => pick(slot, select.value));
 
   input.addEventListener("change", () => {
@@ -90,14 +90,16 @@ function pick(slot, ref) {
     return;
   }
   state.picked[slot] = ref;
-  root.classList.add("filled");
   const sample = state.boot.samples.find(s => s.ref === ref);
   $(".slot-facts", root).innerHTML = sample
-    ? `<p class="slot-blurb">${esc(sample.blurb)}</p>` +
-      `<dl><dt>package</dt><dd>${esc(sample.file)}</dd>` +
-      `<dt>size</dt><dd>${sample.bytes.toLocaleString()} bytes</dd></dl>`
-    : `<dl><dt>package</dt><dd>${esc(ref.replace(/^upload:/, ""))}</dd>` +
-      `<dt>source</dt><dd>uploaded</dd></dl>`;
+    ? `<p class="slot-blurb">${esc(sample.blurb)}</p>` + factsTable([
+        ["package", esc(sample.file)],
+        ["size", sample.bytes.toLocaleString() + " bytes"],
+      ])
+    : factsTable([
+        ["package", esc(ref.replace(/^upload:/, ""))],
+        ["source", "uploaded"],
+      ]);
   $("#run").disabled = !(state.picked.v1 && state.picked.v2);
 }
 
@@ -198,36 +200,39 @@ function failActiveStage() {
   if (active) active.className = "fail";
 }
 
+function factsTable(rows) {
+  return "<table>" + rows.map(([k, v]) =>
+    `<tr><th>${esc(k)}</th><td>${v}</td></tr>`).join("") + "</table>";
+}
+
 function packageFacts(ev) {
   const root = $(`#slot-${ev.slot}`);
-  const perms = (ev.permissions.length ? ev.permissions : ["none"])
-    .map(p => `<span class="chip">${esc(p)}</span>`).join("");
-  const hosts = (ev.host_permissions.length ? ev.host_permissions : ["none"])
+  const chips = list => (list.length ? list : ["none"])
     .map(p => `<span class="chip">${esc(p)}</span>`).join("");
   const blurb = $(".slot-blurb", root);
-  $(".slot-facts", root).innerHTML =
-    (blurb ? blurb.outerHTML : "") +
-    `<dl>` +
-    `<dt>name</dt><dd>${esc(ev.name)}</dd>` +
-    `<dt>version</dt><dd>${esc(ev.version)}</dd>` +
-    `<dt>manifest</dt><dd>MV${esc(ev.manifest_version)}, ${esc(ev.background)}</dd>` +
-    `<dt>permissions</dt><dd>${perms}</dd>` +
-    `<dt>host access</dt><dd>${hosts}</dd>` +
-    `<dt>files</dt><dd>${esc(ev.files)}</dd>` +
-    `</dl>`;
-  root.classList.add("filled");
+  const rows = [
+    ["name", esc(ev.name)],
+    ["version", esc(ev.version)],
+    ["package", esc(ev.file) + " (" + esc(ev.format) + ")"],
+  ];
+  // The id comes out of the CRX signature. Two versions are versions of one extension
+  // only if it matches, which is exactly how a browser decides to apply an update.
+  if (ev.extension_id) rows.push(["extension id", esc(ev.extension_id)]);
+  rows.push(["manifest", "MV" + esc(ev.manifest_version) + ", " + esc(ev.background)]);
+  rows.push(["permissions", chips(ev.permissions)]);
+  rows.push(["host access", chips(ev.host_permissions)]);
+  rows.push(["files", esc(ev.files)]);
+  $(".slot-facts", root).innerHTML = (blurb ? blurb.outerHTML : "") + factsTable(rows);
 }
 
 function declared(ev) {
   const box = $("#declared");
   box.hidden = false;
-  const lead = ev.added_permissions.length
-    ? "What the update <strong>declares</strong>, before anything is run:"
-    : "What the update <strong>declares</strong>:";
-  box.innerHTML = `${lead} ` + ev.lines.map(esc).join(" ") +
+  box.innerHTML = "<b>Declared by the update, before anything runs:</b> " +
+    ev.lines.map(esc).join(" ") +
     (ev.added_permissions.length
-      ? ` A store reviewer sees this much. It does not say what the new code will <em>do</em>.`
-      : ` A purely static check has nothing to flag here.`);
+      ? " This is what a store reviewer sees. It says what the new code may do, not what it does."
+      : " A static permission check has nothing to flag here.");
 }
 
 function observed(ev) {
@@ -236,10 +241,14 @@ function observed(ev) {
   const baseline = ev.slot === "v2" ? state.keys.v1 : null;
   const tbody = $(`#pane-${ev.slot} tbody`);
   tbody.innerHTML = "";
-  const newCount = baseline ? rows.filter(r => !baseline.has(r.key)).length : 0;
+  // Two different counts, and conflating them on screen is confusing: how many recorded
+  // rows are new, and how many *distinct* behaviours those rows represent. The verdict is
+  // driven by the distinct count, so both are shown.
+  const newRows = baseline ? rows.filter(r => !baseline.has(r.key)) : [];
+  const newDistinct = new Set(newRows.map(r => r.key)).size;
   $(`#pane-${ev.slot} .pane-count`).textContent =
-    `${rows.length} behaviours · ${ev.duration}s · ${ev.pages.length} pages` +
-    (baseline ? ` · ${newCount} new` : "");
+    `${rows.length} rows · ${ev.duration}s · ${ev.pages.length} pages` +
+    (baseline ? ` · ${newRows.length} new (${newDistinct} distinct)` : "");
 
   // Reveal in small batches so the table can be followed while it fills, and never take
   // longer than about two seconds however many rows there are.

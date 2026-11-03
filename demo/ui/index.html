@@ -9,10 +9,9 @@
 <body>
 
 <header class="masthead">
-  <div class="masthead-text">
+  <div>
     <h1>extdrift</h1>
-    <p>Detecting a malicious browser-extension <em>update</em> by what the two versions do,
-       not by what their code looks like.</p>
+    <p>Behavioural differencing of browser-extension updates. Score the change, not the extension.</p>
   </div>
   <dl class="env" id="env"></dl>
 </header>
@@ -20,64 +19,55 @@
 <main>
 
   <section class="step">
-    <h2><span class="step-no">1</span> Choose the two versions of the extension</h2>
-    <p class="step-note">Version N is the release the user already trusts. Version N+1 is the
-       update the store is about to push to them. Either slot takes a bundled sample or a
-       <code>.zip</code> / <code>.crx</code> / <code>.xpi</code> you drop on it.</p>
+    <h2><span class="sec">Step 1</span> Two versions of one extension</h2>
+    <p class="step-note">Version N is the release already installed and trusted. Version N+1
+      is the update about to replace it. Both slots take a signed <code>.crx</code>, or a
+      <code>.zip</code> / <code>.xpi</code> if that is what you have.</p>
 
     <div class="slots">
       <div class="slot" id="slot-v1" data-slot="v1">
-        <div class="slot-head">
-          <span class="slot-tag">Version N</span>
-          <span class="slot-sub">the baseline</span>
+        <div class="slot-head"><span class="slot-tag">Version N</span><span class="slot-sub">installed</span></div>
+        <div class="slot-body">
+          <select class="slot-select" aria-label="Package for version N"></select>
+          <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
+          <div class="slot-facts"></div>
         </div>
-        <select class="slot-select" aria-label="Package for version N"></select>
-        <label class="slot-drop">
-          <input type="file" accept=".zip,.crx,.xpi" hidden>
-          <span>or drop a package here</span>
-        </label>
-        <div class="slot-facts"></div>
       </div>
 
-      <div class="slot-arrow" aria-hidden="true">
-        <span>update</span>
-        <svg viewBox="0 0 48 12" width="48" height="12"><path d="M0 6h40M36 2l5 4-5 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
-      </div>
+      <div class="slot-arrow" aria-hidden="true">update<br>&#8594;</div>
 
       <div class="slot" id="slot-v2" data-slot="v2">
-        <div class="slot-head">
-          <span class="slot-tag">Version N+1</span>
-          <span class="slot-sub">the candidate</span>
+        <div class="slot-head"><span class="slot-tag">Version N+1</span><span class="slot-sub">candidate</span></div>
+        <div class="slot-body">
+          <select class="slot-select" aria-label="Package for version N+1"></select>
+          <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
+          <div class="slot-facts"></div>
         </div>
-        <select class="slot-select" aria-label="Package for version N+1"></select>
-        <label class="slot-drop">
-          <input type="file" accept=".zip,.crx,.xpi" hidden>
-          <span>or drop a package here</span>
-        </label>
-        <div class="slot-facts"></div>
       </div>
     </div>
 
     <div class="actions">
       <button id="run" type="button">Analyse this update</button>
       <p class="actions-note">Both versions are executed in the same sealed sandbox, under the
-        same scripted run <code id="scenario-name">bank-login-then-webmail</code>, against
-        byte-identical pages. Takes about half a minute.</p>
+        same scripted session <code id="scenario-name">bank-login-then-webmail</code>, against
+        identical local pages. About 35 seconds.</p>
     </div>
     <p class="declared" id="declared" hidden></p>
   </section>
 
   <section class="step" id="pipeline-step" hidden>
-    <h2><span class="step-no">2</span> What the tool is doing</h2>
+    <h2><span class="sec">Step 2</span> Execution</h2>
+    <p class="step-note">Lines prefixed <code>config</code> are settings. Everything else is
+      read back off the run that just happened.</p>
     <ol class="stages" id="stages"></ol>
     <pre class="log" id="log" aria-live="polite"></pre>
   </section>
 
   <section class="step" id="observed-step" hidden>
-    <h2><span class="step-no">3</span> What each version actually did</h2>
-    <p class="step-note">Every row was recorded by instrumentation inside the extension's own
-       scripts while it ran. Rows marked <span class="chip chip-new">new</span> appear in the
-       update and never appeared in the baseline &mdash; that set is the behavioural delta.</p>
+    <h2><span class="sec">Step 3</span> Observed behaviour</h2>
+    <p class="step-note">Recorded by instrumentation inside the extension's own scripts while
+      it ran. Rows marked <span class="chip chip-new">new</span> occur in the update and did
+      not occur in the baseline. That set is the behavioural delta.</p>
     <div class="panes">
       <div class="pane" id="pane-v1">
         <h3>Version N <span class="pane-count"></span></h3>
@@ -85,21 +75,21 @@
       </div>
       <div class="pane" id="pane-v2">
         <h3>Version N+1 <span class="pane-count"></span>
-          <label class="only-new"><input type="checkbox" id="only-new"> only what is new</label>
+          <label class="only-new"><input type="checkbox" id="only-new">only what is new</label>
         </h3>
         <div class="table-wrap"><table><tbody></tbody></table></div>
       </div>
     </div>
     <div class="collector" id="collector" hidden>
-      <h3>The fake collector&rsquo;s own log &mdash; ground truth</h3>
+      <h3>Received by the sandbox collector</h3>
       <p>The sandbox answers every network name locally, so nothing left this machine. It also
-         records what the extension <em>tried</em> to send. This is the stolen data, as received:</p>
+        records what was sent to it. This is what the update tried to upload, as received:</p>
       <pre id="collector-body"></pre>
     </div>
   </section>
 
   <section class="step" id="verdict-step" hidden>
-    <h2><span class="step-no">4</span> The verdict on the change</h2>
+    <h2><span class="sec">Step 4</span> Verdict on the change</h2>
     <div class="verdict" id="verdict">
       <div class="verdict-band">
         <span class="verdict-label" id="verdict-label"></span>
@@ -110,13 +100,13 @@
         <dl class="verdict-scores" id="verdict-scores"></dl>
       </div>
       <div class="why">
-        <h3>Why &mdash; the evidence behind the verdict</h3>
+        <h3>Evidence</h3>
         <ul id="why-rules" class="rules"></ul>
         <p class="no-rules" id="no-rules" hidden>No heuristic fired. Nothing in the change
           matched a known-dangerous pattern.</p>
       </div>
       <details class="features" id="features-box">
-        <summary>The behavioural features that moved</summary>
+        <summary>Behavioural features that moved</summary>
         <div class="table-wrap"><table id="features-table"><tbody></tbody></table></div>
       </details>
       <p class="caveats" id="caveats"></p>
@@ -126,9 +116,9 @@
 </main>
 
 <footer>
-  <p>Full artefacts for the last run are written to <code>out/demo-ui/&lt;run-id&gt;/</code>:
-     both traces, the behavioural delta and <code>report.json</code>. The containerised
-     sandbox and its isolation guarantees are documented in <code>docs/SANDBOX.md</code>.</p>
+  <p>Each run writes <code>out/demo-ui/&lt;run-id&gt;/</code>: both traces, the behavioural delta
+     and <code>report.json</code>. The containerised sandbox and its isolation guarantees are
+     documented in <code>docs/SANDBOX.md</code>.</p>
 </footer>
 
 <script src="app.js"></script>

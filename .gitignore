@@ -38,3 +38,7 @@ data/real/extensiondeltas/
 
 # Node deps used only to build the presentations
 node_modules/
+
+# Demo signing key: a private key does not belong in a repository, even one that only
+# signs synthetic test extensions. demo/package_samples.py regenerates it if absent.
+demo/extensions/demo-signing-key.pem

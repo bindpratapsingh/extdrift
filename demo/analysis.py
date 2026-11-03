@@ -24,6 +24,7 @@ from urllib.parse import urlsplit
 from engine.features.delta import behavioral_delta
 from engine.report.render import build_record
 from engine.scoring.rules import score_delta
+from engine.sandbox.testsite import COLLECTOR_HOSTS
 from engine.unpack.crx import unpack_extension
 from engine.unpack.manifest import diff_manifests, summarise_manifest_diff
 
@@ -125,6 +126,7 @@ def package_summary(unpacked: dict, path: Path) -> dict:
     return {
         "file": path.name,
         "format": unpacked.get("format", "directory"),
+        "extension_id": unpacked.get("extension_id"),
         "name": manifest.get("name", "unknown"),
         "version": manifest.get("version", "0"),
         "manifest_version": manifest.get("manifest_version", 2),
@@ -160,8 +162,9 @@ def classify(numeric: dict, scored: dict, new_keys: list, dropped_keys: list) ->
         "label": verdict,
         "class": verdict.lower(),
         "headline": headlines.get(verdict, verdict),
-        "detail": "%d behaviour(s) appear in version N+1 that version N never produced; "
-                  "%d of the 26 behavioural features moved." % (len(new_keys), len(moved)),
+        "detail": "%d distinct behaviour(s) appear in version N+1 that version N never "
+                  "produced; %d of the 26 behavioural features moved." % (
+                      len(new_keys), len(moved)),
     }
 
 
@@ -187,12 +190,23 @@ def analyse_pair(
     summary_v2 = package_summary(unpacked_v2, Path(package_v2))
     emit("package", slot="v1", **summary_v1)
     emit("package", slot="v2", **summary_v2)
-    emit("log", text="version N   : %s %s (MV%s, %d files)" % (
-        summary_v1["name"], summary_v1["version"],
-        summary_v1["manifest_version"], summary_v1["files"]))
-    emit("log", text="version N+1 : %s %s (MV%s, %d files)" % (
-        summary_v2["name"], summary_v2["version"],
-        summary_v2["manifest_version"], summary_v2["files"]))
+    for slot, summary in (("N  ", summary_v1), ("N+1", summary_v2)):
+        emit("log", text="version %s : %s %s, MV%s, %d files, read from %s" % (
+            slot, summary["name"], summary["version"], summary["manifest_version"],
+            summary["files"], summary["format"]))
+
+    # Two packages are versions of one extension only if they carry the same id. Chrome
+    # decides that from the signing key in the CRX header; if we are given bare archives
+    # there is no id to check and the comparison rests on the operator's say-so.
+    id_v1, id_v2 = summary_v1["extension_id"], summary_v2["extension_id"]
+    if id_v1 and id_v2:
+        emit("log", text="identity    : both packages are signed as %s - %s" % (
+            id_v1, "the same extension, so this really is an update" if id_v1 == id_v2
+            else "DIFFERENT IDS, these are not two versions of one extension"))
+    else:
+        emit("log", text="identity    : unsigned archive, so there is no extension id to "
+                         "check; taking it on trust that these are two versions of one "
+                         "extension")
 
     manifest_diff = diff_manifests(unpacked_v1["manifest"], unpacked_v2["manifest"])
     declared = summarise_manifest_diff(manifest_diff)
@@ -206,14 +220,16 @@ def analyse_pair(
     emit("stage", id="validate", state="done")
 
     # --- 2. the sandbox ---------------------------------------------------------------
+    # These lines say how the run is configured. They are settings, not findings, and are
+    # marked as such: the measurements come after each run, read back off the trace.
     emit("stage", id="seal", state="active")
-    emit("log", text="sandbox: Chromium, fresh profile, no state carried in or out")
-    emit("log", text="sandbox: every .test name resolves to the in-process test site, "
+    emit("log", text="config  : Chromium, fresh profile, no state carried in or out")
+    emit("log", text="config  : every .test name is resolved to the in-process test site, "
                      "so no DNS query is made and no packet leaves this machine")
-    emit("log", text="sandbox: the fake collector is armed - whatever the extension "
-                     "uploads is captured here, as ground truth")
-    emit("log", text="sandbox: both versions run the identical scenario '%s' against "
-                     "byte-identical pages" % scenario)
+    emit("log", text="config  : collector hosts %s answer locally and record what they "
+                     "are sent" % ", ".join(sorted(COLLECTOR_HOSTS)))
+    emit("log", text="config  : both versions run scenario '%s' against the same local "
+                     "pages" % scenario)
     emit("stage", id="seal", state="done")
 
     # --- 3 and 4. the two runs --------------------------------------------------------
@@ -231,9 +247,26 @@ def analyse_pair(
         )
         traces[slot] = trace
         rows = behaviour_rows(trace)
-        emit("log", text="%s: run finished in %.1fs - %d behaviours observed across "
-                         "%d pages" % (slot, time.monotonic() - started, len(rows),
-                                       len(trace["run"]["pages"])))
+        run = trace["run"]
+        instrumentation = run.get("instrumentation", {})
+
+        # Everything from here is read back off the trace this run produced.
+        emit("log", text="%s run   : finished in %.1fs, %d behaviours across %d pages" % (
+            slot, time.monotonic() - started, len(rows), len(run["pages"])))
+        emit("log", text="%s run   : instrumented %s; test site served on port %s" % (
+            slot, ", ".join(instrumentation.get("instrumented_scripts", [])) or "nothing",
+            instrumentation.get("testsite_port", "?")))
+        hosts = sorted({_host(e.get("url", "")) for e in trace.get("network", [])} - {""})
+        offsite = [h for h in hosts if not h.endswith(".test")]
+        emit("log", text="%s egress: %d request(s) to %d host(s): %s" % (
+            slot, len(trace.get("network", [])), len(hosts), ", ".join(hosts) or "none"))
+        emit("log", text="%s egress: %s" % (
+            slot, "every host is a .test name answered inside the sandbox; nothing "
+                  "reached the internet" if not offsite
+                  else "OFF-SANDBOX HOSTS CONTACTED: %s" % ", ".join(offsite)))
+        counts = ", ".join("%s %d" % (channel, len(trace.get(channel, [])))
+                           for channel in ("network", "dom", "storage", "api"))
+        emit("log", text="%s record: %s" % (slot, counts))
         emit("observed", slot=slot, rows=rows,
              duration=trace["run"]["duration_s"],
              pages=trace["run"]["pages"],

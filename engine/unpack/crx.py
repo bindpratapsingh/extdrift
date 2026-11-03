@@ -238,3 +238,76 @@ def unpack_extension(package: str | Path, dest: str | Path) -> dict:
         "file_count": count,
         "manifest": json.loads(manifest_path.read_text(encoding="utf-8")),
     }
+
+
+# ---------------------------------------------------------------------------------
+# Writing CRX3
+#
+# Reading a package is what the analysis needs; writing one is what the corpus needs.
+# A .zip of an extension directory is not what a browser ships - Chrome ships a signed
+# CRX3, whose header carries the public key and from which the extension ID is derived.
+# Because the ID comes from the signing key, two versions signed with the same key share
+# an ID, which is exactly what makes the second one an *update* to the first rather than
+# a different extension. Our corpus pairs should carry that property, so we can produce it.
+# ---------------------------------------------------------------------------------
+
+#: Field numbers in CrxFileHeader (chrome/browser/.../crx3.proto).
+_CRX3_SHA256_WITH_RSA_FIELD = 2
+#: Field numbers in AsymmetricKeyProof.
+_CRX3_PUBLIC_KEY_FIELD = 1
+_CRX3_SIGNATURE_FIELD = 2
+#: Prefix Chromium signs over, so a CRX signature cannot be replayed in another context.
+_CRX3_SIGNATURE_CONTEXT = b"CRX3 SignedData\x00"
+
+
+def _varint(value: int) -> bytes:
+    out = bytearray()
+    while True:
+        byte = value & 0x7F
+        value >>= 7
+        out.append(byte | (0x80 if value else 0))
+        if not value:
+            return bytes(out)
+
+
+def _field(field_number: int, payload: bytes) -> bytes:
+    """Encode one length-delimited (wire type 2) protobuf field."""
+    return _varint((field_number << 3) | 2) + _varint(len(payload)) + payload
+
+
+def write_crx3(zip_bytes: bytes, private_key, out_path: str | Path) -> dict:
+    """Sign *zip_bytes* and write a CRX3 package, the format Chrome actually ships.
+
+    *private_key* is a ``cryptography`` RSA private key. Returns the extension id and the
+    byte size, and the result is readable by :func:`read_crx_header` and
+    :func:`unpack_extension` - which is the round trip the tests check.
+    """
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import padding
+
+    public_der = private_key.public_key().public_bytes(
+        encoding=serialization.Encoding.DER,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+    )
+    crx_id = hashlib.sha256(public_der).digest()[:16]
+    signed_header = _field(_CRX3_CRX_ID_FIELD, crx_id)
+
+    # Chromium signs the context string, the signed-header length and the header itself,
+    # then the archive. Signing the length is what stops a header field being moved into
+    # the archive without invalidating the signature.
+    to_sign = (_CRX3_SIGNATURE_CONTEXT
+               + struct.pack("<I", len(signed_header))
+               + signed_header
+               + zip_bytes)
+    signature = private_key.sign(to_sign, padding.PKCS1v15(), hashes.SHA256())
+
+    proof = _field(_CRX3_PUBLIC_KEY_FIELD, public_der) + _field(_CRX3_SIGNATURE_FIELD, signature)
+    header = (_field(_CRX3_SHA256_WITH_RSA_FIELD, proof)
+              + _field(_CRX3_SIGNED_HEADER_FIELD, signed_header))
+
+    blob = (CRX_MAGIC + struct.pack("<I", 3) + struct.pack("<I", len(header))
+            + header + zip_bytes)
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_bytes(blob)
+    return {"extension_id": crx_id_from_bytes(crx_id), "bytes": len(blob)}
