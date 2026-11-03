@@ -19,40 +19,59 @@
 <main>
 
   <section class="step">
-    <h2><span class="sec">Step 1</span> Two versions of one extension</h2>
+    <h2><span class="sec">1</span> Pick two versions of one extension</h2>
     <p class="step-note">Version N is the release already installed and trusted. Version N+1
-      is the update about to replace it. Both slots take a signed <code>.crx</code>, or a
-      <code>.zip</code> / <code>.xpi</code> if that is what you have.</p>
+      is the update about to replace it. Pick a ready-made pair below &mdash; one click fills
+      both &mdash; or choose each package yourself.</p>
 
-    <div class="slots">
-      <div class="slot" id="slot-v1" data-slot="v1">
-        <div class="slot-head"><span class="slot-tag">Version N</span><span class="slot-sub">installed</span></div>
-        <div class="slot-body">
-          <select class="slot-select" aria-label="Package for version N"></select>
-          <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
-          <div class="slot-facts"></div>
-        </div>
+    <div class="loadouts">
+      <p class="loadout-lead">One click loads both versions:</p>
+
+      <div class="loadout-group" id="lo-guided">
+        <h3>Guided demos <span>&mdash; built-in sample extension</span></h3>
+        <div class="loadout-chips"></div>
       </div>
 
-      <div class="slot-arrow" aria-hidden="true">update<br>&#8594;</div>
+      <div class="loadout-group" id="lo-real" hidden>
+        <h3>Real published extensions <span>&mdash; genuine updates, on this machine</span></h3>
+        <div class="loadout-chips"></div>
+      </div>
 
-      <div class="slot" id="slot-v2" data-slot="v2">
-        <div class="slot-head"><span class="slot-tag">Version N+1</span><span class="slot-sub">candidate</span></div>
-        <div class="slot-body">
-          <select class="slot-select" aria-label="Package for version N+1"></select>
-          <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
-          <div class="slot-facts"></div>
-        </div>
+      <div class="loadout-group attack" id="lo-weap" hidden>
+        <h3>Real extension + injected attack <span>&mdash; a real extension, one documented attack added</span></h3>
+        <div class="loadout-chips"></div>
       </div>
     </div>
 
-    <div class="real-pairs" id="real-pairs" hidden></div>
+    <details class="manual">
+      <summary>Or choose / upload each version by hand</summary>
+      <div class="slots">
+        <div class="slot" id="slot-v1" data-slot="v1">
+          <div class="slot-head"><span class="slot-tag">Version N</span><span class="slot-sub">installed</span></div>
+          <div class="slot-body">
+            <select class="slot-select" aria-label="Package for version N"></select>
+            <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
+            <div class="slot-facts"></div>
+          </div>
+        </div>
+
+        <div class="slot-arrow" aria-hidden="true">update<br>&#8594;</div>
+
+        <div class="slot" id="slot-v2" data-slot="v2">
+          <div class="slot-head"><span class="slot-tag">Version N+1</span><span class="slot-sub">candidate</span></div>
+          <div class="slot-body">
+            <select class="slot-select" aria-label="Package for version N+1"></select>
+            <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
+            <div class="slot-facts"></div>
+          </div>
+        </div>
+      </div>
+    </details>
 
     <div class="actions">
       <button id="run" type="button">Analyse this update</button>
-      <p class="actions-note">Both versions are executed in the same sealed sandbox, under the
-        same scripted session <code id="scenario-name">bank-login-then-webmail</code>, against
-        identical local pages. About 35 seconds.</p>
+      <p class="actions-note">Both versions run in the same sealed, offline sandbox under one
+        scripted session, against identical local pages. About 35 seconds.</p>
     </div>
     <p class="declared" id="declared" hidden></p>
   </section>
@@ -82,6 +101,14 @@
         <div class="table-wrap"><table><tbody></tbody></table></div>
       </div>
     </div>
+    <div class="chart-panel" id="chart-panel" hidden>
+      <h3>How the behaviour counts changed, version N &rarr; N+1</h3>
+      <div class="chart-body">
+        <div class="chart-legend"><span><i class="n"></i> version N</span><span><i class="n1"></i> version N+1</span></div>
+        <div id="chart"></div>
+      </div>
+    </div>
+
     <div class="collector" id="collector" hidden>
       <h3>Received by the sandbox collector</h3>
       <p>The sandbox answers every network name locally, so nothing left this machine. It also
@@ -101,11 +128,22 @@
         </div>
         <dl class="verdict-scores" id="verdict-scores"></dl>
       </div>
+      <div class="briefing" id="briefing" hidden>
+        <h3>What the update is doing</h3>
+        <ul id="briefing-doing"></ul>
+      </div>
+
       <div class="why">
-        <h3>Evidence</h3>
+        <h3>Indicators behind the verdict</h3>
         <ul id="why-rules" class="rules"></ul>
         <p class="no-rules" id="no-rules" hidden>No heuristic fired. Nothing in the change
           matched a known-dangerous pattern.</p>
+      </div>
+
+      <div class="report-actions" id="report-actions" hidden>
+        <a id="report-view" class="primary" target="_blank" rel="noopener">View the full report</a>
+        <a id="report-print">Print / Save as PDF</a>
+        <a id="report-json" target="_blank" rel="noopener">Raw JSON</a>
       </div>
       <details class="features" id="features-box">
         <summary>Behavioural features that moved</summary>

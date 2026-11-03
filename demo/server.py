@@ -45,6 +45,12 @@ RUNS_DIR = ROOT / "out" / "demo-ui"
 #: That is what lets the demo analyse a genuine extension without redistributing it.
 REAL_PAIRS_MANIFEST = ROOT / "data" / "real" / "amo" / "pairs.json"
 
+#: "Real extension + injected attack behaviour" pairs, built by
+#: demo/build_weaponised_pairs.py. Same deal: derived from third-party code, git-ignored,
+#: discovered at runtime. These are the honest malicious examples - a real published
+#: extension as version N, the same extension plus one documented attack as version N+1.
+WEAPONISED_PAIRS_MANIFEST = ROOT / "data" / "real" / "weaponised" / "pairs.json"
+
 MAX_UPLOAD_BYTES = 32 * 1024 * 1024
 CONTENT_TYPES = {".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
                  ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml"}
@@ -106,17 +112,17 @@ def samples() -> list[dict]:
     return out
 
 
-def real_pairs() -> list[dict]:
-    """Real update pairs present on this machine, each as two selectable versions.
+def _discover_pairs(manifest: Path, prefix: str) -> list[dict]:
+    """Load a pairs manifest into pair-grouped entries the page can offer as one click.
 
-    Returns a pair-grouped list so the page can offer "load this real update" as one
-    click that fills both slots, which also stops anyone pairing version N of one
-    extension with version N+1 of a different one.
+    Grouping by pair (rather than listing loose versions) also stops anyone pairing
+    version N of one extension with version N+1 of a different one. *prefix* is the ref
+    scheme (``real:`` or ``weap:``) so the resolver can tell the corpora apart.
     """
-    if not REAL_PAIRS_MANIFEST.is_file():
+    if not manifest.is_file():
         return []
     try:
-        entries = json.loads(REAL_PAIRS_MANIFEST.read_text(encoding="utf-8"))
+        entries = json.loads(manifest.read_text(encoding="utf-8"))
     except (ValueError, OSError):
         return []
     out = []
@@ -126,25 +132,42 @@ def real_pairs() -> list[dict]:
         if not ((v1_dir / "manifest.json").is_file() and (v2_dir / "manifest.json").is_file()):
             continue
         slug, name = str(p.get("slug", "?")), str(p.get("name", p.get("slug", "?")))
-        out.append({
+        entry = {
             "slug": slug, "name": name, "mv": p.get("mv"),
-            "v1": {"ref": "real:%s/v1" % slug, "version": str(p.get("v1", "")),
+            "v1": {"ref": "%s%s/v1" % (prefix, slug), "version": str(p.get("v1", "")),
                    "label": "%s %s" % (name, p.get("v1", ""))},
-            "v2": {"ref": "real:%s/v2" % slug, "version": str(p.get("v2", "")),
+            "v2": {"ref": "%s%s/v2" % (prefix, slug), "version": str(p.get("v2", "")),
                    "label": "%s %s" % (name, p.get("v2", ""))},
-        })
+        }
+        for extra in ("family", "family_desc", "added_permission", "injected_files"):
+            if p.get(extra) is not None:
+                entry[extra] = p[extra]
+        out.append(entry)
     return out
 
 
-def _real_ref_index() -> dict[str, Path]:
-    """Map every valid ``real:`` ref to its on-disk directory. The allowlist the
+def real_pairs() -> list[dict]:
+    """Genuine published update pairs present on this machine (benign, as shipped)."""
+    return _discover_pairs(REAL_PAIRS_MANIFEST, "real:")
+
+
+def weaponised_pairs() -> list[dict]:
+    """Real extensions with one documented attack behaviour injected as version N+1."""
+    return _discover_pairs(WEAPONISED_PAIRS_MANIFEST, "weap:")
+
+
+def _pair_ref_index() -> dict[str, Path]:
+    """Every valid ``real:``/``weap:`` ref mapped to its directory. The allowlist the
     resolver checks against, so a client can never reach an arbitrary path."""
     index = {}
-    for pair in real_pairs():
-        for slot in ("v1", "v2"):
-            raw = next(e for e in json.loads(REAL_PAIRS_MANIFEST.read_text(encoding="utf-8"))
-                       if e.get("slug") == pair["slug"])
-            index[pair[slot]["ref"]] = (ROOT / str(raw["%s_dir" % slot])).resolve()
+    for manifest, prefix in ((REAL_PAIRS_MANIFEST, "real:"),
+                             (WEAPONISED_PAIRS_MANIFEST, "weap:")):
+        if not manifest.is_file():
+            continue
+        for raw in json.loads(manifest.read_text(encoding="utf-8")):
+            slug = raw.get("slug")
+            for slot in ("v1", "v2"):
+                index["%s%s/%s" % (prefix, slug, slot)] = (ROOT / str(raw["%s_dir" % slot])).resolve()
     return index
 
 
@@ -162,10 +185,10 @@ def resolve(ref: str, run_dir: Path) -> Path:
         if not path.is_file():
             raise ValueError("no such upload: " + name)
         return path
-    if ref.startswith("real:"):
-        path = _real_ref_index().get(ref)
+    if ref.startswith("real:") or ref.startswith("weap:"):
+        path = _pair_ref_index().get(ref)
         if path is None or not (path / "manifest.json").is_file():
-            raise ValueError("no such real pair: " + ref)
+            raise ValueError("no such pair: " + ref)
         return path
     raise ValueError("unrecognised package reference")
 
@@ -237,6 +260,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json({
                 "samples": samples(),
                 "real_pairs": real_pairs(),
+                "weaponised_pairs": weaponised_pairs(),
                 "stages": [{"id": sid, "label": label} for sid, label in STAGES],
                 "environment": environment(),
                 "feature_docs": {name: doc[0] for name, doc in FEATURE_DOCS.items()},
@@ -252,6 +276,28 @@ class Handler(BaseHTTPRequestHandler):
                 events = run["events"][cursor:]
                 done = run["done"]
             self._json({"cursor": cursor + len(events), "events": events, "done": done})
+        elif route.path == "/api/report":
+            run_id = Path((query.get("run") or [""])[0]).name
+            report_path = RUNS_DIR / run_id / "report.json"
+            if not report_path.is_file():
+                self._send(404, "text/plain; charset=utf-8", b"no report for this run yet")
+                return
+            if (query.get("format") or [""])[0] == "json":
+                self._send(200, "application/json; charset=utf-8",
+                           report_path.read_bytes())
+                return
+            from demo.report import render_report_html
+            record = json.loads(report_path.read_text(encoding="utf-8"))
+            html = render_report_html(record).encode("utf-8")
+            disposition = "attachment" if (query.get("download") or [""])[0] else "inline"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Disposition",
+                             '%s; filename="extdrift-report-%s.html"' % (disposition, run_id))
+            self.send_header("Content-Length", str(len(html)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(html)
         else:
             self._static(route.path.lstrip("/"))
 

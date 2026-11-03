@@ -29,10 +29,12 @@ async function boot() {
   renderEnv(state.boot.environment);
   renderStages(state.boot.stages);
   for (const slot of ["v1", "v2"]) setupSlot(slot);
-  renderRealPairs(state.boot.real_pairs || []);
+  renderLoadouts();
   // The pairing that tells the story best, pre-selected so a demo can start in one click.
   pick("v1", "sample:reader-lite-1.0.0.crx");
   pick("v2", "sample:reader-lite-1.1.0.crx");
+  const first = $(".chipbtn[data-v2='sample:reader-lite-1.1.0.crx']");
+  if (first) first.classList.add("on");
   $("#run").addEventListener("click", analyse);
   $("#only-new").addEventListener("change", ev =>
     $("#pane-v2").classList.toggle("filtered", ev.target.checked));
@@ -48,19 +50,100 @@ function renderEnv(env) {
     `<div><dt>${esc(k)}</dt><dd class="${on ? "" : "off"}">${esc(v)}</dd></div>`).join("");
 }
 
-function renderRealPairs(pairs) {
-  const box = $("#real-pairs");
-  if (!box) return;
-  if (!pairs.length) { box.hidden = true; return; }
-  box.hidden = false;
-  box.innerHTML =
-    `<span class="real-lead">Or load a real published update (found on this machine):</span> ` +
-    pairs.map(p =>
-      `<button type="button" class="real-chip" data-slug="${esc(p.slug)}">` +
-      `${esc(p.name)} <span class="real-ver">${esc(p.v1.version)}&#8594;${esc(p.v2.version)}</span>` +
-      `</button>`).join("");
-  box.querySelectorAll(".real-chip").forEach(b =>
-    b.addEventListener("click", () => loadRealPair(b.dataset.slug)));
+// The three canonical demos, built from the bundled sample extension.
+const GUIDED = [
+  { label: "Malicious update", cls: "malicious",
+    v1: "sample:reader-lite-1.0.0.crx", v2: "sample:reader-lite-1.1.0.crx" },
+  { label: "Benign update", cls: "benign",
+    v1: "sample:reader-lite-1.0.0.crx", v2: "sample:reader-lite-1.0.1.crx" },
+  { label: "No change at all", cls: "nochange",
+    v1: "sample:reader-lite-1.0.0.crx", v2: "sample:reader-lite-1.0.0.crx" },
+];
+
+function chipButton(v1ref, v2ref, inner) {
+  return `<button type="button" class="chipbtn" data-v1="${esc(v1ref)}" ` +
+         `data-v2="${esc(v2ref)}">${inner}</button>`;
+}
+
+function fillGroup(id, html, show) {
+  const group = $(id);
+  group.hidden = !show;
+  if (show) $(".loadout-chips", group).innerHTML = html;
+}
+
+function renderLoadouts() {
+  fillGroup("#lo-guided", GUIDED.map(d =>
+    chipButton(d.v1, d.v2, `<span class="dot ${d.cls}"></span>${esc(d.label)}`)).join(""), true);
+
+  const real = state.boot.real_pairs || [];
+  fillGroup("#lo-real", real.map(p => chipButton(p.v1.ref, p.v2.ref,
+    `${esc(p.name)} <span class="cv">${esc(p.v1.version)}&#8594;${esc(p.v2.version)}</span>`)).join(""),
+    real.length > 0);
+
+  const weap = state.boot.weaponised_pairs || [];
+  fillGroup("#lo-weap", weap.map(p => chipButton(p.v1.ref, p.v2.ref,
+    `${esc(p.name)} <span class="fam">${esc((p.family || "").replace(/_/g, " "))}</span>`)).join(""),
+    weap.length > 0);
+
+  document.querySelectorAll(".chipbtn").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll(".chipbtn.on").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    pick("v1", b.dataset.v1);
+    pick("v2", b.dataset.v2);
+  }));
+}
+
+// Find the pair (real or weaponised) a version ref belongs to, and which slot it is.
+function pairForRef(ref) {
+  const all = (state.boot.real_pairs || []).concat(state.boot.weaponised_pairs || []);
+  for (const p of all) {
+    if (p.v1.ref === ref) return { pair: p, slot: "v1" };
+    if (p.v2.ref === ref) return { pair: p, slot: "v2" };
+  }
+  return null;
+}
+
+function pick(slot, ref) {
+  const root = $(`#slot-${slot}`);
+  const found = pairForRef(ref);
+  const known = state.boot.samples.some(s => s.ref === ref) || !!found;
+  $(".slot-select", root).value = known ? ref : "";
+  if (!ref) {
+    state.picked[slot] = null;
+    root.classList.remove("filled");
+    $(".slot-facts", root).innerHTML = "";
+    $("#run").disabled = !(state.picked.v1 && state.picked.v2);
+    return;
+  }
+  state.picked[slot] = ref;
+  root.classList.add("filled");
+  const sample = state.boot.samples.find(s => s.ref === ref);
+  if (sample) {
+    $(".slot-facts", root).innerHTML = `<p class="slot-blurb">${esc(sample.blurb)}</p>` +
+      factsTable([["package", esc(sample.file)],
+                  ["size", sample.bytes.toLocaleString() + " bytes"]]);
+  } else if (found) {
+    const p = found.pair, v = p[found.slot];
+    const injected = (found.slot === "v2" && p.family);
+    const blurb = injected
+      ? `A real published extension with one documented attack behaviour injected to ` +
+        `make this candidate version: <b>${esc((p.family || "").replace(/_/g, " "))}</b> &mdash; ${esc(p.family_desc || "")}`
+      : `A real published extension from the Firefox add-on store, unpacked on this ` +
+        `machine. Nothing synthetic about it.`;
+    const rows = [["extension", esc(p.name)], ["version", esc(v.version)],
+                  ["manifest", "MV" + esc(String(p.mv || "?"))]];
+    if (injected) {
+      if (p.added_permission) rows.push(["added permission", esc(p.added_permission)]);
+      if (p.injected_files) rows.push(["injected into", esc((p.injected_files || []).join(", "))]);
+    } else {
+      rows.push(["source", "AMO (local, not redistributed)"]);
+    }
+    $(".slot-facts", root).innerHTML = `<p class="slot-blurb">${blurb}</p>` + factsTable(rows);
+  } else {
+    $(".slot-facts", root).innerHTML = factsTable([
+      ["package", esc(ref.replace(/^upload:/, ""))], ["source", "uploaded"]]);
+  }
+  $("#run").disabled = !(state.picked.v1 && state.picked.v2);
 }
 
 function renderStages(stages) {
@@ -76,16 +159,20 @@ function setupSlot(slot) {
   const select = $(".slot-select", root);
   const input = $("input[type=file]", root);
 
-  const bundled = state.boot.samples.map(s =>
-    `<option value="${esc(s.ref)}">${esc(s.file)} : ${esc(s.label)}</option>`).join("");
-  const real = (state.boot.real_pairs || []).map(p => {
-    const v = p[slot];
-    return `<option value="${esc(v.ref)}">${esc(v.label)} (real, from AMO)</option>`;
-  }).join("");
+  const opts = list => list.map(([ref, label]) =>
+    `<option value="${esc(ref)}">${esc(label)}</option>`).join("");
+  const bundled = state.boot.samples.map(s => [s.ref, `${s.file} : ${s.label}`]);
+  const real = (state.boot.real_pairs || []).map(p => [p[slot].ref, `${p[slot].label} (real, AMO)`]);
+  const weap = (state.boot.weaponised_pairs || []).map(p =>
+    [p[slot].ref, `${p[slot].label}${slot === "v2" ? " + " + p.family : ""}`]);
   select.innerHTML = `<option value="">Choose a package...</option>` +
-    `<optgroup label="Bundled samples">${bundled}</optgroup>` +
-    (real ? `<optgroup label="Real extensions on this machine">${real}</optgroup>` : "");
-  select.addEventListener("change", () => pick(slot, select.value));
+    `<optgroup label="Bundled samples">${opts(bundled)}</optgroup>` +
+    (real.length ? `<optgroup label="Real extensions (this machine)">${opts(real)}</optgroup>` : "") +
+    (weap.length ? `<optgroup label="Real + injected attack (this machine)">${opts(weap)}</optgroup>` : "");
+  select.addEventListener("change", () => {
+    document.querySelectorAll(".chipbtn.on").forEach(x => x.classList.remove("on"));
+    pick(slot, select.value);
+  });
 
   input.addEventListener("change", () => {
     if (input.files.length) upload(slot, input.files[0]);
@@ -165,7 +252,7 @@ async function analyse() {
   $("#run").disabled = true;
   $("#run").textContent = "Analysing…";
   ["#pipeline-step", "#observed-step", "#verdict-step"].forEach(s => $(s).hidden = false);
-  $("#collector").hidden = true;
+  ["#collector", "#chart-panel", "#briefing", "#report-actions"].forEach(s => $(s).hidden = true);
   $("#only-new").checked = false;
   $("#pane-v2").classList.remove("filtered");
   $("#verdict-step").hidden = true;
@@ -326,6 +413,45 @@ function rowHtml(r, baseline) {
     `<td class="det">${esc(r.detail)}${note}</td></tr>`;
 }
 
+function renderChart(series) {
+  const panel = $("#chart-panel");
+  if (!series || !series.length) { panel.hidden = true; return; }
+  panel.hidden = false;
+  const hi = Math.max(1, ...series.map(s => Math.max(s.v1, s.v2)));
+  const barFill = (value, cls, grew) =>
+    `<div class="chart-bar ${cls}${grew ? " grew" : ""}">` +
+    `<span class="fill" style="width:${(value / hi) * 100}%"></span>` +
+    `<span class="num">${value}</span></div>`;
+  $("#chart").innerHTML = series.map(s =>
+    `<div class="chart-row"><div class="chart-cat">${esc(s.label)}</div>` +
+    `<div class="chart-bars">${barFill(s.v1, "n", false)}` +
+    `${barFill(s.v2, "n1", s.v2 > s.v1)}</div></div>`).join("");
+}
+
+function renderBriefing(briefing) {
+  const box = $("#briefing");
+  const doing = (briefing && briefing.doing) || [];
+  if (!doing.length) { box.hidden = true; return; }
+  box.hidden = false;
+  const hot = briefing.class === "malicious" || briefing.class === "suspicious";
+  $("#briefing-doing").innerHTML = doing.map((x, i) =>
+    `<li class="${hot && i === 0 ? "hot" : ""}">${esc(x)}</li>`).join("");
+}
+
+function renderReportLinks() {
+  const box = $("#report-actions");
+  if (!state.run) { box.hidden = true; return; }
+  box.hidden = false;
+  const url = `/api/report?run=${encodeURIComponent(state.run)}`;
+  $("#report-view").href = url;
+  $("#report-json").href = url + "&format=json";
+  const print = $("#report-print");
+  print.onclick = () => {
+    const w = window.open(url, "_blank");
+    if (w) w.addEventListener("load", () => w.print());
+  };
+}
+
 function verdict(ev) {
   const { outcome, record } = ev;
   $("#verdict-step").hidden = false;
@@ -333,6 +459,10 @@ function verdict(ev) {
   $("#verdict-label").textContent = outcome.label;
   $("#verdict-headline").textContent = outcome.headline;
   $("#verdict-detail").textContent = outcome.detail;
+
+  renderChart(ev.briefing && ev.briefing.chart);
+  renderBriefing(ev.briefing);
+  renderReportLinks();
 
   const scores = [];
   for (const [name, value] of Object.entries(record.scores || {})) {

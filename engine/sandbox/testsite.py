@@ -110,10 +110,24 @@ class _Handler(BaseHTTPRequestHandler):
         # No caching, so both runs make the same requests rather than one of them
         # silently reading from disk and producing a shorter trace.
         self.send_header("Cache-Control", "no-store")
+        # A real exfil endpoint accepts cross-origin uploads; ours must too, or the
+        # browser's CORS preflight blocks a content-script beacon (Content-Type:
+        # application/json is not a "simple" request) before it is ever sent, and the
+        # upload silently never happens. Allowing it models the attacker's willing server.
+        self.send_header("Access-Control-Allow-Origin", "*")
         if cookie:
             self.send_header("Set-Cookie", cookie)
         self.end_headers()
         self.wfile.write(body)
+
+    def do_OPTIONS(self):  # noqa: N802 - answer the CORS preflight for beacon uploads
+        self.send_response(204)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "600")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def do_GET(self):  # noqa: N802 - BaseHTTPRequestHandler's naming
         host, path = self._host(), self.path.split("?")[0]

@@ -137,6 +137,100 @@ def package_summary(unpacked: dict, path: Path) -> dict:
     }
 
 
+#: The features worth charting: small integer counts that share one axis, so a reader can
+#: compare version N and version N+1 at a glance. Byte-scale features are left off the
+#: chart (they would flatten everything else) and reported as plain numbers instead.
+CHART_FEATURES = [
+    ("net_hosts", "Hosts contacted"),
+    ("net_ext_initiated", "Requests from the extension"),
+    ("net_posts", "Uploads (POST/PUT)"),
+    ("cookie_reads", "Cookie reads"),
+    ("cookie_bulk_reads", "Whole-jar cookie reads"),
+    ("dom_sensitive_reads", "Credential-field reads"),
+    ("api_high_risk", "High-risk API calls"),
+    ("exfil_flows", "Read-then-send flows"),
+    ("perm_high_risk", "High-risk permissions"),
+]
+
+
+def chart_series(features_v1: dict, features_v2: dict) -> list[dict]:
+    """The bars for the version-vs-version chart: only features that are non-zero in at
+    least one version, so the chart shows signal rather than a row of empty axes."""
+    series = []
+    for name, label in CHART_FEATURES:
+        v1 = float(features_v1.get(name, 0.0))
+        v2 = float(features_v2.get(name, 0.0))
+        if v1 or v2:
+            series.append({"label": label, "v1": v1, "v2": v2})
+    return series
+
+
+def build_briefing(record: dict, outcome: dict, *, new_keys: list, dropped_keys: list,
+                   declared: list, leaked: list,
+                   summary_v1: dict, summary_v2: dict) -> dict:
+    """A short, plain-English brief: the verdict, what the update is doing, and the
+    indicators behind the call. This is the thing a reviewer reads instead of the trace.
+    """
+    evidence = record.get("evidence", {})
+
+    doing: list[str] = []
+    if leaked:
+        doing.append("Exfiltration confirmed: the sandbox collector received %d upload(s) "
+                     "from version N+1. This is observed, not inferred." % len(leaked))
+    for host in evidence.get("new_upload_hosts", []):
+        doing.append("Uploads to a host the old version never contacted: %s." % host)
+    for target in evidence.get("new_sensitive_dom_targets", []):
+        doing.append("Reads a credential/secret-bearing field it did not read before: %s." % target)
+    for api in evidence.get("new_apis", []):
+        doing.append("Calls a new extension API: %s." % api)
+    for host in evidence.get("new_third_party_hosts", []):
+        if host not in evidence.get("new_upload_hosts", []):
+            doing.append("Contacts a new third-party host: %s." % host)
+    if not doing and new_keys:
+        doing.append("Adds %d new behaviour(s), none of which match a known-dangerous "
+                     "pattern." % len(new_keys))
+    if not doing and not new_keys:
+        doing.append("Produces the same behaviour as the old version under this scenario.")
+
+    indicators = [
+        {"name": r.get("name", r.get("id", "")),
+         "weight": r.get("weight"),
+         "provenance": r.get("provenance", ""),
+         "evidence": r.get("evidence", "")}
+        for r in record.get("fired_rules", [])
+    ]
+
+    capability = list(declared) if declared else ["The update declares no new capability."]
+
+    scores = record.get("scores", {})
+    ml = record.get("ml")
+    confidence = []
+    if ml:
+        confidence.append("Two independent scorers were run: heuristic rules and a trained "
+                          "model. They %s." % ("agree on this verdict"
+                          if record.get("scorer_agreement") else "do NOT agree - treat with care"))
+    confidence.extend(record.get("caveats", []))
+
+    return {
+        "verdict": outcome["label"],
+        "class": outcome["class"],
+        "headline": outcome["headline"],
+        "summary": outcome["detail"],
+        "extension": {"name": summary_v2.get("name"),
+                      "v1": summary_v1.get("version"), "v2": summary_v2.get("version"),
+                      "manifest_version": summary_v2.get("manifest_version"),
+                      "extension_id": summary_v2.get("extension_id")},
+        "doing": doing,
+        "indicators": indicators,
+        "capability_change": capability,
+        "scores": scores,
+        "confidence": confidence,
+        "collector_proven": bool(leaked),
+        "counts": {"new_behaviours": len(new_keys), "dropped_behaviours": len(dropped_keys)},
+        "chart": chart_series(record.get("features_v1", {}), record.get("features_v2", {})),
+    }
+
+
 def classify(numeric: dict, scored: dict, new_keys: list, dropped_keys: list) -> dict:
     """Decide what goes on the verdict band, and say why in one sentence.
 
@@ -313,7 +407,11 @@ def analyse_pair(
                          "proven, not inferred" % len(leaked))
 
     outcome = classify(delta["numeric"], scored, new_keys, dropped_keys)
+    briefing = build_briefing(record, outcome, new_keys=new_keys, dropped_keys=dropped_keys,
+                              declared=declared, leaked=leaked,
+                              summary_v1=summary_v1, summary_v2=summary_v2)
+    record["briefing"] = briefing
     emit("stage", id="score", state="done")
-    emit("verdict", outcome=outcome, record=record,
+    emit("verdict", outcome=outcome, record=record, briefing=briefing,
          new_keys=new_keys, dropped_keys=dropped_keys)
     return record

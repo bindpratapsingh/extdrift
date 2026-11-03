@@ -19,16 +19,34 @@ with the rules behind it.
 | `extensions/` | The packaged sample versions, built by `package_samples.py` from `data/corpus/readerlite/`: a signed `.crx` and a plain `.zip` per version. |
 | `package_samples.py` | Rebuilds them. Re-run after editing anything in the corpus. |
 
-## Real published extensions
+## One-click loadouts
 
-If `data/real/amo/pairs.json` is present on the machine, the page also offers every real
-AMO update pair it finds, as one-click "load this real update" chips and in both
-dropdowns. These are genuine published extensions (uBlock Origin, Dark Reader, Ghostery,
-…), unpacked and run through the identical pipeline — nothing synthetic. That corpus is
-third-party code and is **not** committed (see `.gitignore`); the demo discovers it at
-runtime and shows nothing here when it is absent, so a fresh clone still runs on the
-bundled samples alone. This is what lets the demo analyse a real extension without
-redistributing anyone's code.
+Step 1 offers three kinds of ready-made pair; each fills both slots in one click. You can
+still choose or upload each version by hand under "Or choose / upload each version".
+
+- **Guided demos** — the bundled sample extension in three versions (malicious / benign /
+  no-change). Always present.
+- **Real published extensions** — if `data/real/amo/pairs.json` is on the machine, every
+  real AMO update pair it finds (uBlock Origin, Dark Reader, Ghostery, …), run through the
+  identical pipeline. Genuine published code, nothing synthetic.
+- **Real extension + injected attack** — if `data/real/weaponised/pairs.json` is present,
+  a real extension as version N and the same extension with one documented attack behaviour
+  added as N+1. Build these with `python demo/build_weaponised_pairs.py` (MV3 extensions
+  such as Old Reddit Redirect and FoxyProxy give the cleanest MALICIOUS result, with the
+  exfiltration proven by the collector).
+
+Both real corpora are third-party code and are **not** committed (see `.gitignore`); the
+demo discovers them at runtime and shows nothing when they are absent, so a fresh clone
+still runs on the bundled samples. That is what lets the demo analyse real extensions
+without redistributing anyone's code.
+
+## The report
+
+Every run writes `out/demo-ui/<run-id>/report.json`, and the verdict step offers **View
+the full report** (a self-contained HTML briefing), **Print / Save as PDF**, and the raw
+JSON. The briefing states the verdict, what the update is doing, the indicators behind the
+call (each citing its source), the declared capability change, and the scores. It is
+served by `/api/report?run=<id>` and rendered by `report.py`.
 
 ## Packages
 

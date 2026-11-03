@@ -31,6 +31,11 @@ data/real/amo/
 # extensiondeltas corpus (Pantelaios et al. CCS'20) — third-party, do not redistribute
 data/real/extensiondeltas/
 
+# Weaponised demo pairs: a real extension plus an injected synthetic payload. Derived
+# from third-party code, so it is never redistributed either. Rebuild with
+# demo/build_weaponised_pairs.py.
+data/real/weaponised/
+
 # Instrumented copies of extensions made during capture (contain third-party source).
 .extdrift-work*/
 **/work-v1/

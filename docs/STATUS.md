@@ -162,6 +162,19 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-11-03** — Demo upgrade for the mid-sem review. (1) The front end now runs real
+  published extensions (21 AMO pairs) and **weaponised-real pairs** — a real extension plus one
+  injected documented attack (cookie-jar theft/exfil) as N+1, built by
+  `demo/build_weaponised_pairs.py`; both corpora are git-ignored and discovered at runtime.
+  MV3 pairs (Old Reddit Redirect, FoxyProxy) come out MALICIOUS with the exfil proven by the
+  collector. (2) Each run produces a one-page HTML/PDF **report** (`demo/report.py`,
+  `/api/report`) stating the verdict, what the update is doing, the indicators, and the declared
+  capability change. (3) UI redesign: one-click loadouts, an accent colour and a prominent action,
+  and a version-vs-version **bar chart**. (4) `host_of()` no longer counts the extension's own
+  `chrome-extension://` origin as a network host (it changes per load), which had made every real
+  pair report phantom host churn. (5) The sealed collector now answers CORS preflight, so
+  content-script beacons actually land. (6) `docs/DEMO_BRIEF.pdf` — the run-of-show + talking
+  points for the review. Full suite 231 passed / 38 skipped.
 - **2026-11-03** — Capture determinism fix: the prelude buffers every report and re-posts it at
   t+2s and t+6s; `capture.py` and `proxy.py` drop repeats by `(realm_id, report_seq)`. Before the
   fix, 1 run in 4 of an unchanged extension lost `chrome.runtime.onMessage.addListener` and so

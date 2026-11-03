@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>extdrift — Demonstration Brief</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font: 11pt/1.5 "Segoe UI", Arial, Helvetica, sans-serif; color: #15181c; margin: 0; }
+  h1 { font-size: 22pt; margin: 0 0 2pt; letter-spacing: -0.01em; }
+  .tagline { color: #1b4e8a; font-size: 12pt; margin: 0 0 2pt; font-weight: 600; }
+  .meta { color: #6b7076; font-size: 9.5pt; margin: 0 0 16pt; }
+  h2 { font-size: 12.5pt; margin: 20pt 0 7pt; padding-bottom: 3pt;
+       border-bottom: 2px solid #1b4e8a; color: #10243d; }
+  h3 { font-size: 10.5pt; margin: 12pt 0 3pt; color: #10243d; }
+  p { margin: 5pt 0; }
+  ul, ol { margin: 5pt 0; padding-left: 20pt; }
+  li { margin: 3pt 0; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt;
+         background: #f1f3f5; padding: 0 3px; border-radius: 2px; }
+  .lead { font-size: 11pt; color: #33383d; }
+  .card { border: 1px solid #d9dde1; border-left: 3px solid #1b4e8a; padding: 8pt 11pt;
+          margin: 8pt 0; background: #fafbfc; }
+  .card.attack { border-left-color: #8c1420; }
+  .card h3 { margin-top: 0; }
+  .runsheet { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 6pt 0; }
+  .runsheet th, .runsheet td { border: 1px solid #d9dde1; padding: 5pt 7pt; text-align: left;
+                               vertical-align: top; }
+  .runsheet th { background: #eef3f9; color: #10243d; font-size: 9pt; text-transform: uppercase;
+                 letter-spacing: 0.04em; }
+  .runsheet td.step { white-space: nowrap; font-weight: 600; width: 54pt; }
+  .verdict-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+  .m { background: #8c1420; } .s { background: #8a6214; } .b { background: #1d5137; } .n { background: #3d4349; }
+  .say { background: #eef3f9; border: 1px solid #cfe0f2; padding: 4pt 9pt; margin: 4pt 0;
+         font-style: italic; color: #1d3a5c; }
+  .kpi { display: flex; flex-wrap: wrap; gap: 8pt; margin: 8pt 0; }
+  .kpi div { border: 1px solid #d9dde1; padding: 6pt 10pt; min-width: 120pt; }
+  .kpi b { display: block; font-size: 15pt; color: #1b4e8a; }
+  .kpi span { font-size: 9pt; color: #6b7076; }
+  .foot { margin-top: 16pt; padding-top: 7pt; border-top: 1px solid #d9dde1;
+          color: #8a9097; font-size: 8.5pt; }
+  .pagebreak { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<h1>extdrift</h1>
+<p class="tagline">Catching malicious browser-extension updates by what they <i>do</i>, not what they ask for.</p>
+<p class="meta">Demonstration brief &middot; CSD493 &middot; prepared for the mid-semester review</p>
+
+<p class="lead">An extension you already trust can turn malicious in a routine auto-update &mdash;
+the Cyberhaven incident (December 2024) is the textbook case. Static permission review does
+not catch this: the update often asks for nothing new, and its code is obfuscated. <b>extdrift
+runs both versions of an extension in a sealed sandbox, records what each one actually does,
+and scores the difference.</b> Our rule: <i>score the change, not the extension.</i></p>
+
+<h2>What the demo shows</h2>
+<p>A local web page takes two versions of one extension &mdash; the trusted release (N) and the
+update (N+1) &mdash; runs each in an identical, sealed, offline browser, and shows the whole
+process: the capability the update declares, the two runs happening, the behaviour each one
+produced with the <i>new</i> behaviours marked, a chart of how the counts changed, the sandbox
+collector's record of anything the update tried to upload, and a plain-English verdict with the
+indicators behind it. Every run also produces a one-page report.</p>
+
+<div class="kpi">
+  <div><b>1,047</b><span>behavioural pairs in the dataset</span></div>
+  <div><b>0.983</b><span>model PR-AUC (rules alone: 0.868)</span></div>
+  <div><b>0.998</b><span>PR-AUC, synthetic&rarr;real transfer</span></div>
+  <div><b>0 / 21</b><span>static detection once code is obfuscated</span></div>
+</div>
+
+<h2>How it works, in one minute</h2>
+<ol>
+  <li><b>Sealed sandbox.</b> Each version runs in headless Chromium with a fresh profile. Every
+    network name resolves to an in-process test site, so <b>no packet leaves the machine</b>.
+    Fake collector hosts record anything the extension uploads &mdash; that log is ground truth.</li>
+  <li><b>Instrumentation.</b> We inject probes into the extension's own content script and
+    background/service-worker, so we see cookie reads, DOM reads of credential fields, API calls
+    and network uploads as they happen.</li>
+  <li><b>Differencing.</b> A behaviour "key" ignores timestamps and run-to-run noise, so the two
+    runs are comparable. The set of behaviours present in N+1 but not in N is the delta.</li>
+  <li><b>Scoring, three tiers.</b> 12 weighted rules (each citing the paper or incident it comes
+    from) &rarr; a trained model (HistGradientBoosting) &rarr; an anomaly layer. The verdict reports
+    all of them and whether they agree.</li>
+</ol>
+
+<h2>The three kinds of pair you can load (one click each)</h2>
+<div class="card">
+  <h3>Guided demos &mdash; a built-in sample extension</h3>
+  <p>A small reader extension in three versions: a benign update, a maliciously updated version,
+  and an identical no-change version. These tell the story cleanly and run in ~35&nbsp;seconds.</p>
+</div>
+<div class="card">
+  <h3>Real published extensions &mdash; genuine updates</h3>
+  <p>21 real update pairs downloaded from the Firefox add-on store (uBlock Origin, Dark Reader,
+  Ghostery, Bitwarden&hellip;). The tool runs on the real published code. These are benign, and the
+  tool says so &mdash; the point is that it works on real extensions, not just our samples.</p>
+</div>
+<div class="card attack">
+  <h3>Real extension + injected attack &mdash; the honest malicious case</h3>
+  <p>A real published extension as version N, and the <i>same</i> extension with one documented
+  attack behaviour added as version N+1 (cookie-jar theft and exfiltration, modelled on the
+  Cyberhaven incident). This is the most faithful malicious example available &mdash; see
+  "Why we inject the attack" below.</p>
+</div>
+
+<div class="pagebreak"></div>
+<h2>Step-by-step: how to run it in the room</h2>
+<p>Start once, before the review: <code>python demo/server.py</code> (opens
+<code>http://127.0.0.1:8765</code>). Then, for each act, click a pair and press
+<b>Analyse this update</b>. Narrate while the stages run; each analysis takes about
+35&nbsp;seconds.</p>
+
+<table class="runsheet">
+  <thead><tr><th>Act</th><th>Load this</th><th>Expected verdict</th><th>What to point at</th></tr></thead>
+  <tbody>
+    <tr><td class="step">1</td><td>Guided &rarr; <b>Malicious update</b></td>
+        <td><span class="verdict-dot m"></span>MALICIOUS</td>
+        <td>The new rows highlighted in the N+1 table; the collector panel ("data actually left");
+            the indicators, each citing a paper/incident.</td></tr>
+    <tr><td class="step">2</td><td>Guided &rarr; <b>Benign update</b></td>
+        <td><span class="verdict-dot b"></span>BENIGN</td>
+        <td>Behaviour did change (new rows), but nothing dangerous &mdash; no exfil, no new capability.
+            The tool does not cry wolf.</td></tr>
+    <tr><td class="step">3</td><td>Guided &rarr; <b>No change at all</b></td>
+        <td><span class="verdict-dot n"></span>NO CHANGE</td>
+        <td>Identical behaviour both runs. This is the control: it proves the sandbox is
+            deterministic and the tool has no false positives on an unchanged update.</td></tr>
+    <tr><td class="step">4</td><td>Real &rarr; e.g. <b>uBlock Origin</b></td>
+        <td><span class="verdict-dot b"></span>BENIGN</td>
+        <td>This is a real published extension, real code. The tool runs on it and clears it.</td></tr>
+    <tr><td class="step">5</td><td>Attack &rarr; e.g. <b>Old Reddit Redirect</b></td>
+        <td><span class="verdict-dot m"></span>MALICIOUS</td>
+        <td>A real extension + one injected attack. The update now reads the whole cookie jar and
+            uploads it to a host it never contacted before; the collector proves the upload landed.</td></tr>
+  </tbody>
+</table>
+<p style="font-size:9.5pt;color:#6b7076">For the live malicious run, prefer an MV3 extension &mdash;
+<b>Old Reddit Redirect</b> or <b>FoxyProxy</b>: we validated both as MALICIOUS with the exfiltration
+proven by the collector. (MV3 service workers run most reliably in the sandbox; some larger MV2
+extensions land on SUSPICIOUS.) After any run, click <b>View the full report</b> or
+<b>Print / Save as PDF</b>.</p>
+
+<h2>Pointers to make to the professor</h2>
+<ul>
+  <li><b>Static review misses this; behaviour catches it.</b> Our reproduction of prior static work
+    detects a malicious change on clean code but <b>0 of 21</b> once the same code is obfuscated.
+    Behaviour is unchanged by obfuscation &mdash; the extension still dumps the cookie jar.</li>
+  <li><b>Every indicator is grounded.</b> Each rule cites the paper or real incident it comes from
+    (ExtPrivA S&amp;P'23, Hulk USENIX'14, the Cyberhaven incident&hellip;). It is not a black box.</li>
+  <li><b>Ground truth, not inference.</b> The sandbox is sealed and offline; the fake collector's log
+    is what <i>actually</i> left the browser, so "data exfiltrated" is observed, not guessed.</li>
+  <li><b>It generalises.</b> Trained on synthetic data, it holds up on held-out <b>real</b> data
+    (PR-AUC 0.998). The model is not memorising our generator.</li>
+  <li><b>We fixed a subtle correctness bug.</b> A service-worker report race once made an unchanged
+    extension look different between two runs; we found and fixed it, and five repeat runs are now
+    byte-identical. For a tool whose whole job is differencing, that matters.</li>
+</ul>
+
+<h2>The honest data story (be ready for this question)</h2>
+<p><b>"Is this real malware?"</b> &mdash; Real <i>benign</i> update pairs are real: 21 published
+extensions, run live. Real <i>malicious update pairs</i> are not publicly available anywhere:
+when an extension is caught it is delisted, and the store keeps no archive of its prior versions
+(our own probe recovered a predecessor for 0 of 15 flagged IDs). No research group has this data.</p>
+<p><b>Why we inject the attack.</b> So we take a <i>real</i> extension and add a behaviour modelled
+on a <i>documented real incident</i> (Cyberhaven, Dec 2024: cookie/credential theft). This is a
+standard, defensible methodology: it gives a labelled malicious half whose behaviour is grounded in
+a real attack, and &mdash; crucially &mdash; a differencer needs labelled behavioural <i>deltas</i>, not
+real malicious pairs, to train. The transfer result above is the evidence it generalises.</p>
+
+<h2>What is built already</h2>
+<p>Package unpacking (signed CRX3, XPI, ZIP) &middot; sealed Chromium and Firefox capture engines
+&middot; instrumentation for MV2 and MV3 &middot; 26 behavioural + 27 static-code features &middot; the
+behavioural differencer &middot; a 12-rule scorer, a trained model, and an anomaly layer &middot; a
+synthetic generator and a weaponiser &middot; a Docker-hardened pipeline &middot; statistical rigor
+(confidence intervals, significance tests, a locked held-out test) &middot; a reproduction of prior
+work &middot; an adware sub-study &middot; and this demonstration front end. Remaining work is mainly
+scaling the real benign corpus, a graph-based model, and the written report.</p>
+
+<p class="foot">extdrift &middot; behavioural-diff detection of malicious browser-extension updates
+&middot; CSD493. All extension code runs in a sealed, offline sandbox; no data leaves the machine.</p>
+
+</body>
+</html>
