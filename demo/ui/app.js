@@ -35,7 +35,9 @@ async function boot() {
   pick("v2", "sample:reader-lite-1.1.0.crx");
   const first = $(".chipbtn[data-v2='sample:reader-lite-1.1.0.crx']");
   if (first) first.classList.add("on");
+  state.pickLabel = "Malicious update";
   $("#run").addEventListener("click", analyse);
+  $("#back").addEventListener("click", newAnalysis);
   $("#only-new").addEventListener("change", ev =>
     $("#pane-v2").classList.toggle("filtered", ev.target.checked));
 }
@@ -53,10 +55,13 @@ function renderEnv(env) {
 // The three canonical demos, built from the bundled sample extension.
 const GUIDED = [
   { label: "Malicious update", cls: "malicious",
+    desc: "The update hides a payload that steals data. Expected verdict: MALICIOUS.",
     v1: "sample:reader-lite-1.0.0.crx", v2: "sample:reader-lite-1.1.0.crx" },
   { label: "Benign update", cls: "benign",
+    desc: "A normal feature update, nothing dangerous. Expected verdict: BENIGN.",
     v1: "sample:reader-lite-1.0.0.crx", v2: "sample:reader-lite-1.0.1.crx" },
   { label: "No change at all", cls: "nochange",
+    desc: "The same version twice — behaviour is identical. Expected: NO CHANGE.",
     v1: "sample:reader-lite-1.0.0.crx", v2: "sample:reader-lite-1.0.0.crx" },
 ];
 
@@ -65,29 +70,32 @@ function chipButton(v1ref, v2ref, inner) {
          `data-v2="${esc(v2ref)}">${inner}</button>`;
 }
 
-function fillGroup(id, html, show) {
-  const group = $(id);
-  group.hidden = !show;
-  if (show) $(".loadout-chips", group).innerHTML = html;
-}
-
 function renderLoadouts() {
-  fillGroup("#lo-guided", GUIDED.map(d =>
-    chipButton(d.v1, d.v2, `<span class="dot ${d.cls}"></span>${esc(d.label)}`)).join(""), true);
+  $("#lo-guided").innerHTML = GUIDED.map(d =>
+    `<button type="button" class="chipbtn guided-card" data-v1="${esc(d.v1)}" data-v2="${esc(d.v2)}">` +
+    `<span class="dot ${d.cls}"></span>` +
+    `<span class="gc-text"><span class="gc-title">${esc(d.label)}</span>` +
+    `<span class="gc-sub">${esc(d.desc)}</span></span></button>`).join("");
 
   const real = state.boot.real_pairs || [];
-  fillGroup("#lo-real", real.map(p => chipButton(p.v1.ref, p.v2.ref,
-    `${esc(p.name)} <span class="cv">${esc(p.v1.version)}&#8594;${esc(p.v2.version)}</span>`)).join(""),
-    real.length > 0);
-
+  if (real.length) {
+    $("#grp-real").hidden = false;
+    $("#count-real").textContent = real.length;
+    $("#lo-real").innerHTML = real.map(p => chipButton(p.v1.ref, p.v2.ref,
+      `${esc(p.name)} <span class="cv">${esc(p.v1.version)}&#8594;${esc(p.v2.version)}</span>`)).join("");
+  }
   const weap = state.boot.weaponised_pairs || [];
-  fillGroup("#lo-weap", weap.map(p => chipButton(p.v1.ref, p.v2.ref,
-    `${esc(p.name)} <span class="fam">${esc((p.family || "").replace(/_/g, " "))}</span>`)).join(""),
-    weap.length > 0);
+  if (weap.length) {
+    $("#grp-weap").hidden = false;
+    $("#count-weap").textContent = weap.length;
+    $("#lo-weap").innerHTML = weap.map(p => chipButton(p.v1.ref, p.v2.ref,
+      `${esc(p.name)} <span class="fam">${esc((p.family || "").replace(/_/g, " "))}</span>`)).join("");
+  }
 
   document.querySelectorAll(".chipbtn").forEach(b => b.addEventListener("click", () => {
     document.querySelectorAll(".chipbtn.on").forEach(x => x.classList.remove("on"));
     b.classList.add("on");
+    state.pickLabel = (b.querySelector(".gc-title") || b).textContent.trim();
     pick("v1", b.dataset.v1);
     pick("v2", b.dataset.v2);
   }));
@@ -171,6 +179,8 @@ function setupSlot(slot) {
     (weap.length ? `<optgroup label="Real + injected attack (this machine)">${opts(weap)}</optgroup>` : "");
   select.addEventListener("change", () => {
     document.querySelectorAll(".chipbtn.on").forEach(x => x.classList.remove("on"));
+    const opt = select.options[select.selectedIndex];
+    if (opt && select.value) state.pickLabel = opt.textContent.split(" : ")[0].trim();
     pick(slot, select.value);
   });
 
@@ -248,15 +258,33 @@ async function upload(slot, file) {
 
 /* ------------------------------------------------------------- the run */
 
+function reveal(sel) {
+  const el = $(sel);
+  el.hidden = false;
+  el.classList.remove("revealed");
+  void el.offsetWidth;            // restart the animation
+  el.classList.add("revealed");
+}
+
+function setRunTitle() {
+  $("#run-title").innerHTML = "Analysing <b>" + esc(state.pickLabel || "this update") + "</b>";
+}
+
 async function analyse() {
+  // Move to the dedicated results view; the steps reveal themselves one by one as the
+  // run progresses, rather than all sitting empty on the setup page.
+  $("#view-setup").hidden = true;
+  $("#view-run").hidden = false;
+  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  setRunTitle();
   $("#run").disabled = true;
   $("#run").textContent = "Analysing…";
-  ["#pipeline-step", "#observed-step", "#verdict-step"].forEach(s => $(s).hidden = false);
-  ["#collector", "#chart-panel", "#briefing", "#report-actions"].forEach(s => $(s).hidden = true);
+
+  ["#observed-step", "#verdict-step", "#collector", "#chart-panel",
+   "#briefing", "#report-actions", "#declared"].forEach(s => { $(s).hidden = true; });
+  reveal("#pipeline-step");
   $("#only-new").checked = false;
   $("#pane-v2").classList.remove("filtered");
-  $("#verdict-step").hidden = true;
-  $("#declared").hidden = true;
   $("#log").textContent = "";
   for (const slot of ["v1", "v2"]) {
     $(`#pane-${slot} tbody`).innerHTML = "";
@@ -279,6 +307,14 @@ async function analyse() {
   state.timer = setInterval(poll, 350);
 }
 
+function newAnalysis() {
+  if (state.timer) clearInterval(state.timer);
+  $("#view-run").hidden = true;
+  $("#view-setup").hidden = false;
+  resetButton();
+  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+}
+
 async function poll() {
   const res = await fetch(`/api/events?run=${state.run}&cursor=${state.cursor}`);
   const data = await res.json();
@@ -290,7 +326,7 @@ async function poll() {
 
 function resetButton() {
   $("#run").disabled = false;
-  $("#run").textContent = "Analyse this update";
+  $("#run").textContent = "Analyse this update →";
 }
 
 /* ------------------------------------------------- rendering each event */
@@ -368,6 +404,7 @@ function declared(ev) {
 }
 
 function observed(ev) {
+  if ($("#observed-step").hidden) reveal("#observed-step");
   const rows = ev.rows;
   state.keys[ev.slot] = new Set(rows.map(r => r.key));
   const baseline = ev.slot === "v2" ? state.keys.v1 : null;
@@ -454,7 +491,7 @@ function renderReportLinks() {
 
 function verdict(ev) {
   const { outcome, record } = ev;
-  $("#verdict-step").hidden = false;
+  reveal("#verdict-step");
   $("#verdict").className = "verdict " + outcome.class;
   $("#verdict-label").textContent = outcome.label;
   $("#verdict-headline").textContent = outcome.headline;

@@ -44,10 +44,10 @@ def _chart_svg(series: list[dict]) -> str:
         rows.append(
             f'<text x="{left - 10}" y="{y + bar_h}" class="cat">{_esc(s["label"])}</text>'
             + bar(y, s["v1"], "v1", "#9aa3ad")
-            + bar(y + bar_h + gap, s["v2"], "v2", "#1b4e8a"))
+            + bar(y + bar_h + gap, s["v2"], "v2", "#0d8f84"))
     legend = (f'<rect x="{left}" y="0" width="11" height="11" fill="#9aa3ad"/>'
               f'<text x="{left + 16}" y="9" class="leg">version N</text>'
-              f'<rect x="{left + 110}" y="0" width="11" height="11" fill="#1b4e8a"/>'
+              f'<rect x="{left + 110}" y="0" width="11" height="11" fill="#0d8f84"/>'
               f'<text x="{left + 126}" y="9" class="leg">version N+1</text>')
     return (f'<svg viewBox="0 0 {width} {height}" width="100%" '
             f'style="max-width:{width}px" role="img" aria-label="behaviour counts by version">'

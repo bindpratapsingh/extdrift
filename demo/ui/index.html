@@ -21,66 +21,89 @@
 
 <main>
 
-  <section class="step">
-    <h2><span class="sec">1</span> Pick two versions of one extension</h2>
-    <p class="step-note">Version N is the release already installed and trusted. Version N+1
-      is the update about to replace it. Pick a ready-made pair below &mdash; one click fills
-      both &mdash; or choose each package yourself.</p>
+  <section id="view-setup">
+    <div class="step">
+      <h2><span class="sec">1</span> Choose what to analyse</h2>
+      <p class="step-note">extdrift compares <b>two versions of the same extension</b> &mdash; the
+        release already installed and trusted (N) and the update about to replace it (N+1). It runs
+        both in a sealed, offline sandbox and scores what changed. Pick a pair to begin.</p>
 
-    <div class="loadouts">
-      <p class="loadout-lead">One click loads both versions:</p>
-
-      <div class="loadout-group" id="lo-guided">
-        <h3>Guided demos <span>&mdash; built-in sample extension</span></h3>
-        <div class="loadout-chips"></div>
+      <div class="pick-group">
+        <div class="pick-head">
+          <h3>Start here &middot; guided demos</h3>
+          <p>Prepared examples on a small built-in extension &mdash; one for each result the tool can
+            return. Best if you are seeing this for the first time.</p>
+        </div>
+        <div class="guided-cards" id="lo-guided"></div>
       </div>
 
-      <div class="loadout-group" id="lo-real" hidden>
-        <h3>Real published extensions <span>&mdash; genuine updates, on this machine</span></h3>
-        <div class="loadout-chips"></div>
-      </div>
+      <details class="pick-group collapsible" id="grp-real" hidden>
+        <summary>
+          <div class="pick-head">
+            <h3>Real published extensions <span class="count" id="count-real"></span></h3>
+            <p>Genuine updates downloaded from the add-on store (uBlock Origin, Dark Reader, &hellip;).
+              These are safe &mdash; watch the tool confirm that on real code.
+              <span class="expand-hint">Click to choose one.</span></p>
+          </div>
+        </summary>
+        <div class="loadout-chips" id="lo-real"></div>
+      </details>
 
-      <div class="loadout-group attack" id="lo-weap" hidden>
-        <h3>Real extension + injected attack <span>&mdash; a real extension, one documented attack added</span></h3>
-        <div class="loadout-chips"></div>
-      </div>
-    </div>
+      <details class="pick-group collapsible attack" id="grp-weap" hidden>
+        <summary>
+          <div class="pick-head">
+            <h3>Real extension + injected attack <span class="count" id="count-weap"></span></h3>
+            <p>A real extension whose update has one <b>known attack added</b> &mdash; it steals the
+              browser's cookie jar and uploads it. This is the threat extdrift exists to catch; watch
+              it get flagged. <span class="expand-hint">Click to choose one.</span></p>
+          </div>
+        </summary>
+        <div class="loadout-chips" id="lo-weap"></div>
+      </details>
 
-    <details class="manual">
-      <summary>Or choose / upload each version by hand</summary>
-      <div class="slots">
-        <div class="slot" id="slot-v1" data-slot="v1">
-          <div class="slot-head"><span class="slot-tag">Version N</span><span class="slot-sub">installed</span></div>
-          <div class="slot-body">
-            <select class="slot-select" aria-label="Package for version N"></select>
-            <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
-            <div class="slot-facts"></div>
+      <details class="manual">
+        <summary>Advanced: choose or upload each version by hand</summary>
+        <div class="slots">
+          <div class="slot" id="slot-v1" data-slot="v1">
+            <div class="slot-head"><span class="slot-tag">Version N</span><span class="slot-sub">installed</span></div>
+            <div class="slot-body">
+              <select class="slot-select" aria-label="Package for version N"></select>
+              <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
+              <div class="slot-facts"></div>
+            </div>
+          </div>
+
+          <div class="slot-arrow" aria-hidden="true">update<br>&#8594;</div>
+
+          <div class="slot" id="slot-v2" data-slot="v2">
+            <div class="slot-head"><span class="slot-tag">Version N+1</span><span class="slot-sub">candidate</span></div>
+            <div class="slot-body">
+              <select class="slot-select" aria-label="Package for version N+1"></select>
+              <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
+              <div class="slot-facts"></div>
+            </div>
           </div>
         </div>
+      </details>
 
-        <div class="slot-arrow" aria-hidden="true">update<br>&#8594;</div>
-
-        <div class="slot" id="slot-v2" data-slot="v2">
-          <div class="slot-head"><span class="slot-tag">Version N+1</span><span class="slot-sub">candidate</span></div>
-          <div class="slot-body">
-            <select class="slot-select" aria-label="Package for version N+1"></select>
-            <label class="slot-drop"><input type="file" accept=".crx,.zip,.xpi" hidden><span>or drop a package here</span></label>
-            <div class="slot-facts"></div>
-          </div>
-        </div>
+      <div class="actions">
+        <button id="run" type="button">Analyse this update &rarr;</button>
+        <p class="actions-note">Both versions run in the same sealed, offline sandbox under one
+          scripted session, against identical local pages. About 35 seconds.</p>
       </div>
-    </details>
-
-    <div class="actions">
-      <button id="run" type="button">Analyse this update</button>
-      <p class="actions-note">Both versions run in the same sealed, offline sandbox under one
-        scripted session, against identical local pages. About 35 seconds.</p>
     </div>
-    <p class="declared" id="declared" hidden></p>
   </section>
 
+  <section id="view-run" hidden>
+    <div class="run-bar">
+      <button class="back-btn" id="back" type="button">&larr; New analysis</button>
+      <div class="run-title" id="run-title"></div>
+    </div>
+
+    <p class="declared" id="declared" hidden></p>
+
   <section class="step" id="pipeline-step" hidden>
-    <h2><span class="sec">Step 2</span> Execution</h2>
+    <h2><span class="sec">2</span> Execution</h2>
     <p class="step-note">Lines prefixed <code>config</code> are settings. Everything else is
       read back off the run that just happened.</p>
     <ol class="stages" id="stages"></ol>
@@ -88,7 +111,7 @@
   </section>
 
   <section class="step" id="observed-step" hidden>
-    <h2><span class="sec">Step 3</span> Observed behaviour</h2>
+    <h2><span class="sec">3</span> Observed behaviour</h2>
     <p class="step-note">Recorded by instrumentation inside the extension's own scripts while
       it ran. Rows marked <span class="chip chip-new">new</span> occur in the update and did
       not occur in the baseline. That set is the behavioural delta.</p>
@@ -121,7 +144,7 @@
   </section>
 
   <section class="step" id="verdict-step" hidden>
-    <h2><span class="sec">Step 4</span> Verdict on the change</h2>
+    <h2><span class="sec">4</span> Verdict on the change</h2>
     <div class="verdict" id="verdict">
       <div class="verdict-band">
         <span class="verdict-label" id="verdict-label"></span>
@@ -154,6 +177,8 @@
       </details>
       <p class="caveats" id="caveats"></p>
     </div>
+  </section>
+
   </section>
 
 </main>
