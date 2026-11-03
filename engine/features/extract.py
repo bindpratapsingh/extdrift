@@ -117,12 +117,27 @@ def domain_low_reputation(hostname: str) -> bool:
     return signals >= 2
 
 
+#: Schemes whose "host" is an extension id, not a network destination.
+EXTENSION_URL_SCHEMES = ("chrome-extension", "moz-extension", "safari-web-extension")
+
+
 def host_of(url: str) -> str:
-    """Lower-cased hostname of *url*, or '' when it has none (e.g. a data: URL)."""
+    """Lower-cased hostname of *url*, or '' when it is not a network destination.
+
+    ``chrome-extension://<id>/icon.png`` is a read out of the extension's own package;
+    the browser never puts it on the wire.  It is excluded for a second reason that
+    matters more to us: an unpacked extension is assigned a fresh id on every load, so
+    its own origin is a different string in the baseline run and the candidate run.
+    Counting it as a host made every real update pair report a host appearing and a host
+    disappearing — a difference manufactured by the harness, not by the update.
+    """
     try:
-        return (urlsplit(url).hostname or "").lower()
+        parts = urlsplit(url)
     except ValueError:
         return ""
+    if parts.scheme.lower() in EXTENSION_URL_SCHEMES:
+        return ""
+    return (parts.hostname or "").lower()
 
 
 def registrable_domain(hostname: str) -> str:

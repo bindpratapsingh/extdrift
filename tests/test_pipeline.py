@@ -21,6 +21,7 @@ from engine.features.delta import behavioral_delta
 from engine.features.extract import (
     FEATURE_ORDER,
     extract_features,
+    host_of,
     looks_encoded,
     registrable_domain,
     shannon_entropy,
@@ -110,6 +111,26 @@ class TestFeatures(unittest.TestCase):
         features = extract_features(load("benign_pair", "v1"))
         # demo-bank.test and webmail.test are the scenario's own pages.
         self.assertEqual(features["net_hosts"] - features["net_third_party_hosts"], 2.0)
+
+    def test_the_extensions_own_origin_is_not_a_network_host(self):
+        """An unpacked extension gets a fresh id per load, so its own origin differs
+        between the baseline run and the candidate run.  Counting it made every real
+        update pair report one host gained and one lost — a harness artefact."""
+        for url in ("chrome-extension://kdgpmoomcnalgdhclepccbklldfpofma/img/icon16.png",
+                    "moz-extension://6f3d9c21-0000-4000-8000-000000000000/popup.html"):
+            self.assertEqual(host_of(url), "")
+        self.assertEqual(host_of("https://collect-analytics.test/p"), "collect-analytics.test")
+
+    def test_package_internal_reads_do_not_inflate_the_host_sets(self):
+        trace = load("benign_pair", "v1")
+        trace["network"] = trace["network"] + [
+            {"ts": 9.0, "url": "chrome-extension://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/icon.png",
+             "method": "GET", "initiator": "extension", "resource_type": "fetch", "body_len": 0},
+        ]
+        before = extract_features(load("benign_pair", "v1"))
+        after = extract_features(trace)
+        self.assertEqual(after["net_hosts"], before["net_hosts"])
+        self.assertEqual(after["net_third_party_hosts"], before["net_third_party_hosts"])
 
     def test_identity_reads_are_not_counted_as_credential_reads(self):
         features = extract_features(load("grayzone_pair", "v2"))

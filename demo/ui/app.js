@@ -29,6 +29,7 @@ async function boot() {
   renderEnv(state.boot.environment);
   renderStages(state.boot.stages);
   for (const slot of ["v1", "v2"]) setupSlot(slot);
+  renderRealPairs(state.boot.real_pairs || []);
   // The pairing that tells the story best, pre-selected so a demo can start in one click.
   pick("v1", "sample:reader-lite-1.0.0.crx");
   pick("v2", "sample:reader-lite-1.1.0.crx");
@@ -47,6 +48,21 @@ function renderEnv(env) {
     `<div><dt>${esc(k)}</dt><dd class="${on ? "" : "off"}">${esc(v)}</dd></div>`).join("");
 }
 
+function renderRealPairs(pairs) {
+  const box = $("#real-pairs");
+  if (!box) return;
+  if (!pairs.length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML =
+    `<span class="real-lead">Or load a real published update (found on this machine):</span> ` +
+    pairs.map(p =>
+      `<button type="button" class="real-chip" data-slug="${esc(p.slug)}">` +
+      `${esc(p.name)} <span class="real-ver">${esc(p.v1.version)}&#8594;${esc(p.v2.version)}</span>` +
+      `</button>`).join("");
+  box.querySelectorAll(".real-chip").forEach(b =>
+    b.addEventListener("click", () => loadRealPair(b.dataset.slug)));
+}
+
 function renderStages(stages) {
   $("#stages").innerHTML = stages.map(s =>
     `<li id="stage-${s.id}"><span class="dot"></span><span class="label">${esc(s.label)}</span>` +
@@ -60,9 +76,15 @@ function setupSlot(slot) {
   const select = $(".slot-select", root);
   const input = $("input[type=file]", root);
 
+  const bundled = state.boot.samples.map(s =>
+    `<option value="${esc(s.ref)}">${esc(s.file)} : ${esc(s.label)}</option>`).join("");
+  const real = (state.boot.real_pairs || []).map(p => {
+    const v = p[slot];
+    return `<option value="${esc(v.ref)}">${esc(v.label)} (real, from AMO)</option>`;
+  }).join("");
   select.innerHTML = `<option value="">Choose a package...</option>` +
-    state.boot.samples.map(s =>
-      `<option value="${esc(s.ref)}">${esc(s.file)} : ${esc(s.label)}</option>`).join("");
+    `<optgroup label="Bundled samples">${bundled}</optgroup>` +
+    (real ? `<optgroup label="Real extensions on this machine">${real}</optgroup>` : "");
   select.addEventListener("change", () => pick(slot, select.value));
 
   input.addEventListener("change", () => {
@@ -80,27 +102,50 @@ function setupSlot(slot) {
   drop.addEventListener("click", ev => { if (ev.target === drop) input.click(); });
 }
 
+function realVersion(slot, ref) {
+  for (const p of state.boot.real_pairs || []) if (p[slot].ref === ref) return p;
+  return null;
+}
+
 function pick(slot, ref) {
   const root = $(`#slot-${slot}`);
-  $(".slot-select", root).value = state.boot.samples.some(s => s.ref === ref) ? ref : "";
+  const known = state.boot.samples.some(s => s.ref === ref) || !!realVersion(slot, ref);
+  $(".slot-select", root).value = known ? ref : "";
   if (!ref) {
     state.picked[slot] = null;
     root.classList.remove("filled");
     $(".slot-facts", root).innerHTML = "";
+    $("#run").disabled = !(state.picked.v1 && state.picked.v2);
     return;
   }
   state.picked[slot] = ref;
+  root.classList.add("filled");
   const sample = state.boot.samples.find(s => s.ref === ref);
-  $(".slot-facts", root).innerHTML = sample
-    ? `<p class="slot-blurb">${esc(sample.blurb)}</p>` + factsTable([
-        ["package", esc(sample.file)],
-        ["size", sample.bytes.toLocaleString() + " bytes"],
-      ])
-    : factsTable([
-        ["package", esc(ref.replace(/^upload:/, ""))],
-        ["source", "uploaded"],
-      ]);
+  const pair = realVersion(slot, ref);
+  if (sample) {
+    $(".slot-facts", root).innerHTML = `<p class="slot-blurb">${esc(sample.blurb)}</p>` +
+      factsTable([["package", esc(sample.file)],
+                  ["size", sample.bytes.toLocaleString() + " bytes"]]);
+  } else if (pair) {
+    $(".slot-facts", root).innerHTML =
+      `<p class="slot-blurb">A real published extension from the Firefox add-on store, ` +
+      `unpacked on this machine. Nothing synthetic about it.</p>` +
+      factsTable([["extension", esc(pair.name)],
+                  ["version", esc(pair[slot].version)],
+                  ["manifest", "MV" + esc(String(pair.mv || "?"))],
+                  ["source", "AMO (local, not redistributed)"]]);
+  } else {
+    $(".slot-facts", root).innerHTML = factsTable([
+      ["package", esc(ref.replace(/^upload:/, ""))], ["source", "uploaded"]]);
+  }
   $("#run").disabled = !(state.picked.v1 && state.picked.v2);
+}
+
+function loadRealPair(slug) {
+  const p = (state.boot.real_pairs || []).find(x => x.slug === slug);
+  if (!p) return;
+  pick("v1", p.v1.ref);
+  pick("v2", p.v2.ref);
 }
 
 async function upload(slot, file) {

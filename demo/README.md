@@ -19,6 +19,17 @@ with the rules behind it.
 | `extensions/` | The packaged sample versions, built by `package_samples.py` from `data/corpus/readerlite/`: a signed `.crx` and a plain `.zip` per version. |
 | `package_samples.py` | Rebuilds them. Re-run after editing anything in the corpus. |
 
+## Real published extensions
+
+If `data/real/amo/pairs.json` is present on the machine, the page also offers every real
+AMO update pair it finds, as one-click "load this real update" chips and in both
+dropdowns. These are genuine published extensions (uBlock Origin, Dark Reader, Ghostery,
+…), unpacked and run through the identical pipeline — nothing synthetic. That corpus is
+third-party code and is **not** committed (see `.gitignore`); the demo discovers it at
+runtime and shows nothing here when it is absent, so a fresh clone still runs on the
+bundled samples alone. This is what lets the demo analyse a real extension without
+redistributing anyone's code.
+
 ## Packages
 
 Accepted: `.crx` (CRX2 and CRX3), `.zip`, `.xpi`, and an already-unpacked directory from

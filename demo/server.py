@@ -39,6 +39,12 @@ UI_DIR = ROOT / "demo" / "ui"
 SAMPLES_DIR = ROOT / "demo" / "extensions"
 RUNS_DIR = ROOT / "out" / "demo-ui"
 
+#: Real published extension-update pairs, downloaded from AMO, if they are present on
+#: this machine. This corpus is third-party code and is NOT committed (see .gitignore);
+#: the demo discovers it at runtime and simply offers nothing here when it is absent.
+#: That is what lets the demo analyse a genuine extension without redistributing it.
+REAL_PAIRS_MANIFEST = ROOT / "data" / "real" / "amo" / "pairs.json"
+
 MAX_UPLOAD_BYTES = 32 * 1024 * 1024
 CONTENT_TYPES = {".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
                  ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml"}
@@ -100,6 +106,48 @@ def samples() -> list[dict]:
     return out
 
 
+def real_pairs() -> list[dict]:
+    """Real update pairs present on this machine, each as two selectable versions.
+
+    Returns a pair-grouped list so the page can offer "load this real update" as one
+    click that fills both slots, which also stops anyone pairing version N of one
+    extension with version N+1 of a different one.
+    """
+    if not REAL_PAIRS_MANIFEST.is_file():
+        return []
+    try:
+        entries = json.loads(REAL_PAIRS_MANIFEST.read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        return []
+    out = []
+    for p in entries:
+        v1_dir = (ROOT / str(p.get("v1_dir", ""))).resolve()
+        v2_dir = (ROOT / str(p.get("v2_dir", ""))).resolve()
+        if not ((v1_dir / "manifest.json").is_file() and (v2_dir / "manifest.json").is_file()):
+            continue
+        slug, name = str(p.get("slug", "?")), str(p.get("name", p.get("slug", "?")))
+        out.append({
+            "slug": slug, "name": name, "mv": p.get("mv"),
+            "v1": {"ref": "real:%s/v1" % slug, "version": str(p.get("v1", "")),
+                   "label": "%s %s" % (name, p.get("v1", ""))},
+            "v2": {"ref": "real:%s/v2" % slug, "version": str(p.get("v2", "")),
+                   "label": "%s %s" % (name, p.get("v2", ""))},
+        })
+    return out
+
+
+def _real_ref_index() -> dict[str, Path]:
+    """Map every valid ``real:`` ref to its on-disk directory. The allowlist the
+    resolver checks against, so a client can never reach an arbitrary path."""
+    index = {}
+    for pair in real_pairs():
+        for slot in ("v1", "v2"):
+            raw = next(e for e in json.loads(REAL_PAIRS_MANIFEST.read_text(encoding="utf-8"))
+                       if e.get("slug") == pair["slug"])
+            index[pair[slot]["ref"]] = (ROOT / str(raw["%s_dir" % slot])).resolve()
+    return index
+
+
 def resolve(ref: str, run_dir: Path) -> Path:
     """Turn a client-supplied package reference into a path, refusing anything else."""
     if ref.startswith("sample:"):
@@ -113,6 +161,11 @@ def resolve(ref: str, run_dir: Path) -> Path:
         path = run_dir / "uploads" / name
         if not path.is_file():
             raise ValueError("no such upload: " + name)
+        return path
+    if ref.startswith("real:"):
+        path = _real_ref_index().get(ref)
+        if path is None or not (path / "manifest.json").is_file():
+            raise ValueError("no such real pair: " + ref)
         return path
     raise ValueError("unrecognised package reference")
 
@@ -183,6 +236,7 @@ class Handler(BaseHTTPRequestHandler):
             from engine.features.extract import FEATURE_DOCS
             self._json({
                 "samples": samples(),
+                "real_pairs": real_pairs(),
                 "stages": [{"id": sid, "label": label} for sid, label in STAGES],
                 "environment": environment(),
                 "feature_docs": {name: doc[0] for name, doc in FEATURE_DOCS.items()},

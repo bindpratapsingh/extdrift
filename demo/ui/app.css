@@ -134,6 +134,16 @@ code { font-family: var(--mono); font-size: 0.93em; color: var(--ink); }
 
 /* ---------- action ---------- */
 
+.real-pairs { margin-top: 16px; padding-top: 12px; border-top: 1px dotted var(--rule); }
+.real-lead { color: var(--muted); font-size: 12.5px; margin-right: 6px; }
+.real-chip {
+  display: inline-block; margin: 4px 6px 0 0; padding: 4px 9px;
+  border: 1px solid var(--rule); background: var(--paper, #fff);
+  font: 12px/1.3 var(--sans); color: var(--ink); cursor: pointer;
+}
+.real-chip:hover { border-color: var(--ink); }
+.real-chip .real-ver { font-family: var(--mono); color: var(--muted); font-size: 11px; }
+
 .actions { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
 button {
   font: bold 13px var(--sans); padding: 8px 18px; cursor: pointer;
