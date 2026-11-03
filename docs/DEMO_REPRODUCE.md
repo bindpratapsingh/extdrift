@@ -98,6 +98,7 @@ The run-of-show, expected verdicts and talking points are in **`docs/DEMO_BRIEF.
 | `playwright` not found | activate the venv: `source .venv/bin/activate` |
 | Real/weaponised rows missing | you have not run step 4 / step 5 on this machine yet |
 | Chip shows a garbled name | harmless — a store name with a special character |
+| Fonts look plain / not Inter | the page pulls fonts from Google; with no internet it falls back to the system font. Harmless — everything still works. |
 
 Nothing in steps 4–5 is committed: `data/real/` is git-ignored on purpose (we do not
 redistribute third-party extension code). Each machine regenerates it locally. A fresh
