@@ -5,8 +5,10 @@
 > sync with the code; it is the single place to see "what exists and what's left" at a glance.
 > The full narrative is in [PROJECT_REPORT.md](PROJECT_REPORT.md).
 
-**Last updated:** 2026-11-03 · **tests:** 222 fast passing + 36 Docker end-to-end passing · **dataset:**
-1,152 pairs (1,000 synthetic + 150 real + 2 fixtures).
+**Last updated:** 2026-11-06 · **tests:** 231 fast passing + 38 skipped · **dataset:**
+1,152 pairs (1,000 synthetic + 150 real + 2 fixtures) **+ a new 17-extension REAL-MALWARE
+validation set** (executed sealed; see §4/§7). **Model:** XGBoost (bake-off now selects by
+FPR@90%recall — see §5).
 
 **Done this session:** merged the Docker analysis pipeline into `main`; built `demo/` — a local
 web front end that runs a pair end to end and shows the process (see `docs/DEMO_MANUAL.md`);
@@ -112,7 +114,16 @@ benign corpus, and the written deliverables. See §6.
 - **Behavioural dataset:** 1,047 pairs · 266 extensions · 449 malicious / 598 benign
   (1,000 synthetic + 30 weaponised-real + 15 real-benign + 2 fixtures).
 - **Static-code track:** 40 rows · 10 real extensions.
-- **Bake-off winner:** HistGradientBoosting, PR-AUC 0.983, FPR@90%-recall 0.008 (rules: 0.868 / 0.450).
+- **Bake-off winner:** XGBoost, CV PR-AUC 0.981, **FPR@90%-recall 0.011** (rules: 0.892 / 0.408);
+  RF/HistGB tied within 0.003 PR-AUC. Selection is now **FPR-primary** (the operational metric
+  for a differencing tool) rather than PR-AUC-primary — which also lands on a gradient-boosted
+  model (the advisor's "beyond RF"). Retrained 2026-11-06 on the current `deltas.csv`.
+- **Real-malware validation (NEW, 2026-11-06):** 17 confirmed-malicious extensions (Edge
+  "Two Heads" + still-live mallorybowes) executed in the **sealed** sandbox → **14/17 (82%)
+  flagged**; **19 distinct real exfil/C2 backends intercepted** locally (flipshope, urban-vpn
+  analytics, ipify IP-recon, DNS-over-HTTPS evasion, …), nothing left the machine. Proves the
+  features fire on real malware, not only synthetic payloads. See `out/real_malicious/` and
+  `docs/research/P0_DATA_ACQUISITION.md`.
 - **Synthetic→real held-out transfer:** PR-AUC 0.998, recall 0.93, precision 1.0, 0% FPR.
 - **Rules on real weaponised:** 30/30 = 100% recall.
 
@@ -126,7 +137,11 @@ benign corpus, and the written deliverables. See §6.
 - ⬜ **[E, Mac/P2]** Scale real benign corpus to hundreds of pairs (infra + `scripts/scale_capture.sh` ready).
 - ⬜ **[E, Mac/P4]** Capture genuinely-malicious *live* Chrome extensions in the sealed sandbox.
 - ✅ **[E]** Adware sub-study — `experiments/adware_study.py` (zero-shot: supervised 0%, anomaly 49%).
-- ❌ Real malicious *update pairs* — **blocked:** no public source (60% delisted; 0/15 archived). Documented; weaponise substitute stands.
+- 🟡 Real malicious *update pairs* — **still infeasible** (same id, benign→malicious: Chrome serves
+  only current; Wayback holds no CRX binaries — confirmed 2026-11-06). **But** real malicious
+  *extensions* are now obtained and executed: a **17-extension sealed real-malware validation
+  set** (82% flagged). Weaponise substitute stands for *training*; real malware validates it.
+  Sources: `engine/collector/{edge,wayback}.py`, `experiments/{harvest,capture}_real_malicious.py`.
 
 ### Method completeness
 - ✅ **[E]** Validate the Chromium engine on real extensions — `experiments/chrome_spike.py`.
@@ -162,6 +177,18 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-11-06** — **Real-data acquisition (P0).** Pivoted off the "real malicious data is
+  unobtainable" assumption using the Gemini research (`Researches/`, digested in
+  `docs/research/P0_DATA_ACQUISITION.md`). Built `engine/collector/wayback.py` (Internet-Archive
+  recovery — honest negative result: IA holds no CRX binaries) and `engine/collector/edge.py`
+  (Edge store still serves extensions removed from Chrome). Harvested **18 real malicious
+  extensions** (Two Heads Edge set + still-live mallorybowes) via
+  `experiments/harvest_real_malicious.py`. Added a **`seal_all` sandbox mode** (host-resolver
+  maps every hostname to the local collector so real malware cannot phone home) and ran them:
+  `experiments/capture_real_malicious.py` → **14/17 flagged, 19 real backends intercepted**.
+  Retrained the model on the current dataset and switched bake-off selection to **FPR-primary**
+  → winner **XGBoost** (FPR@90 0.011). `.gitignore` hardened to a blanket `data/real/*` (malware
+  never committable). 231 tests pass.
 - **2026-11-03** — Demo upgrade for the mid-sem review. (1) The front end now runs real
   published extensions (21 AMO pairs) and **weaponised-real pairs** — a real extension plus one
   injected documented attack (cookie-jar theft/exfil) as N+1, built by

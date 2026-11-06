@@ -650,16 +650,26 @@ runtime behaviour). This is the empirical case for dynamic over static.
 
 Stated plainly, because it is how strong work is written and defended:
 
-- **No genuinely in-the-wild malicious *pair* is captured** — the malicious class is weaponised-real,
-  because real malicious update pairs cannot be sourced (§12). The synthetic→real transfer result
-  mitigates but does not fully replace this.
-- **The real corpus is still modest** (15 extensions / 45 pairs). A production false-positive claim
-  needs hundreds; the infrastructure is ready, it is compute time.
-- **Trigger-dependent payloads can still be missed** — the HoneyPage elicits most, but time-bombs and
-  anti-analysis evasion remain open (pitfall #3 is only partly closed).
-- **The Chromium engine is validated on synthetic + the fixture; real-Chrome behavioural capture is
-  not yet fully validated** (Firefox is validated on 15 real extensions).
-- **Numbers are point estimates** — confidence intervals and significance testing are pending.
+- **No genuinely in-the-wild malicious *pair* (same id, benign→malicious) is captured** — the
+  training malicious class is weaponised-real, because real malicious *update pairs* cannot be
+  sourced (§12; re-confirmed 2026-11-06 — the Internet Archive holds the Chrome update *manifests*
+  but not the CRX binaries). **Mitigated two ways now:** (a) the synthetic→real transfer result,
+  and (b) a **real-malware validation set** — 17 confirmed-malicious extensions (Microsoft Edge
+  "Two Heads" set + still-live mallorybowes ids) executed in the sealed sandbox, of which 82% are
+  flagged by the rules and whose beacons to 19 real backends were intercepted locally. So the
+  features are now shown to fire on *real* malware, not only our injected payloads.
+- **The real *benign* corpus is still modest** (≈20 extensions / 51 captured pairs). A production
+  false-positive claim needs hundreds; the pipeline is ready and this is compute time on the Mac
+  (`scripts/scale_capture.sh`).
+- **Trigger-dependent payloads can still be missed** — the HoneyPage elicits most, but time-bombs,
+  search-query-triggered hijackers and anti-analysis evasion remain open (pitfall #3 is only partly
+  closed; 3 of the 17 real malware samples were not flagged for exactly this reason).
+- **Residual isolation gap in the host-sealed path:** `seal_all` maps every *hostname* to the local
+  collector, but Chromium's host-resolver does not remap *literal-IP* connections; extension malware
+  overwhelmingly uses domains, and the Docker `--internal` pipeline is the full-isolation path.
+- **Confidence intervals are computed** (`experiments/statistical_rigor.py`): the ML-over-rules gain
+  is +0.11 PR-AUC with a 95% CI that excludes zero. Model-vs-model differences among the top
+  ensembles are within noise, which is why selection is by FPR@recall, not PR-AUC.
 
 The current build/remaining status is tracked live in `docs/STATUS.md`.
 
