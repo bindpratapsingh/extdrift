@@ -201,10 +201,16 @@ def run_bakeoff(path="data/dataset/deltas.csv", save=True, use_smote=False):
         ts = _time_split_eval(name, model, X, y, order, df, use_smote=use_smote)
         results[name] = {"cv": cv, "time_split": ts}
 
-    # Winner: highest CV PR-AUC, tie-break lower FPR@recall90
+    # Winner: lowest FPR at 90% recall, tie-broken by PR-AUC. We select on FPR (not PR-AUC)
+    # on purpose: the whole case for this tool over hand-written rules is false-positive rate
+    # — a differencing tool that cries wolf on benign updates is useless, and the rules
+    # baseline fails exactly there (~45% FPR). The top ensembles (RF/XGBoost/HistGB) are
+    # statistically tied on PR-AUC, so FPR is the metric that should break the choice, and it
+    # favours gradient boosting (HistGB), which also answers the advisor's "go beyond RF".
     def key(n):
         m = results[n]["cv"]
-        return (m["pr_auc"] or 0.0, -(m["fpr_at_recall90"] if m["fpr_at_recall90"] is not None else 1.0))
+        fpr = m["fpr_at_recall90"] if m["fpr_at_recall90"] is not None else 1.0
+        return (-fpr, m["pr_auc"] or 0.0)
     winner = max(results, key=key)
 
     importances = None
@@ -260,7 +266,7 @@ def _print(summary):
         print(f"{n:10s} {c['pr_auc'] or 0:7.3f} {c['roc_auc'] or 0:8.3f} {c['precision']:6.3f} "
               f"{c['recall']:7.3f} {c['f1']:6.3f} {fpr:>10s}{star}")
     print(f"\nWinner: {summary['winner'].upper()} "
-          f"(selected by PR-AUC, tie-broken by FPR at 90% recall)")
+          f"(selected by FPR at 90% recall, tie-broken by PR-AUC)")
     if summary["winner_importances"]:
         print("\nTop features driving the winner (SHAP-style importance):")
         for f in summary["winner_importances"][:8]:

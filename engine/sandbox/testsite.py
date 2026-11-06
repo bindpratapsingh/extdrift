@@ -131,7 +131,7 @@ class _Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):  # noqa: N802 - BaseHTTPRequestHandler's naming
         host, path = self._host(), self.path.split("?")[0]
-        if host in COLLECTOR_HOSTS:
+        if host in COLLECTOR_HOSTS or getattr(self.server, "seal_all", False):
             self.server.collected.append({"host": host, "method": "GET", "path": self.path})
             self._send(200, "application/json", b'{"ok":true}')
             return
@@ -163,7 +163,7 @@ class _Handler(BaseHTTPRequestHandler):
         host = self._host()
         length = int(self.headers.get("Content-Length") or 0)
         body = self.rfile.read(length) if length else b""
-        if host in COLLECTOR_HOSTS:
+        if host in COLLECTOR_HOSTS or getattr(self.server, "seal_all", False):
             self.server.collected.append({
                 "host": host, "method": "POST", "path": self.path,
                 "body_len": len(body),
@@ -182,12 +182,16 @@ class _Handler(BaseHTTPRequestHandler):
 class TestSite:
     """The local site, started on an ephemeral port and stopped on context exit."""
 
-    def __init__(self, port: int = 0, noise: bool = False):
+    def __init__(self, port: int = 0, noise: bool = False, seal_all: bool = False):
         self.server = ThreadingHTTPServer(("127.0.0.1", port), _Handler)
         self.server.collected = []
         #: When True, each HTML page load injects a unique third-party resource, so two
         #: runs of the same extension diverge — the determinism ablation's "noisy web".
         self.server.noise = noise
+        #: When True, the host-resolver maps EVERY hostname here (not just .test), so running
+        #: real malware cannot reach the internet — its exfil beacons land in this collector
+        #: instead. Used by the real-malicious capture; the handler then records every host.
+        self.server.seal_all = seal_all
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
 
     @property
@@ -205,6 +209,12 @@ class TestSite:
         # The report host is dead-mapped BEFORE the general .test rule (Chromium takes the
         # first match), so instrumentation reports never reach the test site; the driver
         # reads them off the CDP request event instead.
+        if self.server.seal_all:
+            # Seal EVERYTHING: every hostname resolves to this collector, so real malware
+            # cannot phone home. .test still points here too; only the report host is dead.
+            return (f"MAP extdrift-report.test 127.0.0.1:1,"
+                    f"MAP extdrift-report.invalid 127.0.0.1:1,"
+                    f"MAP * 127.0.0.1:{self.port}")
         return (f"MAP extdrift-report.test 127.0.0.1:1,"
                 f"MAP *.test 127.0.0.1:{self.port},"
                 "MAP extdrift-report.invalid 127.0.0.1:1")

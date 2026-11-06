@@ -78,12 +78,18 @@ def capture(
     headless: bool = True,
     replay_bundle: str = "local-testsite-v1",
     noise: bool = False,
+    seal_all: bool = False,
 ) -> dict:
     """Run *unpacked_dir* through *scenario_name* against the local test site.
 
     Returns the validated trace and also writes it to *out_path*. When *noise* is True the
     test site injects a unique third-party resource per page load (the determinism-ablation
     "noisy web"); leave it False for normal deterministic analysis.
+
+    *seal_all* maps EVERY hostname to the local collector, not just ``.test`` — required when
+    running untrusted/real malware so its exfiltration cannot leave the machine (it is
+    captured locally instead). Use it for the real-malicious corpus, never for normal runs
+    (it would also swallow a sample's legitimate third-party calls).
     """
     sync_playwright = _require_playwright()
     scenario = scenarios.get(scenario_name)
@@ -109,7 +115,7 @@ def capture(
     def ts() -> float:
         return round(time.monotonic() - started, 3)
 
-    with TestSite(noise=noise) as site:
+    with TestSite(noise=noise, seal_all=seal_all) as site:
         trace["run"].update({
             "pages": list(scenario.pages),
             "replay_bundle": (replay_bundle if not noise else "noisy-web-ablation"),
