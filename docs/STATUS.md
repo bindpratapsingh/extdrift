@@ -196,9 +196,14 @@ model → report & presentation.
   `--families` and `--evasion` (backward-compatible; defaults reproduce the old behaviour and
   folder names). Evasion rows are written to separate `amo_<slug>_mal_<family>_evasion/` folders
   so they never overwrite plain rows; `engine/batch.py` folds them in automatically (verified).
-  Wrote `docs/MAC_STEP3_WEAPONISER.md` — the exact, copy-pasteable Mac runbook (commands,
-  timings, where to push). **Remaining (Mac, capture-bound):** run the captures, fold into
-  `deltas.csv`, retrain + re-run the bake-off.
+  Wrote `scripts/capture_all.sh` — one chunked, resumable command that captures benign + all 4
+  CS-bearing malicious families + the evasion layer for the top-N real extensions, checkpointing
+  the dataset after every chunk, and `docs/MAC_STEP3_WEAPONISER.md` — the Mac runbook built around
+  it (target: **top-100 real extensions**, in chunks of 10). **Remaining (Mac, capture-bound):**
+  run `bash scripts/capture_all.sh 100 10` across a few sittings, push `deltas.csv` + the new
+  `captured/amo_*`, then merge + re-evaluate. Note for Bind: with 4 plain + 3 evasion malicious
+  families per extension the real set skews malicious — if balance matters after merge, raise real
+  benign via `--pairs` on the AMO crawl, or trim the evasion family list.
 - **2026-11-06** — **Real-data acquisition (P0).** Pivoted off the "real malicious data is
   unobtainable" assumption using the Gemini research (`Researches/`, digested in
   `docs/research/P0_DATA_ACQUISITION.md`). Built `engine/collector/wayback.py` (Internet-Archive
