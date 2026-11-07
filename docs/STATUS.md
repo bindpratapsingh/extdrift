@@ -191,9 +191,14 @@ model → report & presentation.
   a `application/dns-message` POST) is reproduced with **nothing leaving the machine** —
   directly answering "synthetic malware has no evasion" with behaviours taken from captures.
   `--evasion` flag on the demo builder. Obfuscation now also hides the DoH/IP-recon URL
-  literals. Added two end-to-end tests; full suite **233 passed / 38 skipped**. Next (step 3,
-  Mac): rebuild weaponised pairs with the new families + evasion, re-capture, fold into the
-  dataset, retrain.
+  literals. Added two end-to-end tests; full suite **233 passed / 38 skipped**.
+  **(3) Step-3 enablement.** `experiments/capture_weaponised_behavioural.py` gained
+  `--families` and `--evasion` (backward-compatible; defaults reproduce the old behaviour and
+  folder names). Evasion rows are written to separate `amo_<slug>_mal_<family>_evasion/` folders
+  so they never overwrite plain rows; `engine/batch.py` folds them in automatically (verified).
+  Wrote `docs/MAC_STEP3_WEAPONISER.md` — the exact, copy-pasteable Mac runbook (commands,
+  timings, where to push). **Remaining (Mac, capture-bound):** run the captures, fold into
+  `deltas.csv`, retrain + re-run the bake-off.
 - **2026-11-06** — **Real-data acquisition (P0).** Pivoted off the "real malicious data is
   unobtainable" assumption using the Gemini research (`Researches/`, digested in
   `docs/research/P0_DATA_ACQUISITION.md`). Built `engine/collector/wayback.py` (Internet-Archive

@@ -43,13 +43,18 @@ def _pairs():
     return out
 
 
-def _fam_complete(slug: str, fam: str) -> bool:
-    d = CAPTURED / f"amo_{slug}_mal_{fam}"
+def _tag(fam: str, evasion: bool) -> str:
+    """Folder/label tag so evasion rows never collide with plain rows of the same family."""
+    return f"{fam}_evasion" if evasion else fam
+
+
+def _fam_complete(slug: str, tag: str) -> bool:
+    d = CAPTURED / f"amo_{slug}_mal_{tag}"
     return all((d / f).exists() for f in ("v1.trace.json", "v2.trace.json", "label.json"))
 
 
 def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | None = None,
-        skip_existing: bool = True) -> dict:
+        skip_existing: bool = True, evasion: bool = False) -> dict:
     from engine.sandbox.firefox_capture import capture_firefox
     from engine.weaponiser import weaponise
 
@@ -66,7 +71,8 @@ def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | N
         slug = p["slug"]
         v2 = Path(p["v2_dir"])
         work = WORK / slug
-        todo = [f for f in families if not (skip_existing and _fam_complete(slug, f))]
+        todo = [f for f in families
+                if not (skip_existing and _fam_complete(slug, _tag(f, evasion)))]
         if not todo:
             # Resumable: every family for this extension is already captured; skip the
             # expensive baseline capture entirely.
@@ -83,28 +89,29 @@ def run(n_exts: int = 3, families=FAMILIES, headless: bool = True, only: str | N
             continue
 
         for fam in todo:
-            dest = CAPTURED / f"amo_{slug}_mal_{fam}"
+            tag = _tag(fam, evasion)
+            dest = CAPTURED / f"amo_{slug}_mal_{tag}"
             dest.mkdir(parents=True, exist_ok=True)
-            mal_src = work / f"mal_{fam}"
+            mal_src = work / f"mal_{tag}"
             try:
-                weaponise(v2, mal_src, family=fam, obfuscated=False)
+                weaponise(v2, mal_src, family=fam, obfuscated=False, evasion=evasion)
                 mal_trace = capture_firefox(mal_src, SCENARIO,
                                             out_path=dest / "v2.trace.json",
-                                            work_dir=work / f"work_{fam}", headless=headless)
+                                            work_dir=work / f"work_{tag}", headless=headless)
             except Exception as exc:  # noqa: BLE001
-                print(f"[{i}/{len(pairs)}] {slug}/{fam}: FAILED ({type(exc).__name__}: {exc})")
-                failed.append(f"{slug}/{fam}")
+                print(f"[{i}/{len(pairs)}] {slug}/{tag}: FAILED ({type(exc).__name__}: {exc})")
+                failed.append(f"{slug}/{tag}")
                 shutil.rmtree(mal_src, ignore_errors=True)
                 continue
             # v1 = the real baseline; v2 = the weaponised capture just written.
             (dest / "v1.trace.json").write_text(json.dumps(base_trace, indent=2), encoding="utf-8")
             leaked = len(mal_trace["run"].get("collector_received", []))
             (dest / "label.json").write_text(json.dumps({
-                "label": "malicious", "family": fam, "obfuscated": False,
+                "label": "malicious", "family": fam, "obfuscated": False, "evasion": evasion,
                 "source": "amo-firefox-weaponised", "collected_at": p.get("v2_date", ""),
                 "collector_leak_events": leaked}), encoding="utf-8")
-            print(f"[{i}/{len(pairs)}] {slug}/{fam}: captured  (collector leak events: {leaked})")
-            made.append(f"{slug}/{fam}")
+            print(f"[{i}/{len(pairs)}] {slug}/{tag}: captured  (collector leak events: {leaked})")
+            made.append(f"{slug}/{tag}")
             shutil.rmtree(mal_src, ignore_errors=True)
 
         shutil.rmtree(work, ignore_errors=True)   # never keep third-party / weaponised source
@@ -123,8 +130,15 @@ def main(argv=None) -> int:
     ap.add_argument("--only", default=None, help="capture only this slug (e.g. darkreader)")
     ap.add_argument("--show", action="store_true", help="run with a visible browser window")
     ap.add_argument("--force", action="store_true", help="re-capture even if already present")
+    ap.add_argument("--families", nargs="+", default=list(FAMILIES),
+                    help="payload families to inject (default: cookie_theft credential_theft; "
+                         "e.g. --families history_exfil ad_affiliate)")
+    ap.add_argument("--evasion", action="store_true",
+                    help="layer the observed evasion (IP-recon + DoH exfil) onto each family; "
+                         "writes separate *_evasion rows so it never overwrites plain rows")
     args = ap.parse_args(argv)
-    run(n_exts=args.exts, headless=not args.show, only=args.only, skip_existing=not args.force)
+    run(n_exts=args.exts, families=args.families, headless=not args.show, only=args.only,
+        skip_existing=not args.force, evasion=args.evasion)
     return 0
 
 
