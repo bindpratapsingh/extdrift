@@ -89,7 +89,13 @@ SITE.update(EXTENDED_SITE)
 #: Hosts that exist purely to receive stolen data during an analysis run. Includes the
 #: collector used by the weaponiser payloads (engine.weaponiser.payloads.COLLECTOR) so a
 #: live-captured synthetic attack is confirmed by the collector's own log (ground truth).
-COLLECTOR_HOSTS = {"collect-analytics.test", "collect-metrics.test"}
+COLLECTOR_HOSTS = {
+    "collect-analytics.test", "collect-metrics.test",
+    # Evasion endpoints the weaponiser's evasion layer beacons to (engine.weaponiser.
+    # payloads.{IPRECON_HOST,DOH_HOST}) — .test stand-ins for api.ipify.org / dns.google
+    # observed in real captures; recorded here as exfil ground truth, nothing leaves.
+    "ip-recon.test", "doh.resolver.test",
+}
 
 
 class _Handler(BaseHTTPRequestHandler):

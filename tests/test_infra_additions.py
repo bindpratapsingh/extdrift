@@ -75,6 +75,63 @@ class TestWeaponiser(unittest.TestCase):
             self.assertIn("extdrift_bg.js", html)                          # payload wired in
             self.assertIn("cookies", m["permissions"])
 
+    def test_new_real_grounded_families_weaponise_end_to_end(self):
+        # history_exfil (DataSpii browsing-data exfil — the most common real malicious
+        # behaviour we observed) and ad_affiliate (affiliate-link replacement) must be
+        # registered and inject cleanly, clean and obfuscated.
+        expected = {
+            "history_exfil": {"permission": "tabs", "needs_sw": True},
+            "ad_affiliate": {"permission": None, "needs_sw": False},
+        }
+        for family, exp in expected.items():
+            self.assertIn(family, PAYLOADS)
+            for obf in (False, True):
+                with tempfile.TemporaryDirectory() as tmp:
+                    r = weaponise(BENIGN, Path(tmp) / "mal", family=family, obfuscated=obf)
+                    self.assertEqual(r["added_permission"], exp["permission"])
+                    cs = (Path(r["out_dir"]) / "extdrift_cs.js").read_text(encoding="utf-8")
+                    self.assertIn(PAYLOAD_MARKER, cs)
+                    m = json.loads((Path(r["out_dir"]) / "manifest.json").read_text())
+                    self.assertEqual(m["_extdrift_synthetic"]["family"], family)
+                    if exp["permission"]:
+                        self.assertIn(exp["permission"], m["permissions"])
+                    if exp["needs_sw"]:
+                        sw = (Path(r["out_dir"]) / "sw.js").read_text(encoding="utf-8")
+                        self.assertIn(PAYLOAD_MARKER, sw)
+                    if obf:
+                        # obfuscation must hide the collector literal in every injected file
+                        for f in r["injected_files"]:
+                            self.assertNotIn(f'"{COLLECTOR}"', (Path(r["out_dir"]) / f).read_text())
+
+    def test_evasion_layer_injects_observed_opsec_behaviours(self):
+        # The evasion add-on reproduces the OPSEC we captured from real malware in P0:
+        # IP-recon + DNS-over-HTTPS exfil. Endpoints are .test stand-ins (nothing leaves).
+        from engine.sandbox.testsite import COLLECTOR_HOSTS
+        self.assertIn("ip-recon.test", COLLECTOR_HOSTS)      # sandbox records them as exfil
+        self.assertIn("doh.resolver.test", COLLECTOR_HOSTS)
+        with tempfile.TemporaryDirectory() as tmp:
+            # clean: evasion lands in the worker, with a DoH-shaped request
+            r = weaponise(BENIGN, Path(tmp) / "e", family="cookie_theft", evasion=True)
+            sw = (Path(r["out_dir"]) / "sw.js").read_text(encoding="utf-8")
+            self.assertIn("ip-recon.test", sw)
+            self.assertIn("doh.resolver.test", sw)
+            self.assertIn("application/dns-message", sw)
+            m = json.loads((Path(r["out_dir"]) / "manifest.json").read_text())
+            self.assertTrue(m["_extdrift_synthetic"]["evasion"])
+            # obfuscated: the evasion host literals must be gone
+            ro = weaponise(BENIGN, Path(tmp) / "eo", family="cookie_theft",
+                           evasion=True, obfuscated=True)
+            swo = (Path(ro["out_dir"]) / "sw.js").read_text(encoding="utf-8")
+            self.assertNotIn('"http://ip-recon.test/json"', swo)
+            self.assertNotIn('"http://doh.resolver.test/dns-query"', swo)
+        with tempfile.TemporaryDirectory() as tmp:
+            # a content-script-only family gets evasion in its CS, without a duplicate entry
+            r = weaponise(BENIGN, Path(tmp) / "a", family="ad_affiliate", evasion=True)
+            cs = (Path(r["out_dir"]) / "extdrift_cs.js").read_text(encoding="utf-8")
+            self.assertIn("doh.resolver.test", cs)
+            m = json.loads((Path(r["out_dir"]) / "manifest.json").read_text())
+            self.assertEqual(len(m["content_scripts"]), 2)   # host CS + payload CS only
+
     def test_unknown_family_is_rejected(self):
         from engine.weaponiser import WeaponiseError
         with tempfile.TemporaryDirectory() as tmp:

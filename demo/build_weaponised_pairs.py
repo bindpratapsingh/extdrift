@@ -88,7 +88,9 @@ def load_amo() -> dict[str, dict]:
     return {p["slug"]: p for p in json.loads(AMO_MANIFEST.read_text(encoding="utf-8"))}
 
 
-def build(limit: int) -> list[dict]:
+def build(limit: int, family: str = FAMILY, evasion: bool = False) -> list[dict]:
+    if family not in PAYLOADS:
+        sys.exit("unknown family %r; known: %s" % (family, ", ".join(PAYLOADS)))
     amo = load_amo()
     if OUT_DIR.exists():
         shutil.rmtree(OUT_DIR)
@@ -96,7 +98,6 @@ def build(limit: int) -> list[dict]:
 
     pairs: list[dict] = []
     for slug in PREFERRED:
-        family = FAMILY
         if len(pairs) >= limit:
             break
         src = amo.get(slug)
@@ -112,7 +113,7 @@ def build(limit: int) -> list[dict]:
         v1_dst, v2_dst = pair_dir / "v1", pair_dir / "v2"
         try:
             shutil.copytree(v1_src, v1_dst)
-            summary = weaponise(v1_dst, v2_dst, family=family)
+            summary = weaponise(v1_dst, v2_dst, family=family, evasion=evasion)
             grant_beacon_hosts(v2_dst)
         except Exception as exc:  # a sample that will not weaponise is simply left out
             print("  skip %-26s (%s: %s)" % (slug, type(exc).__name__, exc))
@@ -132,6 +133,7 @@ def build(limit: int) -> list[dict]:
             "family_desc": PAYLOADS[family]["description"],
             "added_permission": summary["added_permission"],
             "injected_files": summary["injected_files"],
+            "evasion": summary.get("evasion", False),
         })
         print("  built %-26s + %-16s -> %s" % (slug, family, summary["version"]))
 
@@ -173,13 +175,17 @@ def validate(pairs: list[dict], keep_min: str | None) -> list[dict]:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--limit", type=int, default=8, help="how many pairs to build")
+    ap.add_argument("--family", default=FAMILY, choices=sorted(PAYLOADS),
+                    help="which attack family to inject (default: %(default)s)")
+    ap.add_argument("--evasion", action="store_true",
+                    help="also layer the observed OPSEC behaviours (IP-recon + DoH exfil)")
     ap.add_argument("--validate", action="store_true",
                     help="run each pair and record its measured verdict (slow)")
     ap.add_argument("--keep-min", default=None,
                     help="with --validate, drop pairs weaker than this "
                          "(e.g. SUSPICIOUS or MALICIOUS)")
     args = ap.parse_args()
-    pairs = build(args.limit)
+    pairs = build(args.limit, args.family, args.evasion)
     print("\n%d weaponised pair(s) built under %s" % (len(pairs), OUT_DIR))
     if args.validate:
         print("Validating each pair through the real pipeline:")

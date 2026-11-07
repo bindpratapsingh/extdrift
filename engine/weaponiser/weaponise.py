@@ -19,7 +19,13 @@ import json
 import shutil
 from pathlib import Path
 
-from engine.weaponiser.payloads import PAYLOADS, PAYLOAD_MARKER, obfuscate_js, render
+from engine.weaponiser.payloads import (
+    _EVASION_JS,
+    PAYLOADS,
+    PAYLOAD_MARKER,
+    obfuscate_js,
+    render,
+)
 
 
 class WeaponiseError(RuntimeError):
@@ -91,8 +97,15 @@ def _background_file(manifest: dict, work: Path) -> Path:
     return work / "extdrift_sw.js"
 
 
-def weaponise(benign_dir, out_dir, family="cookie_theft", obfuscated=False) -> dict:
-    """Produce a malicious copy of *benign_dir* at *out_dir*. Returns a summary dict."""
+def weaponise(benign_dir, out_dir, family="cookie_theft", obfuscated=False,
+              evasion=False) -> dict:
+    """Produce a malicious copy of *benign_dir* at *out_dir*. Returns a summary dict.
+
+    ``evasion=True`` layers the OPSEC behaviours captured from real malware in P0
+    (IP-recon fingerprinting + DNS-over-HTTPS exfil tunnelling) on top of the chosen
+    family — the behaviour is appended to the family's background worker, or to its
+    content script when the family has no worker.
+    """
     if family not in PAYLOADS:
         raise WeaponiseError(f"unknown family {family!r}; known: {', '.join(PAYLOADS)}")
     benign_dir, out_dir = Path(benign_dir), Path(out_dir)
@@ -112,14 +125,23 @@ def weaponise(benign_dir, out_dir, family="cookie_theft", obfuscated=False) -> d
         rendered = render(text)
         return obfuscate_js(rendered) if obfuscated else rendered
 
+    cs_target = sw_target = None
     if spec["content_script"] and PAYLOAD_MARKER not in _read(out_dir):
-        target = _content_script_file(manifest, out_dir)
-        _append(target, _payload(spec["content_script"]))
-        injected.append(target.name)
+        cs_target = _content_script_file(manifest, out_dir)
+        _append(cs_target, _payload(spec["content_script"]))
+        injected.append(cs_target.name)
     if spec["service_worker"]:
-        target = _background_file(manifest, out_dir)
-        _append(target, _payload(spec["service_worker"]))
-        injected.append(target.name)
+        sw_target = _background_file(manifest, out_dir)
+        _append(sw_target, _payload(spec["service_worker"]))
+        injected.append(sw_target.name)
+
+    if evasion:
+        # Prefer the background worker (runs with no page, as real malware does); fall back
+        # to the family's content script, or create a worker if the family injected neither.
+        target = sw_target or cs_target or _background_file(manifest, out_dir)
+        _append(target, _payload(_EVASION_JS))
+        if target.name not in injected:
+            injected.append(target.name)
 
     if spec["permission"]:
         perms = manifest.setdefault("permissions", [])
@@ -127,12 +149,13 @@ def weaponise(benign_dir, out_dir, family="cookie_theft", obfuscated=False) -> d
             perms.append(spec["permission"])
 
     manifest["version"] = _bump(manifest.get("version", "1.0.0"))
-    manifest["_extdrift_synthetic"] = {"family": family, "obfuscated": obfuscated}
+    manifest["_extdrift_synthetic"] = {
+        "family": family, "obfuscated": obfuscated, "evasion": evasion}
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
     return {
         "out_dir": str(out_dir), "family": family, "obfuscated": obfuscated,
-        "version": manifest["version"], "injected_files": injected,
+        "evasion": evasion, "version": manifest["version"], "injected_files": injected,
         "added_permission": spec["permission"],
     }
 

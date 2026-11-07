@@ -209,3 +209,56 @@ injection, used for the demo pairs and real-grounded malicious) has only 3 famil
   sealed `seal_all` capture + 17-extension real-malware validation (82% flagged, 19 real
   backends) ✓ · benign-scale assessed (Mac job, pool seeded) ✓ · model retrained + FPR-primary
   selection → XGBoost ✓ · STATUS.md + PROJECT_REPORT §17 reconciled ✓. Nothing pushed.
+
+---
+
+## Log (P1 — weaponiser parity with the real attack vocabulary)
+
+### 2026-11-07 — P1 step 1 DONE: `history_exfil` + `ad_affiliate` registered
+- The two templates had been drafted in `payloads.py` but were **never added to the
+  `PAYLOADS` dict**, so the weaponiser still exposed only 3 families (confirmed by import).
+  Registered both:
+  - `history_exfil` — CS reports each visited page to the worker; SW pulls every open tab's
+    URL (`chrome.tabs.query`) and beacons the lot (+ a `webNavigation.onCompleted` hook,
+    `&&`-guarded so it degrades where the API/permission is absent). Permission: `tabs`.
+    This is the DataSpii pattern and the single most common real behaviour (14/20 Two Heads).
+  - `ad_affiliate` — CS rewrites commerce links to append the attacker's referral tag and
+    beacons which origins were touched. No extra permission (pure DOM + content-script fetch).
+- Verified the **full weaponise path** end-to-end on `data/corpus/readerlite/1.0.0`, clean and
+  obfuscated: files injected, marker present, `tabs` added for `history_exfil`, none for
+  `ad_affiliate`, version bumped, `_extdrift_synthetic.family` stamped. Obfuscation hides the
+  collector literal in every injected file.
+- `demo/build_weaponised_pairs.py` gained `--family {…}` (argparse-validated against the
+  registry) so demo pairs can now be built from any family, not just `cookie_theft`.
+- Added `tests/test_infra_additions.py::test_new_real_grounded_families_weaponise_end_to_end`.
+  Full suite **232 passed / 38 skipped**.
+- **Roadmap item 1 ✓.**
+
+### 2026-11-07 — P1 step 2 DONE: evasion / OPSEC layer (observed behaviours)
+- Added `weaponise(evasion=True)` — an optional layer, composable with **any** family, that
+  reproduces the two anti-analysis behaviours we captured from real malware in P0:
+  1. **IP-recon** — fetch an IP-fingerprinting host (real malware: `api.ipify.org`).
+  2. **DNS-over-HTTPS exfil** — POST the stolen datum to a DoH resolver with
+     `Content-Type: application/dns-message`, so exfil looks like name resolution, not an
+     upload (real malware: `dns.google`, `cloudflare-dns.com`).
+- **Safety (the key design point).** The endpoints are **`.test` stand-ins**
+  (`ip-recon.test`, `doh.resolver.test`), *not* the literal real hosts — because the
+  non-sealed demo capture maps only `*.test` to loopback (`testsite.py`), so a literal
+  `dns.google` in a sample would attempt real egress. The `.test` names are mapped to the
+  local sink and registered in `testsite.COLLECTOR_HOSTS`, so the sandbox records them as
+  exfil ground truth while **nothing leaves the machine** — the module's invariant holds.
+  The feature extractor keys on the *behaviour* (a distinct IP-recon host + a DoH-shaped
+  POST), not the literal string, so the stand-in is scientifically faithful.
+- Injection: appended to the family's background worker (runs with no page, like real
+  malware), or to its content script when the family has no worker — reusing the already-
+  injected file, so no duplicate `content_scripts` entry. `obfuscate_js` now also base64-
+  hides the DoH/IP-recon URL literals, so the static-vs-dynamic head-to-head still holds.
+- `demo/build_weaponised_pairs.py --evasion`. Two end-to-end tests added; full suite
+  **233 passed / 38 skipped**.
+- **Roadmap item 2 ✓.** Panel line: "Our synthetic malware isn't naïve — we layer the exact
+  evasion we observed in the real captures (IP-recon + DNS-over-HTTPS exfil tunnelling),
+  reproduced safely so nothing leaves the sandbox."
+- **Next: item 3 (Mac)** — rebuild the weaponised demo pairs with the new families + evasion,
+  re-capture through the sandbox, fold the new malicious traces into `deltas.csv`, retrain and
+  re-run the bake-off. This is capture-bound (background Playwright stalls here), so it's the
+  Mac's job per the division of labour.

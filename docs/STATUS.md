@@ -74,7 +74,7 @@ benign corpus, and the written deliverables. See §6.
 | Component | Status | Where |
 |---|:--:|---|
 | Synthetic generator (12 personas, 9 families, hard overlap) | ✅ | `engine/synth/generate.py` |
-| Weaponiser (real payloads, clean + obfuscated, MV2-safe) | ✅ | `engine/weaponiser/` |
+| Weaponiser (5 real-grounded families + evasion layer, clean + obfuscated, MV2-safe) | ✅ | `engine/weaponiser/` — cookie_theft, credential_theft, sw_beacon, **history_exfil** (DataSpii browsing-data exfil, the #1 real behaviour), **ad_affiliate** (affiliate-link replacement); **`evasion=True`** layers the observed OPSEC (IP-recon + DNS-over-HTTPS exfil, `.test` stand-ins); `demo/build_weaponised_pairs.py --family/--evasion` |
 | Dataset assembler (synthetic + captured → one schema) | ✅ | `engine/batch.py` |
 
 ## 3. Built — real-data collection
@@ -177,6 +177,23 @@ model → report & presentation.
 
 ## 7. Changelog (newest first)
 
+- **2026-11-07** — **P1 weaponiser parity (steps 1 + 2).**
+  **(1) Two new families.** Registered the real-grounded payload families that were drafted but
+  inert in `engine/weaponiser/payloads.py`: **`history_exfil`** (DataSpii browsing-data
+  exfiltration — the single most common real malicious-update behaviour, 14/20 of the labelled
+  Two Heads samples) and **`ad_affiliate`** (affiliate-link replacement / redirect). Weaponiser
+  now ships **5 families** (was 3), each injecting cleanly in clean + obfuscated form,
+  MV2/MV3-safe. `demo/build_weaponised_pairs.py` gains `--family`.
+  **(2) Evasion layer.** `weaponise(evasion=True)` layers the OPSEC we actually captured from
+  real malware in P0 onto any family: **IP-recon fingerprinting** and **DNS-over-HTTPS exfil
+  tunnelling**. Endpoints are `.test` stand-ins for the real `api.ipify.org` / `dns.google`
+  hosts, registered in `testsite.COLLECTOR_HOSTS`, so the behaviour (a distinct IP-recon host +
+  a `application/dns-message` POST) is reproduced with **nothing leaving the machine** —
+  directly answering "synthetic malware has no evasion" with behaviours taken from captures.
+  `--evasion` flag on the demo builder. Obfuscation now also hides the DoH/IP-recon URL
+  literals. Added two end-to-end tests; full suite **233 passed / 38 skipped**. Next (step 3,
+  Mac): rebuild weaponised pairs with the new families + evasion, re-capture, fold into the
+  dataset, retrain.
 - **2026-11-06** — **Real-data acquisition (P0).** Pivoted off the "real malicious data is
   unobtainable" assumption using the Gemini research (`Researches/`, digested in
   `docs/research/P0_DATA_ACQUISITION.md`). Built `engine/collector/wayback.py` (Internet-Archive
